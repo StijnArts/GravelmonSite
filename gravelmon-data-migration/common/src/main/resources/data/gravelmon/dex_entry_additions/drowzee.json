@@ -1,0 +1,23 @@
+{
+  "entryId": "cobblemon:drowzee",
+  "forms": [
+    {
+      "displayForm": "Epoch",
+      "unlockForms": [
+        "Epoch"
+      ]
+    },
+    {
+      "displayForm": "Forman",
+      "unlockForms": [
+        "Forman"
+      ]
+    },
+    {
+      "displayForm": "Enjinnian",
+      "unlockForms": [
+        "Enjinnian"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "entryId": "cobblemon:cacnea",
+  "forms": [
+    {
+      "displayForm": "Neo",
+      "unlockForms": [
+        "Neo"
+      ]
+    },
+    {
+      "displayForm": "X",
+      "unlockForms": [
+        "X"
+      ]
+    },
+    {
+      "displayForm": "Epoch",
+      "unlockForms": [
+        "Epoch"
+      ]
+    },
+    {
+      "displayForm": "Epoch",
+      "unlockForms": [
+        "Epoch"
+      ]
+    }
+  ]
+}
