@@ -17,6 +17,19 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
+# Node.js subproject ignores
+**/node_modules/
+**/npm-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/.npm/
+**/.next/
+**/.parcel-cache/
+**/.turbo/
+
 # Angular cache
 
 /.angular/cache
