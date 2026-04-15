@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     id 'com.github.johnrengelman.shadow'
     id 'org.jetbrains.kotlin.jvm' version "2.1.10"
@@ -53,7 +51,7 @@ dependencies {
     }
     modImplementation "maven.modrinth:packet-fixer:${packet_fixer_neoforge_file}"
     modImplementation files("libs/gravels_extended_battles-neoforge-${gravelmon_file}.jar")
-    modImplementation("maven.modrinth:cobblemon-paleontology:0.0.3-Beta")
+//    modImplementation("maven.modrinth:cobblemon-paleontology:0.0.3-Beta")
     modImplementation "maven.modrinth:midnightlib:uGySRC8x"
     modImplementation("maven.modrinth:cobblemon-mega-showdown:${megashowdown_neoforge}")
 
@@ -98,6 +96,6 @@ tasks.withType(Zip).configureEach {
     zip64 = true
 }
 
-tasks.named("shadowJar", ShadowJar) {
-    zip64 = true
-}
+//tasks.named("shadowJar", ShadowJar) {
+//    zip64 = true
+//}

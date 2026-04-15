@@ -1,0 +1,1663 @@
+{
+  "style": {
+    "font-family": "sans-serif",
+    "background-color": "#ffffff",
+    "background-image": "",
+    "background-size": "100%",
+    "node-color": "#ffffff",
+    "border-width": 4,
+    "border-color": "#000000",
+    "radius": 50,
+    "node-padding": 5,
+    "node-margin": 2,
+    "outside-position": "auto",
+    "node-icon-image": "",
+    "node-background-image": "",
+    "icon-position": "inside",
+    "icon-size": 64,
+    "caption-position": "inside",
+    "caption-max-width": 200,
+    "caption-color": "#000000",
+    "caption-font-size": 50,
+    "caption-font-weight": "normal",
+    "label-position": "inside",
+    "label-display": "pill",
+    "label-color": "#000000",
+    "label-background-color": "#ffffff",
+    "label-border-color": "#000000",
+    "label-border-width": 4,
+    "label-font-size": 40,
+    "label-padding": 5,
+    "label-margin": 4,
+    "directionality": "directed",
+    "detail-position": "inline",
+    "detail-orientation": "parallel",
+    "arrow-width": 5,
+    "arrow-color": "#000000",
+    "margin-start": 5,
+    "margin-end": 5,
+    "margin-peer": 20,
+    "attachment-start": "normal",
+    "attachment-end": "normal",
+    "relationship-icon-image": "",
+    "type-color": "#000000",
+    "type-background-color": "#ffffff",
+    "type-border-color": "#000000",
+    "type-border-width": 0,
+    "type-font-size": 16,
+    "type-padding": 5,
+    "property-position": "outside",
+    "property-alignment": "colon",
+    "property-color": "#000000",
+    "property-font-size": 16,
+    "property-font-weight": "normal"
+  },
+  "nodes": [
+    {
+      "id": "n0",
+      "position": {
+        "x": 243,
+        "y": -4
+      },
+      "caption": "Move",
+      "labels": [],
+      "properties": {
+        "Name": "",
+        "Description": "",
+        "Power Points": "",
+        "Base Power": "",
+        "Priority": "",
+        "Accuracy": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "position": {
+        "x": 452.7805242261819,
+        "y": 642.5385249842006
+      },
+      "caption": "Pokemon",
+      "labels": [],
+      "properties": {
+        "Name": "",
+        "BaseHp": "",
+        "BaseAttack": "",
+        "BaseDefense": "",
+        "BaseSpecialAttack": "",
+        "BaseSpecialDefense": "",
+        "BaseSpeed": "",
+        "HeightInMeters": "",
+        "WeightInKilograms": "",
+        "HpEVYield": "",
+        "AttackEVYield": "",
+        "DefenseEVYield": "",
+        "SpecialAttackEVYield": "",
+        "SpecialDefenseEVYield": "",
+        "SpeedEVYield": "",
+        "CatchRate": "",
+        "MaleRatio": "",
+        "BaseExperienceYield": "",
+        "BaseFriendship": "",
+        "EggCycles": "",
+        "PokedexEntry": "",
+        "DropAmount": "",
+        "PokedexNumber": "",
+        "HitboxHeight": "",
+        "HitboxWidth": "",
+        "HitboxFixed?": "",
+        "BaseScale": "",
+        "CannotDynamax?": ""
+      },
+      "style": {
+        "radius": 90
+      }
+    },
+    {
+      "id": "n2",
+      "position": {
+        "x": 700.9594875688072,
+        "y": -88.07885379859134
+      },
+      "caption": "Type",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n3",
+      "position": {
+        "x": 923.0071696957235,
+        "y": 567.5257756990966
+      },
+      "caption": "Ability",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n4",
+      "position": {
+        "x": 243,
+        "y": -239.4802934540776
+      },
+      "caption": "Move Category",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n5",
+      "position": {
+        "x": 125.25985327296117,
+        "y": -207.93191622184565
+      },
+      "caption": "Move Range",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n6",
+      "position": {
+        "x": 39.06808377815431,
+        "y": -121.74014672703868
+      },
+      "caption": "Move Label",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n7",
+      "position": {
+        "x": 363.66108260973533,
+        "y": 367.8745515641087
+      },
+      "caption": "Moveset",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n8",
+      "position": {
+        "x": 725.781153991958,
+        "y": 260.503922102536
+      },
+      "caption": "ExperienceGroup",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n9",
+      "position": {
+        "x": 856.7947666941272,
+        "y": 390.5216554141257
+      },
+      "caption": "EggGroup",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n10",
+      "position": {
+        "x": -36.57104432491338,
+        "y": 104.81190732211867
+      },
+      "caption": "Evolution",
+      "labels": [],
+      "properties": {
+        "ConsumesHeldItem": "",
+        "IsForced": "",
+        "": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n12",
+      "position": {
+        "x": -352.7761771919232,
+        "y": 99.39350924349833
+      },
+      "caption": "EvolutionType",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n13",
+      "position": {
+        "x": -11.699610086902725,
+        "y": 573.7054916356662
+      },
+      "caption": "Form",
+      "labels": [],
+      "properties": {
+        "Name": "",
+        "BaseHp": "",
+        "BaseAttack": "",
+        "BaseDefense": "",
+        "BaseSpecialAttack": "",
+        "BaseSpecialDefense": "",
+        "BaseSpeed": "",
+        "HeightInMeters": "",
+        "WeightInKilograms": "",
+        "HpEVYield": "",
+        "AttackEVYield": "",
+        "DefenseEVYield": "",
+        "SpecialAttackEVYield": "",
+        "SpecialDefenseEVYield": "",
+        "SpeedEVYield": "",
+        "CatchRate": "",
+        "MaleRatio": "",
+        "BaseExperienceYield": "",
+        "BaseFriendship": "",
+        "PokedexEntry": "",
+        "DropAmount": "",
+        "HitboxHeight": "",
+        "HitboxWidth": "",
+        "HitboxFixed?": "",
+        "BaseScale": "",
+        "CannotDynamax?": ""
+      },
+      "style": {
+        "radius": 90
+      }
+    },
+    {
+      "id": "n14",
+      "position": {
+        "x": -476.89552759975413,
+        "y": 248.72929852830327
+      },
+      "caption": "EvolutionRequirement",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n15",
+      "position": {
+        "x": -741.9648364192644,
+        "y": 248.7292985283034
+      },
+      "caption": "EvolutionCondition",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n16",
+      "position": {
+        "x": 286.84922111503323,
+        "y": 476.6072218730519
+      },
+      "caption": "Label",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n17",
+      "position": {
+        "x": -252.93868799261807,
+        "y": 390.5216554141257
+      },
+      "caption": "Item",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n18",
+      "position": {
+        "x": 125.25985327296117,
+        "y": 175.4579626342892
+      },
+      "caption": "Aspect",
+      "labels": [],
+      "properties": {
+        "Name": "",
+        "isNew": "",
+        "isDefault": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n19",
+      "position": {
+        "x": -569.115830738856,
+        "y": 526.1602856333304
+      },
+      "caption": "SpawnData",
+      "labels": [],
+      "properties": {
+        "Id": "",
+        "minSpawnLevel": "",
+        "maxSpawnLevel": "",
+        "spawnWeight": "",
+        "MinMoonPhase": "",
+        "MaxMoonPhase": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n20",
+      "position": {
+        "x": -1127.024681619826,
+        "y": 567.5257756990966
+      },
+      "caption": "SpawnContext",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n21",
+      "position": {
+        "x": -1032.1479813082492,
+        "y": 840.1262347405359
+      },
+      "caption": "SpawnPool",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n22",
+      "position": {
+        "x": -635.5802314530547,
+        "y": 1081.638343793519
+      },
+      "caption": "SpawnCondition",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n23",
+      "position": {
+        "x": -510.9918290020862,
+        "y": 1082.5728934000945
+      },
+      "caption": "SpawnPreset",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n24",
+      "position": {
+        "x": -389.2863145033557,
+        "y": 1055.9099762894152
+      },
+      "caption": "HerdSpawn",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n26",
+      "position": {
+        "x": -1097.1493313576113,
+        "y": 1082.5728934000945
+      },
+      "caption": "Biome",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n27",
+      "position": {
+        "x": -984.5265031311477,
+        "y": 1195.1957216265582
+      },
+      "caption": "BiomeTag",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n28",
+      "position": {
+        "x": -766.9071793436743,
+        "y": 1049.4689632575341
+      },
+      "caption": "WeightMultiplier",
+      "labels": [],
+      "properties": {
+        "multiplier": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n29",
+      "position": {
+        "x": 116.50672169745184,
+        "y": 1632.4994823828229
+      },
+      "caption": "Behaviour",
+      "labels": [],
+      "properties": {
+        "WalkSpeed": "",
+        "WillDefendOwner": "",
+        "WillDefendSelf": "",
+        "WillFlee": "",
+        "MaxHerdSize": "",
+        "AvoidsWater": "",
+        "CanSleep": "",
+        "SleepMinLightLevel": "",
+        "SleepMaxLightLevel": "",
+        "WanderChance": "",
+        "SwimSpeed": "",
+        "CanSwimInWater?": "",
+        "CanSwimInLava?": "",
+        "CanLookAround?": "",
+        "WillSleepOnBed?": "",
+        "CanWalk?": "",
+        "CanWalkOnWater?": "",
+        "CanWalkOnLava?": "",
+        "AvoidsLand?": "",
+        "DrowsyChance": "",
+        "RouseChance": "",
+        "CanBreatheUnderwater?": "",
+        "CanBreatheUnderlava?": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n30",
+      "position": {
+        "x": -150.59599532509114,
+        "y": 1632.4994823828229
+      },
+      "caption": "Time",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n31",
+      "position": {
+        "x": 1402.494829842776,
+        "y": 205.33662065632794
+      },
+      "caption": "Game",
+      "labels": [],
+      "properties": {
+        "Name": "",
+        "Developer": "",
+        "WikiPage": "",
+        "IsPermitted?": "",
+        "Logo": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n32",
+      "position": {
+        "x": -1195.6869919201133,
+        "y": 1273.7221689288049
+      },
+      "caption": "Mod",
+      "labels": [],
+      "properties": {
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n33",
+      "position": {
+        "x": 1402.494829842776,
+        "y": 805.7881754108881
+      },
+      "caption": "PosingFileData",
+      "labels": [],
+      "properties": {
+        "profileScale": "",
+        "portraitScale": "",
+        "headBone": "",
+        "rootBone": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n34",
+      "position": {
+        "x": 1402.494829842776,
+        "y": 470.3412370651329
+      },
+      "caption": "SpeciesFileData",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n35",
+      "position": {
+        "x": 1144.262406008139,
+        "y": 1253.0598536541402
+      },
+      "caption": "Vector",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n36",
+      "position": {
+        "x": 1262.0824996506396,
+        "y": 1410.4869821140771
+      },
+      "caption": "PoseType",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n37",
+      "position": {
+        "x": 700.9594875688072,
+        "y": 1519.2325799768385
+      },
+      "caption": "SeatPoseOffset",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n38",
+      "position": {
+        "x": 484.9532983101047,
+        "y": 1755.2440124870227
+      },
+      "caption": "RideBehaviour",
+      "labels": [],
+      "properties": {
+        "AccelerationMin": "",
+        "JumpMin": "",
+        "SkillMin": "",
+        "SpeedMin": "",
+        "StaminaMin": "",
+        "HitboxBreachPercentage": "",
+        "JumpMax": "",
+        "SkillMax": "",
+        "SpeedMax": "",
+        "StaminaMax": "",
+        "AccelerationMax": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n39",
+      "position": {
+        "x": 1988.6115308294252,
+        "y": 1273.7221689288049
+      },
+      "caption": "Sound",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n40",
+      "position": {
+        "x": 1074.5999178179832,
+        "y": 1832.4741569860266
+      },
+      "caption": "RidingType",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n41",
+      "position": {
+        "x": 700.9594875688072,
+        "y": 1924.6814426817452
+      },
+      "caption": "RidingKey",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n42",
+      "position": {
+        "x": 1717.6915310653244,
+        "y": 866.7941071774503
+      },
+      "caption": "PoseAnimations",
+      "labels": [],
+      "properties": {
+        "isBattle": "",
+        "isTouchingWater": "",
+        "conditionExpression": "",
+        "isUnderwater": "",
+        "allPoseTypes?": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n43",
+      "position": {
+        "x": 1599.5371202082265,
+        "y": 1165.3074559029221
+      },
+      "caption": "AnimationName",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n44",
+      "position": {
+        "x": 1438.4740106376837,
+        "y": 1027.8581149220618
+      },
+      "caption": "TransformedPartData",
+      "labels": [],
+      "properties": {
+        "Part": "",
+        "isVisible?": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n45",
+      "position": {
+        "x": 1865.1422929884322,
+        "y": 1049.4689632575341
+      },
+      "caption": "Quirk",
+      "labels": [],
+      "properties": {
+        "LoopTimes": "",
+        "minSecondsBetweenOccurrences": "",
+        "maxSecondsBetweenOccurrences": "",
+        "CurveExpression": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n46",
+      "position": {
+        "x": 2263.5300241189548,
+        "y": 498.74474793294036
+      },
+      "caption": "Animation",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n47",
+      "position": {
+        "x": 946.4780585825521,
+        "y": 866.7941071774503
+      },
+      "caption": "CameraOffset",
+      "labels": [],
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n48",
+      "position": {
+        "x": 1691.5168891205221,
+        "y": 449.2164547380504
+      },
+      "caption": "VariationData",
+      "labels": [],
+      "properties": {
+        "TextureName": "",
+        "Model": "",
+        "Poser": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n49",
+      "position": {
+        "x": 1865.1422929884322,
+        "y": 275.5910508701403
+      },
+      "caption": "LayerData",
+      "labels": [],
+      "properties": {
+        "Name": "",
+        "isEmmissive": "",
+        "isTranslucent": "",
+        "framerate": "",
+        "loops?": "",
+        "numberOfFrames": "",
+        "TextureName": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n50",
+      "position": {
+        "x": -150.59599532509114,
+        "y": 1115.6290875673035
+      },
+      "caption": "GenderDifference",
+      "labels": [],
+      "properties": {
+        "HasGenderedTexture?": "",
+        "HasGenderedModel?": "",
+        "HasAnimationDifference?": ""
+      },
+      "style": {}
+    }
+  ],
+  "relationships": [
+    {
+      "id": "n0",
+      "fromId": "n2",
+      "toId": "n2",
+      "type": "Resists",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "fromId": "n2",
+      "toId": "n2",
+      "type": "Immune To",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n2",
+      "fromId": "n2",
+      "toId": "n2",
+      "type": "Effective Against",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n3",
+      "fromId": "n1",
+      "toId": "n2",
+      "type": "Primary Type",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n4",
+      "fromId": "n1",
+      "toId": "n2",
+      "type": "Secondary Type",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n5",
+      "fromId": "n0",
+      "toId": "n2",
+      "type": "IsType",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n6",
+      "fromId": "n0",
+      "toId": "n4",
+      "type": "In Category",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n7",
+      "fromId": "n0",
+      "toId": "n5",
+      "type": "Has Range",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n8",
+      "fromId": "n0",
+      "toId": "n6",
+      "type": "With Label",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n9",
+      "fromId": "n1",
+      "toId": "n7",
+      "type": "Moveset Of",
+      "properties": {
+        "IsPlaceholder?": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n11",
+      "fromId": "n7",
+      "toId": "n0",
+      "type": "Level Up",
+      "properties": {
+        "Level": "int"
+      },
+      "style": {}
+    },
+    {
+      "id": "n12",
+      "fromId": "n7",
+      "toId": "n0",
+      "type": "Teach",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n13",
+      "fromId": "n7",
+      "toId": "n0",
+      "type": "Egg",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n16",
+      "fromId": "n1",
+      "toId": "n3",
+      "type": "Has Ability",
+      "properties": {
+        "IsHidden": "",
+        "IsPlaceholder": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n17",
+      "fromId": "n1",
+      "toId": "n8",
+      "type": "InExperienceGroup",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n18",
+      "fromId": "n1",
+      "toId": "n9",
+      "type": "InEggGroup",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n19",
+      "fromId": "n1",
+      "toId": "n1",
+      "type": "",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n24",
+      "fromId": "n10",
+      "toId": "n12",
+      "type": "IsType",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n25",
+      "fromId": "n10",
+      "toId": "n0",
+      "type": "LearnsUponEvolving",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n26",
+      "fromId": "n1",
+      "toId": "n13",
+      "type": "HasForm",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n27",
+      "fromId": "n13",
+      "toId": "n1",
+      "type": "IsFormOf",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n28",
+      "fromId": "n13",
+      "toId": "n3",
+      "type": "Has Ability",
+      "properties": {
+        "IsHidden": "",
+        "IsPlaceholder": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n29",
+      "fromId": "n13",
+      "toId": "n7",
+      "type": "Moveset of",
+      "properties": {
+        "IsPlaceholder?": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n30",
+      "fromId": "n13",
+      "toId": "n10",
+      "type": "HasEvolution",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n31",
+      "fromId": "n10",
+      "toId": "n13",
+      "type": "EvolvesFrom",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n32",
+      "fromId": "n10",
+      "toId": "n13",
+      "type": "EvolvesInto",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n33",
+      "fromId": "n13",
+      "toId": "n2",
+      "type": "PrimaryType",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n34",
+      "fromId": "n13",
+      "toId": "n2",
+      "type": "SecondaryType",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n35",
+      "fromId": "n10",
+      "toId": "n10",
+      "type": "EvolutionRequirement",
+      "properties": {
+        "condition": "",
+        "requirementKind": "",
+        "ConditionParameter": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n36",
+      "fromId": "n10",
+      "toId": "n14",
+      "type": "HasRequirement",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n37",
+      "fromId": "n14",
+      "toId": "n15",
+      "type": "HasCondition",
+      "properties": {
+        "conditionParam": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n38",
+      "fromId": "n10",
+      "toId": "n13",
+      "type": "Sheds",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n39",
+      "fromId": "n13",
+      "toId": "n16",
+      "type": "HasLabel",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n40",
+      "fromId": "n1",
+      "toId": "n16",
+      "type": "HasLabel",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n41",
+      "fromId": "n13",
+      "toId": "n17",
+      "type": "Drops",
+      "properties": {
+        "chance": "",
+        "quantityMin": "",
+        "quantityMax": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n42",
+      "fromId": "n13",
+      "toId": "n18",
+      "type": "HasAspect",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n43",
+      "fromId": "n17",
+      "toId": "n10",
+      "type": "UseOn",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n44",
+      "fromId": "n14",
+      "toId": "n17",
+      "type": "NeedsToHold",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n45",
+      "fromId": "n19",
+      "toId": "n13",
+      "type": "Spawns",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n46",
+      "fromId": "n19",
+      "toId": "n17",
+      "type": "PreferredBlock",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n47",
+      "fromId": "n19",
+      "toId": "n17",
+      "type": "RequiredBlock",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n48",
+      "fromId": "n19",
+      "toId": "n20",
+      "type": "InContext",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n49",
+      "fromId": "n19",
+      "toId": "n21",
+      "type": "InPool",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n50",
+      "fromId": "n19",
+      "toId": "n22",
+      "type": "HasCondition",
+      "properties": {
+        "Value": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n51",
+      "fromId": "n19",
+      "toId": "n22",
+      "type": "HasAntiCondition",
+      "properties": {
+        "Value": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n52",
+      "fromId": "n19",
+      "toId": "n23",
+      "type": "UsesPreset",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n53",
+      "fromId": "n24",
+      "toId": "n13",
+      "type": "PartOfHerd",
+      "properties": {
+        "minLevel": "",
+        "maxLevel": "",
+        "weight": "",
+        "maxTimes": "",
+        "isLeader": "",
+        "levelRangeOffsetMin": "",
+        "levelRangeOffsetMax": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n54",
+      "fromId": "n19",
+      "toId": "n24",
+      "type": "IsHerdSpawn",
+      "properties": {
+        "MaxHerdSize": "",
+        "minDistanceBetweenSpawns": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n55",
+      "fromId": "n27",
+      "toId": "n26",
+      "type": "ContainsBiome",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n56",
+      "fromId": "n27",
+      "toId": "n27",
+      "type": "ContainsTag",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n57",
+      "fromId": "n19",
+      "toId": "n27",
+      "type": "SpawnsInBiomeTag",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n58",
+      "fromId": "n19",
+      "toId": "n27",
+      "type": "DoesNotSpawnInBiomeTag",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n59",
+      "fromId": "n19",
+      "toId": "n26",
+      "type": "SpawnsInBiome",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n60",
+      "fromId": "n19",
+      "toId": "n26",
+      "type": "DoesNotSpawnInBiome",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n61",
+      "fromId": "n19",
+      "toId": "n28",
+      "type": "HasWeightMultiplier",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n62",
+      "fromId": "n28",
+      "toId": "n22",
+      "type": "HasCondition",
+      "properties": {
+        "Value": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n63",
+      "fromId": "n28",
+      "toId": "n22",
+      "type": "HasAntiCondition",
+      "properties": {
+        "Value": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n64",
+      "fromId": "n13",
+      "toId": "n29",
+      "type": "Performs",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n65",
+      "fromId": "n1",
+      "toId": "n29",
+      "type": "Performs",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n66",
+      "fromId": "n29",
+      "toId": "n1",
+      "type": "ToleratedLeader",
+      "properties": {
+        "Tier": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n67",
+      "fromId": "n29",
+      "toId": "n13",
+      "type": "ToleratedLeader",
+      "properties": {
+        "Tier": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n68",
+      "fromId": "n29",
+      "toId": "n30",
+      "type": "CanSleepDuring",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n69",
+      "fromId": "n31",
+      "toId": "n0",
+      "type": "Introduces",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n70",
+      "fromId": "n31",
+      "toId": "n3",
+      "type": "Introduces",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n71",
+      "fromId": "n31",
+      "toId": "n18",
+      "type": "IsFrom",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n72",
+      "fromId": "n31",
+      "toId": "n13",
+      "type": "IsFrom",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n73",
+      "fromId": "n31",
+      "toId": "n1",
+      "type": "IsFrom",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n74",
+      "fromId": "n32",
+      "toId": "n26",
+      "type": "Adds",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n75",
+      "fromId": "n32",
+      "toId": "n27",
+      "type": "Adds",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n76",
+      "fromId": "n33",
+      "toId": "n35",
+      "type": "ProfileCoords",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n77",
+      "fromId": "n33",
+      "toId": "n35",
+      "type": "PortraitCoords",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n78",
+      "fromId": "n29",
+      "toId": "n37",
+      "type": "HasSeatOffsets",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n79",
+      "fromId": "n29",
+      "toId": "n35",
+      "type": "SeatOffset",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n80",
+      "fromId": "n37",
+      "toId": "n36",
+      "type": "ForPose",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n81",
+      "fromId": "n37",
+      "toId": "n35",
+      "type": "Offset",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n82",
+      "fromId": "n29",
+      "toId": "n38",
+      "type": "HasRidingBehaviour",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n83",
+      "fromId": "n38",
+      "toId": "n39",
+      "type": "RideSound",
+      "properties": {
+        "muffleEnabled?": "",
+        "pitchExpression": "",
+        "PlayForNonPassengers?": "",
+        "PlayForPassengers?": "",
+        "SoundLocation": "",
+        "VolumeExpression": "",
+        "Submerged": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n84",
+      "fromId": "n38",
+      "toId": "n41",
+      "type": "UsesKey",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n85",
+      "fromId": "n38",
+      "toId": "n40",
+      "type": "IsFor",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n86",
+      "fromId": "n13",
+      "toId": "n33",
+      "type": "Poses",
+      "properties": {
+        "forFemale": "",
+        "overridesBase?": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n87",
+      "fromId": "n42",
+      "toId": "n36",
+      "type": "ForPoseType",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n88",
+      "fromId": "n42",
+      "toId": "n43",
+      "type": "usesName",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n89",
+      "fromId": "n42",
+      "toId": "n44",
+      "type": "HasTransformedPart",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n90",
+      "fromId": "n33",
+      "toId": "n42",
+      "type": "ComposedOf",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n91",
+      "fromId": "n44",
+      "toId": "n35",
+      "type": "Position",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n92",
+      "fromId": "n44",
+      "toId": "n35",
+      "type": "Rotation",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n95",
+      "fromId": "n42",
+      "toId": "n45",
+      "type": "hasQuirk",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n96",
+      "fromId": "n45",
+      "toId": "n46",
+      "type": "hasQuirkAnimation",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n97",
+      "fromId": "n42",
+      "toId": "n46",
+      "type": "hasConditionalAnimation",
+      "properties": {
+        "AnimationExpression": "",
+        "Condition": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n98",
+      "fromId": "n42",
+      "toId": "n46",
+      "type": "hasNamedAnimation",
+      "properties": {
+        "AnimationExpression": "",
+        "Name": ""
+      },
+      "style": {}
+    },
+    {
+      "id": "n99",
+      "fromId": "n33",
+      "toId": "n47",
+      "type": "CameraOffsetForSeat",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n100",
+      "fromId": "n47",
+      "toId": "n35",
+      "type": "FirstPersonOffset",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n101",
+      "fromId": "n47",
+      "toId": "n35",
+      "type": "thirdPersonCameraOffset",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n102",
+      "fromId": "n47",
+      "toId": "n35",
+      "type": "thirdPersonCameraOffsetReverse",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n103",
+      "fromId": "n33",
+      "toId": "n46",
+      "type": "hasGlobalAnimation",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n104",
+      "fromId": "n34",
+      "toId": "n13",
+      "type": "Resolves",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n105",
+      "fromId": "n34",
+      "toId": "n48",
+      "type": "ComposedOf",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n106",
+      "fromId": "n48",
+      "toId": "n18",
+      "type": "VariationFor",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n107",
+      "fromId": "n48",
+      "toId": "n49",
+      "type": "ComposedOf",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n108",
+      "fromId": "n13",
+      "toId": "n50",
+      "type": "HasGenderDifference",
+      "properties": {},
+      "style": {}
+    },
+    {
+      "id": "n109",
+      "type": "Introduces",
+      "style": {},
+      "properties": {
+        "InBattleEffect": ""
+      },
+      "fromId": "n31",
+      "toId": "n17"
+    }
+  ]
+}
