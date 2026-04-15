@@ -67,6 +67,17 @@ dependencies {
     modImplementation("maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21")
 
     modImplementation("dev.emi:trinkets:3.10.0")
+    
+    // AWS Neptune and Graph Database
+    implementation 'software.amazon.awssdk:neptune:2.25.0'
+    implementation 'org.apache.tinkerpop:gremlin-driver:3.7.1'
+    implementation 'org.apache.tinkerpop:gremlin-core:3.7.1'
+    
+    // JSON processing
+    implementation 'com.google.code.gson:gson:2.10.1'
+    
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.11'
 }
 
 
