@@ -20,17 +20,21 @@ Resources:
     Properties:
       TableName: !Ref DynamoTableName
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
           AttributeType: S
       KeySchema:
-        - AttributeName: id
+        - AttributeName: PK
           KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
   DynamoRelationalFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Handler: index.handler
+      Handler: src/handler.handler
       Runtime: nodejs18.x
       Policies:
         - DynamoDBCrudPolicy:

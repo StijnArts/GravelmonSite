@@ -2,7 +2,7 @@
 
 This project is an AWS SAM Node.js application that uses DynamoDB as the database and exposes a Lambda-backed HTTP API.
 
-The implementation uses AWS SDK for JavaScript v3 in `index.js` to perform DynamoDB operations.
+The implementation uses AWS SDK for JavaScript v3 with a clean Lambda structure in `src/`.
 
 ## Recommended architecture
 
@@ -20,8 +20,11 @@ This keeps the production architecture aligned with AWS while allowing local dev
 
 - `template.yaml` - SAM template defining the Lambda and DynamoDB table
 - `package.json` - Node.js package file with dependencies and scripts
-- `index.js` - Lambda handler and DynamoDB service code
+- `src/handler.js` - Lambda entry point and HTTP event routing
+- `src/dynamoService.js` - DynamoDB client and persistence operations
+- `src/response.js` - shared Lambda API response helpers
 - `run-local.bat` / `run-local.sh` - helpers for local testing
+- `test-handler.bat` - local request validation script
 
 ## Local setup
 
@@ -90,26 +93,50 @@ npm start
 
 ### Test the API
 
-Create an item:
+Create a node:
 
 ```bash
 curl -X POST http://127.0.0.1:3000/items \
   -H "Content-Type: application/json" \
-  -d '{"operation":"create","id":"item-1","name":"Sample","description":"Sample item"}'
+  -d '{"operation":"createNode","id":"node-1","name":"Node 1","description":"Graph node"}'
 ```
 
-Get an item by id:
-
-```bash
-curl "http://127.0.0.1:3000/items?id=item-1"
-```
-
-Query by name:
+Create an edge:
 
 ```bash
 curl -X POST http://127.0.0.1:3000/items \
   -H "Content-Type: application/json" \
-  -d '{"operation":"query","name":"Sample"}'
+  -d '{"operation":"createEdge","sourceId":"node-1","targetId":"node-2","relation":"knows","properties":{"since":"2024"}}'
+```
+
+Get a node by id:
+
+```bash
+curl "http://127.0.0.1:3000/items?id=node-1"
+```
+
+List outgoing edges for a node:
+
+```bash
+curl -X POST http://127.0.0.1:3000/items \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"neighbors","sourceId":"node-1"}'
+```
+
+Get a specific edge:
+
+```bash
+curl -X POST http://127.0.0.1:3000/items \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"getEdge","sourceId":"node-1","targetId":"node-2"}'
+```
+
+Query nodes by name:
+
+```bash
+curl -X POST http://127.0.0.1:3000/items \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"queryNodes","name":"Node"}'
 ```
 
 ## Deploy to AWS
