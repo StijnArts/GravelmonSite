@@ -30,12 +30,24 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+
+  DynamoDBGraphLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: dynamodb-graph
+      Description: Shared DynamoDB graph utility layer for Lambda functions
+      ContentUri: layers/dynamodb-lib
+      CompatibleRuntimes:
+        - nodejs18.x
+
   DynamoRelationalFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
       Handler: src/handler.handler
       Runtime: nodejs18.x
+      Layers:
+        - !Ref DynamoDBGraphLayer
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DynamoTableName
