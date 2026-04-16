@@ -1,0 +1,14 @@
+{
+  "name": "dynamodb-graph-layer-nodejs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Node.js runtime contents for the DynamoDB graph Lambda layer.",
+  "scripts": {
+    "build": "node scripts/build-layer.js",
+    "bootstrap": "npm install && npm run build"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.358.0",
+    "@aws-sdk/util-dynamodb": "^3.358.0"
+  }
+}

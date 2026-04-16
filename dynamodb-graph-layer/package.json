@@ -1,0 +1,9 @@
+{
+  "name": "dynamodb-graph-layer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone Lambda layer project for DynamoDB graph utilities.",
+  "scripts": {
+    "bootstrap": "npm install --prefix nodejs && npm run bootstrap --prefix nodejs"
+  }
+}

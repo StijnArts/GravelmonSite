@@ -1,0 +1,11 @@
+{
+  "name": "dynamodb-graph",
+  "version": "1.0.0",
+  "description": "DynamoDB graph utility package for Lambda layer.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.358.0",
+    "@aws-sdk/util-dynamodb": "^3.358.0"
+  }
+}

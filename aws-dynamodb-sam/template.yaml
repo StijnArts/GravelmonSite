@@ -36,7 +36,7 @@ Resources:
     Properties:
       LayerName: dynamodb-graph
       Description: Shared DynamoDB graph utility layer for Lambda functions
-      ContentUri: layers/dynamodb-lib
+      ContentUri: ../dynamodb-graph-layer
       CompatibleRuntimes:
         - nodejs18.x
 

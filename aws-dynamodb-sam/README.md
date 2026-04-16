@@ -20,16 +20,13 @@ This keeps the production architecture aligned with AWS while allowing local dev
 
 - `template.yaml` - SAM template defining the Lambda and DynamoDB table
 - `package.json` - Node.js package file with dependencies and scripts
-- `src/handler.js` - Lambda entry point and HTTP event routing
-- `src/dynamoService.js` - layer proxy for shared DynamoDB graph operations
-- `src/response.js` - shared Lambda API response helpers
-- `layers/dynamodb-lib` - Lambda layer containing reusable DynamoDB graph utilities
+- `src/handler.js` - Lambda entry point and request director
 - `run-local.bat` / `run-local.sh` - helpers for local testing
 - `test-handler.bat` - local request validation script
 
 ## Layer support
 
-This project exposes shared DynamoDB graph operations through a Lambda layer in `layers/dynamodb-lib`. The Lambda function imports `dynamodb-graph` from the layer, while the application dependencies remain in `package.json`.
+This project uses a separate Lambda layer project in `../dynamodb-graph-layer`. The `dynamodb-graph` package is loaded from that layer, so shared graph operations are reusable across Lambda functions.
 
 ## Local setup
 

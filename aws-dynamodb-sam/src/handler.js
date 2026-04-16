@@ -6,8 +6,9 @@ const {
   getNeighbors,
   queryNodes,
   ensureTableExists,
-} = require("./dynamoService");
-const { successResponse, errorResponse } = require("./response");
+  successResponse,
+  errorResponse,
+} = require("dynamodb-graph");
 
 exports.handler = async (event) => {
   if (!process.env.DYNAMODB_TABLE) {

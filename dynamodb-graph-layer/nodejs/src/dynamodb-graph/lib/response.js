@@ -10,7 +10,7 @@ function errorResponse(statusCode, message) {
   return {
     statusCode,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ error: message }),
+    body: JSON.stringify({ message }),
   };
 }
 
