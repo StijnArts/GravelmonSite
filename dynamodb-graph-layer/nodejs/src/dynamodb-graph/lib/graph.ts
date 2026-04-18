@@ -1,23 +1,40 @@
-const {
+import {
   DynamoDBClient,
   CreateTableCommand,
   PutItemCommand,
   GetItemCommand,
   QueryCommand,
   ScanCommand,
-} = require("@aws-sdk/client-dynamodb");
+} from "@aws-sdk/client-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-module.exports = {
-  ensureTableExists,
-  createNode,
-  createEdge,
-  getNode,
-  getEdge,
-  getNeighbors,
-  queryNodes,
-};
+interface Node {
+  id: string;
+  name?: string | null;
+  description?: string | null;
+  metadata?: any;
+}
 
-const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
+interface Edge {
+  sourceId: string;
+  targetId: string;
+  relation?: string | null;
+  properties?: any;
+}
+
+interface CreateNodeInput {
+  id: string;
+  name?: string;
+  description?: string;
+  metadata?: any;
+}
+
+interface CreateEdgeInput {
+  sourceId: string;
+  targetId: string;
+  relation?: string;
+  properties?: any;
+}
 
 const TABLE_NAME = process.env.DYNAMODB_TABLE;
 const TABLE_ENDPOINT = process.env.DYNAMODB_ENDPOINT;
@@ -31,7 +48,7 @@ const dynamoClient = new DynamoDBClient({
 const NODE_PREFIX = "NODE#";
 const EDGE_PREFIX = "EDGE#";
 
-async function ensureTableExists() {
+export async function ensureTableExists(): Promise<boolean> {
   if (!TABLE_NAME) {
     throw new Error("DYNAMODB_TABLE environment variable is required.");
   }
@@ -52,7 +69,7 @@ async function ensureTableExists() {
 
     await dynamoClient.send(command);
     return true;
-  } catch (error) {
+  } catch (error: any) {
     if (error.name === "ResourceInUseException") {
       return false;
     }
@@ -60,15 +77,16 @@ async function ensureTableExists() {
   }
 }
 
-function buildNodeKey(id) {
+function buildNodeKey(id: string) {
   return { PK: `${NODE_PREFIX}${id}`, SK: "NODE" };
 }
 
-function buildEdgeKey(sourceId, targetId) {
+function buildEdgeKey(sourceId: string, targetId: string) {
   return { PK: `${NODE_PREFIX}${sourceId}`, SK: `${EDGE_PREFIX}${targetId}` };
 }
 
-async function createNode({ id, name, description, metadata }) {
+export async function createNode(input: CreateNodeInput): Promise<Node> {
+  const { id, name, description, metadata } = input;
   if (!id) {
     throw new Error("Node id is required.");
   }
@@ -91,7 +109,8 @@ async function createNode({ id, name, description, metadata }) {
   return { id, name, description, metadata: metadata || null };
 }
 
-async function createEdge({ sourceId, targetId, relation, properties }) {
+export async function createEdge(input: CreateEdgeInput): Promise<Edge> {
+  const { sourceId, targetId, relation, properties } = input;
   if (!sourceId || !targetId) {
     throw new Error("sourceId and targetId are required.");
   }
@@ -115,7 +134,7 @@ async function createEdge({ sourceId, targetId, relation, properties }) {
   return { sourceId, targetId, relation, properties: properties || null };
 }
 
-async function getNode(id) {
+export async function getNode(id: string): Promise<Node | null> {
   if (!id) {
     throw new Error("Node id is required.");
   }
@@ -140,7 +159,7 @@ async function getNode(id) {
   };
 }
 
-async function getEdge(sourceId, targetId) {
+export async function getEdge(sourceId: string, targetId: string): Promise<Edge | null> {
   if (!sourceId || !targetId) {
     throw new Error("sourceId and targetId are required.");
   }
@@ -165,7 +184,7 @@ async function getEdge(sourceId, targetId) {
   };
 }
 
-async function getNeighbors(sourceId) {
+export async function getNeighbors(sourceId: string): Promise<Edge[]> {
   if (!sourceId) {
     throw new Error("sourceId is required.");
   }
@@ -180,7 +199,7 @@ async function getNeighbors(sourceId) {
   });
 
   const result = await dynamoClient.send(command);
-  const edges = (result.Items || []).map((item) => {
+  const edges: Edge[] = (result.Items || []).map((item) => {
     const edge = unmarshall(item);
     return {
       sourceId: edge.SourceId,
@@ -193,8 +212,8 @@ async function getNeighbors(sourceId) {
   return edges;
 }
 
-async function queryNodes(name) {
-  const params = {
+export async function queryNodes(name?: string): Promise<Node[]> {
+  const params: any = {
     TableName: TABLE_NAME,
     FilterExpression: "#type = :nodeType",
     ExpressionAttributeNames: { "#type": "Type" },

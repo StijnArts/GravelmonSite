@@ -4,8 +4,12 @@
   "private": true,
   "description": "Node.js runtime contents for the DynamoDB graph Lambda layer.",
   "scripts": {
-    "build": "node scripts/build-layer.js",
+    "build": "if exist dist rmdir /s /q dist && tsc && node scripts/build-layer.js",
     "bootstrap": "npm install && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.358.0",

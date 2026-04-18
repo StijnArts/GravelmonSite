@@ -44,7 +44,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      Handler: src/handler.handler
+      Handler: dist/handler.handler
       Runtime: nodejs18.x
       Layers:
         - !Ref DynamoDBGraphLayer

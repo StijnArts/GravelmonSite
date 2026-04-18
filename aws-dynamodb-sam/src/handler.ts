@@ -10,7 +10,25 @@ const {
   errorResponse,
 } = require("dynamodb-graph");
 
-exports.handler = async (event) => {
+interface LambdaEvent {
+  httpMethod?: string;
+  queryStringParameters?: { [key: string]: string | undefined };
+  body?: string;
+}
+
+interface RequestBody {
+  operation?: string;
+  id?: string;
+  name?: string;
+  description?: string;
+  metadata?: any;
+  sourceId?: string;
+  targetId?: string;
+  relation?: string;
+  properties?: any;
+}
+
+const handler = async (event: LambdaEvent) => {
   if (!process.env.DYNAMODB_TABLE) {
     return errorResponse(500, "DYNAMODB_TABLE environment variable is required.");
   }
@@ -19,7 +37,7 @@ exports.handler = async (event) => {
 
   try {
     if (event.httpMethod === "GET") {
-      const id = event.queryStringParameters && event.queryStringParameters.id;
+      const id = event.queryStringParameters?.id;
       if (!id) {
         return errorResponse(400, "Missing query parameter: id");
       }
@@ -30,12 +48,12 @@ exports.handler = async (event) => {
       return successResponse(item);
     }
 
-    const body = event.body ? JSON.parse(event.body) : {};
-    const operation = body.operation && body.operation.toLowerCase();
+    const body: RequestBody = event.body ? JSON.parse(event.body) : {};
+    const operation = body.operation?.toLowerCase();
 
     switch (operation) {
       case "create":
-      case "createNode":
+      case "createnode":
         if (!body.id) {
           return errorResponse(400, "Missing id in request body.");
         }
@@ -46,7 +64,7 @@ exports.handler = async (event) => {
           metadata: body.metadata,
         });
         return successResponse(createdNode);
-      case "createEdge":
+      case "createedge":
         if (!body.sourceId || !body.targetId) {
           return errorResponse(400, "Missing sourceId or targetId in request body.");
         }
@@ -58,14 +76,14 @@ exports.handler = async (event) => {
         });
         return successResponse(createdEdge);
       case "query":
-      case "queryNodes":
+      case "querynodes":
         return successResponse(await queryNodes(body.name));
       case "neighbors":
         if (!body.sourceId) {
           return errorResponse(400, "Missing sourceId in request body.");
         }
         return successResponse(await getNeighbors(body.sourceId));
-      case "getEdge":
+      case "getedge":
         if (!body.sourceId || !body.targetId) {
           return errorResponse(400, "Missing sourceId or targetId in request body.");
         }
@@ -77,7 +95,9 @@ exports.handler = async (event) => {
       default:
         return errorResponse(400, `Unsupported operation: ${body.operation}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     return errorResponse(500, error.message || "Internal error");
   }
 };
+
+module.exports = { handler };

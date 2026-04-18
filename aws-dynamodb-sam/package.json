@@ -2,14 +2,18 @@
   "name": "aws-dynamodb-sam",
   "version": "1.0.0",
   "description": "AWS SAM Node.js app using DynamoDB",
-  "main": "src/handler.js",
+  "main": "dist/handler.js",
   "scripts": {
     "start": "sam local start-api --template template.yaml --port 3000",
-    "build": "npm install",
+    "build": "npm install && npx tsc",
     "test": "echo \"No tests configured yet\" && exit 0"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.358.0",
     "@aws-sdk/util-dynamodb": "^3.358.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
   }
 }
