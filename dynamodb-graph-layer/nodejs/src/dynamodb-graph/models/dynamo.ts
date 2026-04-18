@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, PutItemCommand, TransactWriteItemsCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
 export type PK = string;
@@ -21,24 +21,6 @@ export abstract class DynamoItem {
         this.TYPE = type;
         this.entityType = entityType;
     }
-
-    async save(tableName: string = process.env.DYNAMODB_TABLE || ""): Promise<void> {
-        if (!tableName) {
-            throw new Error("DYNAMODB_TABLE environment variable is required to save DynamoItem.");
-        }
-
-        const client = new DynamoDBClient({
-            region: process.env.AWS_REGION || "us-east-1",
-            endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
-        });
-
-        await client.send(
-            new PutItemCommand({
-                TableName: tableName,
-                Item: marshall(this, { removeUndefinedValues: true }),
-            })
-        );
-    }
 }
 
 export abstract class DynamoNode extends DynamoItem {
@@ -51,14 +33,47 @@ export abstract class DynamoNode extends DynamoItem {
 }
 
 export abstract class DynamoEdge extends DynamoItem {
-    Target: string;
+    Target: PK;
 
     constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string, reverse: boolean = false) {
         super(pk, getEdgeSK(edgeType, targetEntityType, targetName, reverse), ItemType.EDGE, edgeType);
         this.Target = getNodePK(targetEntityType, targetName);
     }
+
+    abstract reverseEdge(): DynamoEdge;
 }
 
+export async function createEdge(edge: DynamoEdge, tableName: string = process.env.DYNAMODB_TABLE || ""): Promise<void> {
+    if (!tableName) {
+        throw new Error("DYNAMODB_TABLE environment variable is required.");
+    }
+
+    const client = new DynamoDBClient({
+        region: process.env.AWS_REGION || "us-east-1",
+        endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+    });
+
+    const reverseEdge = edge.reverseEdge();
+
+    await client.send(
+        new TransactWriteItemsCommand({
+            TransactItems: [
+                {
+                    Put: {
+                        TableName: tableName,
+                        Item: marshall(edge, { removeUndefinedValues: true, convertClassInstanceToMap: true }),
+                    },
+                },
+                {
+                    Put: {
+                        TableName: tableName,
+                        Item: marshall(reverseEdge, { removeUndefinedValues: true, convertClassInstanceToMap: true }),
+                    },
+                },
+            ],
+        })
+    );
+}
 
 export function getNodePK(type: string, name: string): PK {
    return `NODE#${type}#${name}`;
@@ -67,4 +82,14 @@ export function getNodePK(type: string, name: string): PK {
 export function getEdgeSK(edgeType: string, targetType: string, targetName: string, reverse: boolean = false): SK {
     const prefix = reverse ? "EDGE#IN" : "EDGE";
     return `${prefix}#${edgeType}#${targetType}#${targetName}`;
+}
+
+export function getPkType(pk: PK): string {
+        const parts = pk.split('#');
+        return parts[1];
+}
+
+export function getPkName(pk: PK): string {
+        const parts = pk.split('#');
+        return parts[2];
 }
