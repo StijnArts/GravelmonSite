@@ -1,8 +1,10 @@
-import { DynamoEdge, DynamoNode, getNodePK, getPkName } from '../../dynamo';
-import { PokemonIdentifier } from '../pokemon';
+import { DynamoEdge, DynamoNode, getNodePK, getPkName } from '../../../dynamo';
+import { PokemonIdentifier } from '../../pokemon';
 import { MoveEntity } from './move';
 
-const MovesetEntity = "Moveset";
+export const MovesetEntity = "Moveset";
+export const MovesetOfEdgeType = "MovesetOf";
+
 const enum MovesetEdgeType {
     LevelUp = "LevelUp",
     Teach = "Teach",
@@ -10,8 +12,8 @@ const enum MovesetEdgeType {
     Legacy = "Legacy"
 }
 
-export function createMovesetNode(pokemon: PokemonIdentifier): DynamoNode {
-    return new DynamoNode(MovesetEntity, pokemon.toString());
+export function createMovesetNode(pokemon: PokemonIdentifier, isPlaceholder: boolean = false): DynamoNode {
+    return new MovesetNode(pokemon.toString(), isPlaceholder);
 }
 
 export function createMovesetLevelUpEdge(movesetName: string, moveName: string, level: number): DynamoEdge {
@@ -30,10 +32,19 @@ export function createMovesetLegacyEdge(movesetName: string, moveName: string): 
     return new DynamoEdge(getNodePK(MovesetEntity, movesetName), MovesetEdgeType.Legacy, MoveEntity, moveName);
 }
 
+class MovesetNode extends DynamoNode {
+    isPlaceholder: boolean;
+
+    constructor(pokemonName: string, isPlaceholder: boolean = false) {
+        super(MovesetEntity, `${pokemonName}${isPlaceholder ? "#Placeholder" : ""}`);
+        this.isPlaceholder = isPlaceholder;
+    }
+}
+
 class MovesetLevelUpEdge extends DynamoEdge {
     level: number;
-    constructor(movesetName: string, moveName: string, level: number, isReverseEdge: boolean = false) {
-        super(getNodePK(isReverseEdge? MoveEntity : MovesetEntity, movesetName), 
+    constructor(pokemonName: string, moveName: string, level: number, isReverseEdge: boolean = false) {
+        super(getNodePK(isReverseEdge? MoveEntity : MovesetEntity, pokemonName), 
         MovesetEdgeType.LevelUp, 
         isReverseEdge? MovesetEntity : MoveEntity, moveName, isReverseEdge);
         this.level = level;

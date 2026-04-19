@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK } from '../../../dynamo';
 import { TypeEntity } from '../type';
 
 export const MoveEntity = "Move";

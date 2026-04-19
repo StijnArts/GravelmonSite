@@ -1,4 +1,4 @@
-export class stats {
+export class Stats {
     hp: number;
     attack: number;
     defense: number;

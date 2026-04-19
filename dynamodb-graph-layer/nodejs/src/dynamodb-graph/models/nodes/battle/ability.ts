@@ -1,4 +1,4 @@
-import { DynamoNode } from '../dynamo';
+import { DynamoNode } from '../../dynamo';
 
 export const AbilityEntity = "Ability";
 

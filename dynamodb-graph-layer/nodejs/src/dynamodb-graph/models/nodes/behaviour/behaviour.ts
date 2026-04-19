@@ -4,21 +4,14 @@ import { getNodePK } from '../../dynamo';
 import { NumberRange } from '../properties/numberRange';
 import { RidingBehaviourOptions } from './riding';
 import { FormEntity } from '../form';
+import { TimeRange } from '../properties/time';
 
 export const BehaviourEntity = "Behaviour";
-export enum Time {
-    Day ="day",
-    Night = "night",
-    Dawn = "dawn",
-    Dusk = "dusk"
-}
 
 export enum SleepDepth {
     Normal = "normal",
     Comatose = "comatose"
 }
-
-type SleepTime = Time | NumberRange | SleepTime[];
 
 export const ToleratedLeaderEdgeType = "ToleratedLeader";
 export const CanSleepDuringEdgeType = "CanSleepDuring";
@@ -29,7 +22,8 @@ export function createBehaviourNode(pokemon: PokemonIdentifier, options: Behavio
 }
 
 export function createToleratedLeaderEdge(behaviourName: string, leader: string, tier: number): DynamoEdge {
-    return new ToleratedLeaderEdge(behaviourName, leader, tier);
+    let leaderEntityType: string = ToleratedLeaderEdge.getEntityType(PokemonIdentifier.fromString(leader));
+    return new ToleratedLeaderEdge(behaviourName, leader, leaderEntityType, tier);
 }
 
 export interface BehaviourMovementOptions {
@@ -62,7 +56,7 @@ export interface BehaviourSleepOptions {
     sleepLightLevel?: NumberRange;
     drowsyChance?: number;
     depth?: SleepDepth;
-    times?: SleepTime[];
+    times?: TimeRange[];
     biomes?: string[];
 }
 
@@ -92,14 +86,20 @@ class BehaviourNode extends DynamoNode {
 
 class ToleratedLeaderEdge extends DynamoEdge {
     tier: number;
+    leaderEntityType: string;
 
-    constructor(pokemon: string, leader: string, tier: number, isReverseEdge: boolean = false) {
-        super(getNodePK(isReverseEdge ? ToleratedLeaderEdge.getEntityType(PokemonIdentifier.fromString(leader)) : BehaviourEntity, pokemon),
+    constructor(source: string, target: string, targetEntityType: string, tier: number, isReverseEdge: boolean = false) {
+        super(
+            getNodePK(
+                isReverseEdge ? 
+                targetEntityType :
+                BehaviourEntity, source),
             ToleratedLeaderEdgeType, 
-            isReverseEdge ? BehaviourEntity : ToleratedLeaderEdge.getEntityType(PokemonIdentifier.fromString(leader)), 
-            leader,
+            isReverseEdge ? BehaviourEntity : targetEntityType, 
+            target,
             isReverseEdge);
         this.tier = tier;
+        this.leaderEntityType = targetEntityType;
     }
 
     static getEntityType(leader: PokemonIdentifier): string {
@@ -110,6 +110,9 @@ class ToleratedLeaderEdge extends DynamoEdge {
     }
 
     reverseEdge(): DynamoEdge {
-        return new ToleratedLeaderEdge(getPkName(this.Target), getPkName(this.PK), this.tier, !this.isReverseEdge());
+        return new ToleratedLeaderEdge(
+            getPkName(this.Target), getPkName(this.PK), 
+            this.leaderEntityType, this.tier, !this.isReverseEdge()
+        );
     }
 }
