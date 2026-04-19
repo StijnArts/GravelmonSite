@@ -5,6 +5,5 @@ export * from './evolutionType';
 export * from './properties/experienceGroup';
 export * from './form';
 export * from './move/move';
-export * from './moveset';
 export * from './pokemon';
 export * from './type';
