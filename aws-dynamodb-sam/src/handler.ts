@@ -32,7 +32,7 @@ const handler = async (event: LambdaEvent) => {
   if (!process.env.DYNAMODB_TABLE) {
     return errorResponse(500, "DYNAMODB_TABLE environment variable is required.");
   }
-
+  
   await ensureTableExists();
 
   try {

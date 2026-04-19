@@ -23,7 +23,7 @@ export abstract class DynamoItem {
     }
 }
 
-export abstract class DynamoNode extends DynamoItem {
+export class DynamoNode extends DynamoItem {
     Name: string;
 
     constructor(entityType: string, name: string) {
@@ -32,7 +32,7 @@ export abstract class DynamoNode extends DynamoItem {
     }
 }
 
-export abstract class DynamoEdge extends DynamoItem {
+export class DynamoEdge extends DynamoItem {
     Target: PK;
 
     constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string, reverse: boolean = false) {
@@ -40,7 +40,15 @@ export abstract class DynamoEdge extends DynamoItem {
         this.Target = getNodePK(targetEntityType, targetName);
     }
 
-    abstract reverseEdge(): DynamoEdge;
+    reverseEdge(): DynamoEdge {
+        return new DynamoEdge(this.Target, this.entityType, getPkType(this.PK), getPkName(this.PK), !this.isReverseEdge());
+    }
+
+    isReverseEdge(): boolean {
+        const parts = this.SK.split('#');
+        if(parts[2] === "IN") return true;
+        return false;
+    }
 }
 
 export async function createEdge(edge: DynamoEdge, tableName: string = process.env.DYNAMODB_TABLE || ""): Promise<void> {
@@ -85,11 +93,11 @@ export function getEdgeSK(edgeType: string, targetType: string, targetName: stri
 }
 
 export function getPkType(pk: PK): string {
-        const parts = pk.split('#');
-        return parts[1];
+    const parts = pk.split('#');
+    return parts[1];
 }
 
 export function getPkName(pk: PK): string {
-        const parts = pk.split('#');
-        return parts[2];
+    const parts = pk.split('#');
+    return parts[2];
 }

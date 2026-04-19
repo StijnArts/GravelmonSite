@@ -1,18 +1,30 @@
 import { DynamoEdge, DynamoNode, getNodePK, getPkName} from '../dynamo';
 
-const TypeEntity = "Type";
-
-export class TypeNode extends DynamoNode {
-    constructor(name: string) {
-        super(TypeEntity, name);
-    }
-}
+export const TypeEntity = "Type";
 
 export enum TypeRelationShip {
     IMMUNITY = "ImmuneTo",
     WEAKNESS = "WeakAgainst",
     RESISTANCE = "Resists"
 }
+
+export function createTypeNode(name: string): DynamoNode {
+    return new DynamoNode(TypeEntity, name);
+}
+
+export function createTypeEdge(attackingType: string, defendingType: string, typeRelationship: TypeRelationShip): DynamoEdge {
+    switch (typeRelationship) {
+        case TypeRelationShip.IMMUNITY:
+            return new ImmunityEdge(attackingType, defendingType);
+        case TypeRelationShip.WEAKNESS:
+            return new WeaknessEdge(attackingType, defendingType);
+        case TypeRelationShip.RESISTANCE:
+            return new ResistanceEdge(attackingType, defendingType);
+        default:
+            throw new Error(`Unknown type relationship: ${typeRelationship}`);
+    }
+}
+
 
 abstract class TypeRelationShipEdge extends DynamoEdge {
     constructor(attackingType: string, defendingType: string, typeRelationship: TypeRelationShip, reverse: boolean = false) {
@@ -35,19 +47,19 @@ abstract class TypeRelationShipEdge extends DynamoEdge {
     }
 }
 
-export class ImmunityEdge extends TypeRelationShipEdge {
+class ImmunityEdge extends TypeRelationShipEdge {
     constructor(attackingType: string, defendingType: string, reverse: boolean = false) {
         super(attackingType, defendingType, TypeRelationShip.IMMUNITY, reverse);
     }
 }
 
-export class WeaknessEdge extends TypeRelationShipEdge {
+class WeaknessEdge extends TypeRelationShipEdge {
     constructor(attackingType: string, defendingType: string, reverse: boolean = false) {
         super(attackingType, defendingType, TypeRelationShip.WEAKNESS, reverse);
     }
 }
 
-export class ResistanceEdge extends TypeRelationShipEdge {
+class ResistanceEdge extends TypeRelationShipEdge {
     constructor(attackingType: string, defendingType: string, reverse: boolean = false) {
         super(attackingType, defendingType, TypeRelationShip.RESISTANCE, reverse);
     }
