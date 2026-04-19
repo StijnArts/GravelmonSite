@@ -36,11 +36,11 @@ abstract class TypeRelationShipEdge extends DynamoEdge {
         const defendingType = getPkName(this.Target);
         switch (this.entityType) {
             case TypeRelationShip.IMMUNITY:
-                return new ImmunityEdge(defendingType, attackingType, true);
+                return new ImmunityEdge(defendingType, attackingType, !this.isReverseEdge());
             case TypeRelationShip.WEAKNESS: 
-                return new WeaknessEdge(defendingType, attackingType, true);
+                return new WeaknessEdge(defendingType, attackingType, !this.isReverseEdge());
             case TypeRelationShip.RESISTANCE:
-                return new ResistanceEdge(defendingType, attackingType, true);
+                return new ResistanceEdge(defendingType, attackingType, !this.isReverseEdge());
             default:
                 throw new Error(`Unknown type relationship: ${this.entityType}`);
         }

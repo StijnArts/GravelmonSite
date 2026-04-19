@@ -1,9 +1,12 @@
 import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../dynamo';
+import { TypeEntity } from './type';
 
-const PokemonEntity = "Pokemon";
-const TypeEntity = "Type";
+export const PokemonEntity = "Pokemon";
 
 export class PokemonIdentifier {
+    static fromString(leader: string): PokemonIdentifier {
+        throw new Error('Method not implemented.');
+    }
     game: string;
     pokemon: string;
     formName?: string;
@@ -17,6 +20,16 @@ export class PokemonIdentifier {
         const formSuffix = this.formName ? `#${this.formName}` : "";
         return `${this.game}#${this.pokemon}${formSuffix}`;
     }
+
+    fromString(identifier: string): PokemonIdentifier {
+        const [game, pokemonWithForm] = identifier.split("#");
+        const [pokemon, formName] = pokemonWithForm.split("#");
+        return new PokemonIdentifier(game, pokemon, formName);
+    }
+
+    isForm(): boolean {
+        return !!this.formName;
+    }
 }
 
 export class PokemonNode extends DynamoNode {
@@ -26,30 +39,42 @@ export class PokemonNode extends DynamoNode {
 }
 
 export enum PokemonTypeRelationship {
-    PRIMARY_TYPE = "PrimaryType",
-    SECONDARY_TYPE = "SecondaryType"
+    PrimaryType = "PrimaryType",
+    SecondaryType = "SecondaryType"
 }
 
 abstract class PokemonTypeEdge extends DynamoEdge {
-    constructor(pokemonName: string, typeName: string, relationship: PokemonTypeRelationship) {
-        super(getNodePK(PokemonEntity, pokemonName), relationship, TypeEntity, typeName);
+    constructor(pokemonName: string, typeName: string, relationship: PokemonTypeRelationship, isReverseEdge: boolean = false) {
+        super(
+            getNodePK(isReverseEdge? TypeEntity : PokemonEntity, pokemonName), 
+        relationship,
+        isReverseEdge? PokemonEntity : TypeEntity, 
+        typeName, isReverseEdge);
     }
 
     reverseEdge(): PokemonTypeEdge {
-        // For type relationships, reverse might not be directly applicable, but we can implement if needed
-        throw new Error("Reverse edge not implemented for Pokemon-Type relationships");
+        const pokemonName = getPkName(this.PK);
+        const typeName = getPkName(this.Target);
+        switch (this.entityType) {
+            case PokemonTypeRelationship.PrimaryType:
+                return new PrimaryTypeEdge(pokemonName, typeName, !this.isReverseEdge());
+            case PokemonTypeRelationship.SecondaryType:
+                return new SecondaryTypeEdge(pokemonName, typeName, !this.isReverseEdge());
+            default:
+                throw new Error(`Unknown Pokemon-Type relationship: ${this.entityType}`);
+        }
     }
 }
 
 export class PrimaryTypeEdge extends PokemonTypeEdge {
-    constructor(pokemonName: string, typeName: string) {
-        super(pokemonName, typeName, PokemonTypeRelationship.PRIMARY_TYPE);
+    constructor(pokemonName: string, typeName: string, isReverseEdge: boolean = false) {
+        super(pokemonName, typeName, PokemonTypeRelationship.PrimaryType, isReverseEdge);
     }
 }
 
 export class SecondaryTypeEdge extends PokemonTypeEdge {
-    constructor(pokemonName: string, typeName: string) {
-        super(pokemonName, typeName, PokemonTypeRelationship.SECONDARY_TYPE);
+    constructor(pokemonName: string, typeName: string, isReverseEdge: boolean = false) {
+        super(pokemonName, typeName, PokemonTypeRelationship.SecondaryType, isReverseEdge);
     }
 }
 

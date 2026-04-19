@@ -1,8 +1,9 @@
-import { DynamoEdge, DynamoNode } from '../../dynamo';
-import { PokemonIdentifier } from '../pokemon';
+import { DynamoEdge, DynamoNode, getPkName } from '../../dynamo';
+import { PokemonIdentifier, PokemonEntity } from '../pokemon';
 import { getNodePK } from '../../dynamo';
 import { NumberRange } from '../properties/numberRange';
 import { RidingBehaviourOptions } from './riding';
+import { FormEntity } from '../form';
 
 export const BehaviourEntity = "Behaviour";
 export enum Time {
@@ -27,8 +28,8 @@ export function createBehaviourNode(pokemon: PokemonIdentifier, options: Behavio
     return new BehaviourNode(pokemon.toString(), options);
 }
 
-export function createToleratedLeaderEdge(behaviourName: string, leader: PokemonIdentifier, tier: number): DynamoEdge {
-    return new ToleratedLeaderEdge(behaviourName, leader.toString(), tier);
+export function createToleratedLeaderEdge(behaviourName: string, leader: string, tier: number): DynamoEdge {
+    return new ToleratedLeaderEdge(behaviourName, leader, tier);
 }
 
 export interface BehaviourMovementOptions {
@@ -92,8 +93,23 @@ class BehaviourNode extends DynamoNode {
 class ToleratedLeaderEdge extends DynamoEdge {
     tier: number;
 
-    constructor(pokemon: string, leader: string, tier: number) {
-        super(getNodePK(BehaviourEntity, pokemon), ToleratedLeaderEdgeType, BehaviourEntity, leader);
+    constructor(pokemon: string, leader: string, tier: number, isReverseEdge: boolean = false) {
+        super(getNodePK(isReverseEdge ? ToleratedLeaderEdge.getEntityType(PokemonIdentifier.fromString(leader)) : BehaviourEntity, pokemon),
+            ToleratedLeaderEdgeType, 
+            isReverseEdge ? BehaviourEntity : ToleratedLeaderEdge.getEntityType(PokemonIdentifier.fromString(leader)), 
+            leader,
+            isReverseEdge);
         this.tier = tier;
+    }
+
+    static getEntityType(leader: PokemonIdentifier): string {
+        if (leader.isForm()) {
+            return FormEntity;
+        }
+        return PokemonEntity;
+    }
+
+    reverseEdge(): DynamoEdge {
+        return new ToleratedLeaderEdge(getPkName(this.Target), getPkName(this.PK), this.tier, !this.isReverseEdge());
     }
 }

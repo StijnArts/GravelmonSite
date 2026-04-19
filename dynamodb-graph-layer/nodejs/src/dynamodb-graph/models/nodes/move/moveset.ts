@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK, getPkName } from '../../dynamo';
 import { PokemonIdentifier } from '../pokemon';
 import { MoveEntity } from './move';
 
@@ -32,8 +32,14 @@ export function createMovesetLegacyEdge(movesetName: string, moveName: string): 
 
 class MovesetLevelUpEdge extends DynamoEdge {
     level: number;
-    constructor(movesetName: string, moveName: string, level: number) {
-        super(getNodePK(MovesetEntity, movesetName), MovesetEdgeType.LevelUp, MoveEntity, moveName);
+    constructor(movesetName: string, moveName: string, level: number, isReverseEdge: boolean = false) {
+        super(getNodePK(isReverseEdge? MoveEntity : MovesetEntity, movesetName), 
+        MovesetEdgeType.LevelUp, 
+        isReverseEdge? MovesetEntity : MoveEntity, moveName, isReverseEdge);
         this.level = level;
+    }
+
+    reverseEdge(): DynamoEdge {
+        return new MovesetLevelUpEdge(getPkName(this.Target), getPkName(this.PK), this.level, !this.isReverseEdge());
     }
 }

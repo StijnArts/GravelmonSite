@@ -1,6 +1,6 @@
 import { DynamoNode } from '../dynamo';
 
-const FormEntity = "Form";
+export const FormEntity = "Form";
 
 export class FormNode extends DynamoNode {
     constructor(name: string) {

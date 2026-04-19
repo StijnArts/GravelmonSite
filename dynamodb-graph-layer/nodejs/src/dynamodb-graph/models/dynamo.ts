@@ -35,8 +35,8 @@ export class DynamoNode extends DynamoItem {
 export class DynamoEdge extends DynamoItem {
     Target: PK;
 
-    constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string, reverse: boolean = false) {
-        super(pk, getEdgeSK(edgeType, targetEntityType, targetName, reverse), ItemType.EDGE, edgeType);
+    constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string, isReverseEdge: boolean = false) {
+        super(pk, getEdgeSK(edgeType, targetEntityType, targetName, isReverseEdge), ItemType.EDGE, edgeType);
         this.Target = getNodePK(targetEntityType, targetName);
     }
 
