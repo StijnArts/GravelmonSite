@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand, TransactWriteItemsCommand, QueryCommand, GetItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, PutItemCommand, TransactWriteItemsCommand, QueryCommand, GetItemCommand, ScanCommand, UpdateItemCommand, DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export type PK = string;
@@ -312,4 +312,204 @@ export async function queryNodes(nodeType?: string, tableName: string = process.
         const unmarshalled = unmarshall(item) as Record<string, any>;
         return new DynamoNode(unmarshalled.entityType, unmarshalled.name);
     }) || [];
+}
+
+export async function deleteNode(pk: PK, tableName?: string): Promise<void>;
+export async function deleteNode(node: DynamoNode, tableName?: string): Promise<void>;
+export async function deleteNode(nodeOrPk: PK | DynamoNode, tableName: string = process.env.DYNAMODB_TABLE || ""): Promise<void> {
+    if (!tableName) {
+        throw new Error("DYNAMODB_TABLE environment variable is required.");
+    }
+
+    const pk = typeof nodeOrPk === 'string' ? nodeOrPk : nodeOrPk.PK;
+
+    const client = new DynamoDBClient({
+        region: process.env.AWS_REGION || "us-east-1",
+        endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+    });
+
+    await client.send(new DeleteItemCommand({
+        TableName: tableName,
+        Key: marshall({ PK: pk, SK: "METADATA" })
+    }));
+}
+
+export async function deleteEdge(edge: DynamoEdge, tableName: string = process.env.DYNAMODB_TABLE || ""): Promise<void> {
+    if (!tableName) {
+        throw new Error("DYNAMODB_TABLE environment variable is required.");
+    }
+
+    const client = new DynamoDBClient({
+        region: process.env.AWS_REGION || "us-east-1",
+        endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+    });
+
+    const reverseEdge = edge.reverseEdge();
+
+    await client.send(
+        new TransactWriteItemsCommand({
+            TransactItems: [
+                {
+                    Delete: {
+                        TableName: tableName,
+                        Key: marshall({ PK: edge.PK, SK: edge.SK })
+                    },
+                },
+                {
+                    Delete: {
+                        TableName: tableName,
+                        Key: marshall({ PK: reverseEdge.PK, SK: reverseEdge.SK })
+                    },
+                },
+            ],
+        })
+    );
+}
+
+export async function updateNode(
+    pk: PK,
+    updates: Partial<Omit<DynamoNode, 'PK' | 'SK' | 'TYPE'>>,
+    tableName?: string
+): Promise<DynamoNode | null>;
+export async function updateNode(
+    node: DynamoNode,
+    updates: Partial<Omit<DynamoNode, 'PK' | 'SK' | 'TYPE'>>,
+    tableName?: string
+): Promise<DynamoNode | null>;
+export async function updateNode(
+    nodeOrPk: PK | DynamoNode,
+    updates: Partial<Omit<DynamoNode, 'PK' | 'SK' | 'TYPE'>>,
+    tableName: string = process.env.DYNAMODB_TABLE || ""
+): Promise<DynamoNode | null> {
+    if (!tableName) {
+        throw new Error("DYNAMODB_TABLE environment variable is required.");
+    }
+
+    const pk = typeof nodeOrPk === 'string' ? nodeOrPk : nodeOrPk.PK;
+
+    const client = new DynamoDBClient({
+        region: process.env.AWS_REGION || "us-east-1",
+        endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+    });
+
+    // Build update expression
+    const updateExpressions: string[] = [];
+    const expressionAttributeValues: Record<string, any> = {};
+    const expressionAttributeNames: Record<string, string> = {};
+    let index = 0;
+
+    // Reserved keywords that need attribute name mapping
+    const reservedKeywords = new Set(['name', 'type', 'status', 'value']);
+
+    for (const [key, value] of Object.entries(updates)) {
+        let attrName = key;
+        if (reservedKeywords.has(key)) {
+            const placeholder = `#attr${index}`;
+            expressionAttributeNames[placeholder] = key;
+            attrName = placeholder;
+        }
+        updateExpressions.push(`${attrName} = :val${index}`);
+        expressionAttributeValues[`:val${index}`] = value;
+        index++;
+    }
+
+    if (updateExpressions.length === 0) {
+        return getNode(pk, tableName);
+    }
+
+    const params: any = {
+        TableName: tableName,
+        Key: marshall({ PK: pk, SK: "METADATA" }),
+        UpdateExpression: `SET ${updateExpressions.join(', ')}`,
+        ExpressionAttributeValues: marshall(expressionAttributeValues),
+        ReturnValues: "ALL_NEW"
+    };
+
+    if (Object.keys(expressionAttributeNames).length > 0) {
+        params.ExpressionAttributeNames = expressionAttributeNames;
+    }
+
+    const result = await client.send(new UpdateItemCommand(params));
+
+    if (!result.Attributes) return null;
+
+    const item = unmarshall(result.Attributes);
+    return new DynamoNode(item.entityType, item.name);
+}
+
+export async function updateEdge(
+    edge: DynamoEdge,
+    updates: Partial<Omit<DynamoEdge, 'PK' | 'SK' | 'TYPE' | 'Target' | 'sourceType' | 'targetType'>>,
+    tableName: string = process.env.DYNAMODB_TABLE || ""
+): Promise<DynamoEdge | null> {
+    if (!tableName) {
+        throw new Error("DYNAMODB_TABLE environment variable is required.");
+    }
+
+    const client = new DynamoDBClient({
+        region: process.env.AWS_REGION || "us-east-1",
+        endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+    });
+
+    // Build update expression for forward edge
+    const updateExpressions: string[] = [];
+    const expressionAttributeValues: Record<string, any> = {};
+    const expressionAttributeNames: Record<string, string> = {};
+    let index = 0;
+
+    // Reserved keywords that need attribute name mapping
+    const reservedKeywords = new Set(['name', 'type', 'status', 'value']);
+
+    for (const [key, value] of Object.entries(updates)) {
+        let attrName = key;
+        if (reservedKeywords.has(key)) {
+            const placeholder = `#attr${index}`;
+            expressionAttributeNames[placeholder] = key;
+            attrName = placeholder;
+        }
+        updateExpressions.push(`${attrName} = :val${index}`);
+        expressionAttributeValues[`:val${index}`] = value;
+        index++;
+    }
+
+    if (updateExpressions.length === 0) {
+        return edge;
+    }
+
+    const reverseEdge = edge.reverseEdge();
+
+    // Update both forward and reverse edges
+    const updateParams: any = {
+        UpdateExpression: `SET ${updateExpressions.join(', ')}`,
+        ExpressionAttributeValues: marshall(expressionAttributeValues),
+    };
+
+    if (Object.keys(expressionAttributeNames).length > 0) {
+        updateParams.ExpressionAttributeNames = expressionAttributeNames;
+    }
+
+    await client.send(
+        new TransactWriteItemsCommand({
+            TransactItems: [
+                {
+                    Update: {
+                        TableName: tableName,
+                        Key: marshall({ PK: edge.PK, SK: edge.SK }),
+                        ...updateParams,
+                    },
+                },
+                {
+                    Update: {
+                        TableName: tableName,
+                        Key: marshall({ PK: reverseEdge.PK, SK: reverseEdge.SK }),
+                        ...updateParams,
+                    },
+                },
+            ],
+        })
+    );
+
+    // Apply updates to the edge object and return it
+    Object.assign(edge, updates);
+    return edge;
 }

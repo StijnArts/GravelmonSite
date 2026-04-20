@@ -1,5 +1,5 @@
 import { DynamoDBClient, CreateTableCommand, DeleteTableCommand, DescribeTableCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoNode, DynamoEdge, createEdge, createNode, getNode, getOutgoingEdges, getIncomingEdges, queryEdges, queryNodes } from "../dynamodb-graph/models/dynamo";
+import { DynamoNode, DynamoEdge, createEdge, createNode, getNode, getOutgoingEdges, getIncomingEdges, queryEdges, queryNodes, deleteNode, deleteEdge, updateNode, updateEdge } from "../dynamodb-graph/models/dynamo";
 
 const client = new DynamoDBClient({
     region: process.env.AWS_REGION || "us-east-1",
@@ -159,5 +159,122 @@ describe("DynamoDB Graph Integration Tests", () => {
         expect(customEdges).toHaveLength(1);
         expect(customEdges[0]).toBeInstanceOf(CustomEdge);
         expect(customEdges[0].label).toBe("custom");
+    });
+
+    test("should delete nodes", async () => {
+        // Clear table
+        try {
+            await client.send(new DeleteTableCommand({ TableName: tableName }));
+            await client.send(new CreateTableCommand({
+                TableName: tableName,
+                KeySchema: [
+                    { AttributeName: "PK", KeyType: "HASH" },
+                    { AttributeName: "SK", KeyType: "RANGE" }
+                ],
+                AttributeDefinitions: [
+                    { AttributeName: "PK", AttributeType: "S" },
+                    { AttributeName: "SK", AttributeType: "S" }
+                ],
+                BillingMode: "PAY_PER_REQUEST"
+            }));
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        } catch (error) {
+            // Ignore
+        }
+
+        // Create and verify node exists
+        const node = new DynamoNode("Pokemon", "Charizard");
+        await createNode(node, tableName);
+        let retrieved = await getNode("NODE#Pokemon#Charizard", tableName);
+        expect(retrieved).not.toBeNull();
+
+        // Delete node - test convenience syntax by passing the node object directly
+        await deleteNode(node, tableName);
+
+        // Verify node is deleted
+        retrieved = await getNode("NODE#Pokemon#Charizard", tableName);
+        expect(retrieved).toBeNull();
+    });
+
+    test("should delete edges", async () => {
+        // Create nodes
+        const node1 = new DynamoNode("Pokemon", "Squirtle");
+        const node2 = new DynamoNode("Pokemon", "Wartortle");
+        await createNode(node1, tableName);
+        await createNode(node2, tableName);
+
+        // Create edge
+        const edge = new DynamoEdge("NODE#Pokemon#Squirtle", "evolves_to", "Pokemon", "Wartortle");
+        await createEdge(edge, tableName);
+
+        // Verify edge exists
+        let outgoing = await getOutgoingEdges("NODE#Pokemon#Squirtle", tableName);
+        expect(outgoing).toHaveLength(1);
+
+        let incoming = await getIncomingEdges("NODE#Pokemon#Wartortle", tableName);
+        expect(incoming).toHaveLength(1);
+
+        // Delete edge (both forward and reverse)
+        await deleteEdge(edge, tableName);
+
+        // Verify both edges are deleted
+        outgoing = await getOutgoingEdges("NODE#Pokemon#Squirtle", tableName);
+        expect(outgoing).toHaveLength(0);
+
+        incoming = await getIncomingEdges("NODE#Pokemon#Wartortle", tableName);
+        expect(incoming).toHaveLength(0);
+    });
+
+    test("should update nodes", async () => {
+        // Create node
+        const node = new DynamoNode("Pokemon", "Bulbasaur");
+        await createNode(node, tableName);
+
+        // Verify initial state
+        let retrieved = await getNode("NODE#Pokemon#Bulbasaur", tableName);
+        expect(retrieved).not.toBeNull();
+        expect(retrieved!.name).toBe("Bulbasaur");
+
+        // Update node - test convenience syntax by passing the node object directly
+        const updated = await updateNode(node, { name: "Bulbasaur-Updated" }, tableName);
+        expect(updated).not.toBeNull();
+        expect(updated!.name).toBe("Bulbasaur-Updated");
+
+        // Verify update persisted
+        retrieved = await getNode("NODE#Pokemon#Bulbasaur", tableName);
+        expect(retrieved).not.toBeNull();
+        expect(retrieved!.name).toBe("Bulbasaur-Updated");
+    });
+
+    test("should update edges", async () => {
+        // Create nodes
+        const node1 = new DynamoNode("Pokemon", "Oddish");
+        const node2 = new DynamoNode("Pokemon", "Gloom");
+        await createNode(node1, tableName);
+        await createNode(node2, tableName);
+
+        // Create edge with additional property
+        const edge = new DynamoEdge("NODE#Pokemon#Oddish", "evolves_to", "Pokemon", "Gloom");
+        (edge as any).level = 21;
+        await createEdge(edge, tableName);
+
+        // Verify edge property
+        let outgoing = await getOutgoingEdges("NODE#Pokemon#Oddish", tableName);
+        expect(outgoing).toHaveLength(1);
+
+        // Update edge
+        const updated = await updateEdge(edge, { entityType: "evolves_to_rare" }, tableName);
+        expect(updated).not.toBeNull();
+        expect(updated!.entityType).toBe("evolves_to_rare");
+
+        // Verify update persisted in forward edge
+        outgoing = await getOutgoingEdges("NODE#Pokemon#Oddish", tableName);
+        expect(outgoing).toHaveLength(1);
+        expect(outgoing[0].entityType).toBe("evolves_to_rare");
+
+        // Verify update persisted in reverse edge
+        const incoming = await getIncomingEdges("NODE#Pokemon#Gloom", tableName);
+        expect(incoming).toHaveLength(1);
+        expect(incoming[0].entityType).toBe("evolves_to_rare");
     });
 });
