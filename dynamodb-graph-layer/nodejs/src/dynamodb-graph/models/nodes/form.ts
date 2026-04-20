@@ -10,7 +10,6 @@ import {
     PokemonTypeRelationship
 } from './pokemon';
 import { AspectEntity, HasAspectEdgeType } from './properties/aspect';
-import { Stats } from './properties/stats';
 import {HasLabelEdgeType, LabelEntity} from "./label";
 import {BehaviourEntity} from "./behaviour/behaviour";
 import {TypeEntity} from "./battle/type";
@@ -150,16 +149,3 @@ class FormHasAbilityEdge extends DynamoEdge {
         return new FormHasAbilityEdge(getPkName(this.Target), getPkName(this.PK), this.isHidden, this.isPlaceholder, !this.isReverseEdge());
     }
 }
-
-
-// TODO: Implement Form relationships:
-// - IsFormOfEdge to PokemonNode
-// - HasAbilityEdge to AbilityNode
-// - MoveSetOfEdge to MoveSetNode
-// - HasEvolutionEdge to EvolutionNode
-// - PrimaryTypeEdge to TypeNode
-// - SecondaryTypeEdge to TypeNode
-// - HasLabelEdge to LabelNode
-// - DropsEdge to ItemNode
-// - HasAspectEdge to AspectNode
-// - PerformsEdge to BehaviourNode
