@@ -6,8 +6,8 @@ import { EggGroupEntity, InEggGroupEdgeType } from './properties/eggGroup';
 import { ExperienceGroupEntity, InExperienceGroupEdgeType } from './properties/experienceGroup';
 import { Stats } from './properties/stats';
 import { TypeEntity } from './battle/type';
-import { MovesetEntity, MovesetOfEdgeType } from './battle/move/moveset';
 import { FormEntity } from './form';
+import { MoveSetEntity, MoveSetOfEdgeType } from "./battle/move/moveset";
 
 export const PokemonEntity = "Pokemon";
 
@@ -44,8 +44,8 @@ export function createPokemonInExperienceGroupEdge(pokemonName: string, experien
     return new DynamoEdge(getNodePK(PokemonEntity, pokemonName), InExperienceGroupEdgeType, ExperienceGroupEntity, experienceGroupName);
 }
 
-export function createPokemonMoveSetOfEdge(pokemonName: string, movesetName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(PokemonEntity, pokemonName), MovesetOfEdgeType, MovesetEntity, movesetName);
+export function createPokemonMoveSetOfEdge(pokemonName: string, moveSetName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(PokemonEntity, pokemonName), MoveSetOfEdgeType, MoveSetEntity, moveSetName);
 }
 
 export function createPokemonHasFormEdge(pokemonName: string, formName: string): DynamoEdge {

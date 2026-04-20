@@ -19,42 +19,42 @@ export function createEvolutionNode(source: PokemonIdentifier, result: PokemonId
     return new EvolutionNode(source, result, evolutionOptions)
 }
 
-export function createEvolutionNeedsToHoldEdge(evolutionName : string, itemResourceLocation : ResourceLocation) : DynamoEdge {
+export function createEvolutionNeedsToHoldItemEdge(evolutionName : string, itemResourceLocation : ResourceLocation) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(evolutionName, EvolutionEntity), 
         NeedsToHoldEdgeType, ItemEntity, itemResourceLocation.toString()
     );
 }
 
-export function createEvolutionUseOnEdge(evolutionName : string, itemResourceLocation : ResourceLocation) : DynamoEdge {
+export function createEvolutionUseItemOnEdge(evolutionName : string, itemResourceLocation : ResourceLocation) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(evolutionName, EvolutionEntity), 
         UseOnEdgeType, ItemEntity, itemResourceLocation.toString()
     );
 }
 
-export function createEvolutionEvolvesFromEdge(evolutionName : string, sourcePokemon : PokemonIdentifier) : DynamoEdge {
+export function createEvolutionEvolvesFromFormEdge(evolutionName : string, sourcePokemon : PokemonIdentifier) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(evolutionName, EvolutionEntity), 
         EvolvesFromEdgeType, FormEntity, sourcePokemon.toString()
     ); 
 }
 
-export function createEvolutionEvolvesIntoEdge(evolutionName : string, resultPokemon : PokemonIdentifier) : DynamoEdge {
+export function createEvolutionEvolvesIntoFormEdge(evolutionName : string, resultPokemon : PokemonIdentifier) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(evolutionName, EvolutionEntity), 
         EvolvesIntoEdgeType, FormEntity, resultPokemon.toString()
     ); 
 }
 
-export function createEvolutionShedsEdge(evolutionName : string, resultPokemon : PokemonIdentifier) : DynamoEdge {
+export function createEvolutionShedsPokemonFormEdge(evolutionName : string, resultPokemon : PokemonIdentifier) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(evolutionName, EvolutionEntity), 
         ShedsEdgeType, FormEntity, resultPokemon.toString()
     ); 
 }
 
-export function createEvolutionLearnsUponEvolvingEdge(evolutionName : string, moveName : string) : DynamoEdge {
+export function createEvolutionLearnsMoveUponEvolvingEdge(evolutionName : string, moveName : string) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(evolutionName, EvolutionEntity), 
         LearnsUponEvolvingEdgeType, MoveEntity, moveName

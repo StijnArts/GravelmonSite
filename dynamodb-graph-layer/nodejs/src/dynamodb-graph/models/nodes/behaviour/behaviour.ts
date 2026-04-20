@@ -21,9 +21,12 @@ export function createBehaviourNode(pokemon: PokemonIdentifier, options: Behavio
     return new BehaviourNode(pokemon.toString(), options);
 }
 
-export function createToleratedLeaderEdge(behaviourName: string, leader: string, tier: number): DynamoEdge {
-    let leaderEntityType: string = ToleratedLeaderEdge.getEntityType(PokemonIdentifier.fromString(leader));
-    return new ToleratedLeaderEdge(behaviourName, leader, leaderEntityType, tier);
+export function createToleratedLeaderFormEdge(behaviourName: string, leader: PokemonIdentifier, tier: number): DynamoEdge {
+    return new ToleratedLeaderEdge(behaviourName, leader.toString(), FormEntity, tier);
+}
+
+export function createToleratedLeaderPokemonEdge(behaviourName: string, leader: PokemonIdentifier, tier: number): DynamoEdge {
+    return new ToleratedLeaderEdge(behaviourName, leader.toString(), PokemonEntity, tier);
 }
 
 export interface BehaviourMovementOptions {

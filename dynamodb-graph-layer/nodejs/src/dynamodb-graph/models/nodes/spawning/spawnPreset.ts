@@ -28,6 +28,14 @@ export function createSpawnPresetDoesNotSpawnInBiomeTagEdge(spawnPresetName: str
     return new DynamoEdge(getNodePK(SpawnPresetEntity, spawnPresetName), DoesNotSpawnInBiomeEdgeType, BiomeTagEntity, biomeTagName);
 }
 
+export function createSpawnPresetSpawnsInBiomeEdge(spawnPresetName: string, biomeName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(SpawnPresetEntity, spawnPresetName), SpawnsInBiomeEdgeType, BiomeEntity, biomeName);
+}
+
+export function createSpawnPresetSpawnsInBiomeTagEdge(spawnPresetName: string, biomeTagName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(SpawnPresetEntity, spawnPresetName), SpawnsInBiomeEdgeType, BiomeTagEntity, biomeTagName);
+}
+
 export function createSpawnPresetSpawnsInStructureEdge(spawnPresetName: string, StructureName: string): DynamoEdge {
     return new DynamoEdge(getNodePK(SpawnPresetEntity, spawnPresetName), SpawnsInStructureEdgeType, StructureEntity, StructureName);
 }

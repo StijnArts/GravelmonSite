@@ -40,7 +40,7 @@ export class FormNode extends PokemonNode {
 // TODO: Implement Form relationships:
 // - IsFormOfEdge to PokemonNode
 // - HasAbilityEdge to AbilityNode
-// - MovesetOfEdge to MovesetNode
+// - MoveSetOfEdge to MoveSetNode
 // - HasEvolutionEdge to EvolutionNode
 // - PrimaryTypeEdge to TypeNode
 // - SecondaryTypeEdge to TypeNode

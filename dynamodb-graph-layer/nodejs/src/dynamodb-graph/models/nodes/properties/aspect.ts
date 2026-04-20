@@ -8,6 +8,14 @@ export enum AspectType {
     Choice
 }
 
+export function createFlagAspectNode(name: string, defaultValue: boolean = false, isPrimaryAspect: boolean = true): AspectNode {
+    return new FlagAspectNode(name, defaultValue, isPrimaryAspect);
+}
+
+export function createChoiceAspectNode(name: string, choices: string[], defaultValue: string | "random" = "random", isPrimaryAspect: boolean = false): AspectNode {
+    return new ChoiceAspectNode(name, choices, defaultValue, isPrimaryAspect);
+}
+
 abstract class AspectNode extends DynamoNode {
     aspectType: AspectType;
     isAspect: boolean = true;
@@ -34,12 +42,4 @@ class ChoiceAspectNode extends AspectNode {
         super(name, AspectType.Choice, defaultValue, isPrimaryAspect);
         this.choices = choices;
     }
-}
-
-export function createFlagAspectNode(name: string, defaultValue: boolean = false, isPrimaryAspect: boolean = true): AspectNode {
-    return new FlagAspectNode(name, defaultValue, isPrimaryAspect);
-}
-
-export function createChoiceAspectNode(name: string, choices: string[], defaultValue: string | "random" = "random", isPrimaryAspect: boolean = false): AspectNode {
-    return new ChoiceAspectNode(name, choices, defaultValue, isPrimaryAspect);
 }

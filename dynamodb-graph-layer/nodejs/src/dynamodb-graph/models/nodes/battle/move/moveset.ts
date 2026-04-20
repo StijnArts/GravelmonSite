@@ -2,55 +2,55 @@ import { DynamoEdge, DynamoNode, getNodePK, getPkName } from '../../../dynamo';
 import { PokemonIdentifier } from '../../pokemon';
 import { MoveEntity } from './move';
 
-export const MovesetEntity = "Moveset";
-export const MovesetOfEdgeType = "MovesetOf";
+export const MoveSetEntity = "MoveSet";
+export const MoveSetOfEdgeType = "MoveSetOf";
 
-const enum MovesetEdgeType {
+const enum MoveSetEdgeType {
     LevelUp = "LevelUp",
     Teach = "Teach",
     Egg = "Egg",
     Legacy = "Legacy"
 }
 
-export function createMovesetNode(pokemon: PokemonIdentifier, isPlaceholder: boolean = false): DynamoNode {
-    return new MovesetNode(pokemon.toString(), isPlaceholder);
+export function createMoveSetNode(pokemon: PokemonIdentifier, isPlaceholder: boolean = false): DynamoNode {
+    return new MoveSetNode(pokemon.toString(), isPlaceholder);
 }
 
-export function createMovesetLevelUpEdge(movesetName: string, moveName: string, level: number): DynamoEdge {
-    return new MovesetLevelUpEdge(movesetName, moveName, level);
+export function createMoveSetLevelUpEdge(moveSetName: string, moveName: string, level: number): DynamoEdge {
+    return new MoveSetLevelUpEdge(moveSetName, moveName, level);
 }
 
-export function createMovesetTeachEdge(movesetName: string, moveName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(MovesetEntity, movesetName), MovesetEdgeType.Teach, MoveEntity, moveName);
+export function createMoveSetTeachEdge(moveSetName: string, moveName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(MoveSetEntity, moveSetName), MoveSetEdgeType.Teach, MoveEntity, moveName);
 }
 
-export function createMovesetEggEdge(movesetName: string, moveName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(MovesetEntity, movesetName), MovesetEdgeType.Egg, MoveEntity, moveName);
+export function createMoveSetEggEdge(moveSetName: string, moveName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(MoveSetEntity, moveSetName), MoveSetEdgeType.Egg, MoveEntity, moveName);
 }
 
-export function createMovesetLegacyEdge(movesetName: string, moveName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(MovesetEntity, movesetName), MovesetEdgeType.Legacy, MoveEntity, moveName);
+export function createMoveSetLegacyEdge(moveSetName: string, moveName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(MoveSetEntity, moveSetName), MoveSetEdgeType.Legacy, MoveEntity, moveName);
 }
 
-class MovesetNode extends DynamoNode {
+class MoveSetNode extends DynamoNode {
     isPlaceholder: boolean;
 
     constructor(pokemonName: string, isPlaceholder: boolean = false) {
-        super(MovesetEntity, `${pokemonName}${isPlaceholder ? "#Placeholder" : ""}`);
+        super(MoveSetEntity, `${pokemonName}${isPlaceholder ? "#Placeholder" : ""}`);
         this.isPlaceholder = isPlaceholder;
     }
 }
 
-class MovesetLevelUpEdge extends DynamoEdge {
+class MoveSetLevelUpEdge extends DynamoEdge {
     level: number;
     constructor(pokemonName: string, moveName: string, level: number, isReverseEdge: boolean = false) {
-        super(getNodePK(isReverseEdge? MoveEntity : MovesetEntity, pokemonName), 
-        MovesetEdgeType.LevelUp, 
-        isReverseEdge? MovesetEntity : MoveEntity, moveName, isReverseEdge);
+        super(getNodePK(isReverseEdge? MoveEntity : MoveSetEntity, pokemonName), 
+        MoveSetEdgeType.LevelUp, 
+        isReverseEdge? MoveSetEntity : MoveEntity, moveName, isReverseEdge);
         this.level = level;
     }
 
     reverseEdge(): DynamoEdge {
-        return new MovesetLevelUpEdge(getPkName(this.Target), getPkName(this.PK), this.level, !this.isReverseEdge());
+        return new MoveSetLevelUpEdge(getPkName(this.Target), getPkName(this.PK), this.level, !this.isReverseEdge());
     }
 }

@@ -11,46 +11,32 @@ export const DoesNotSpawnInStructureEdgeType = "DoesNotSpawnInStructure";
 
 class StructureNode extends DynamoNode {
     resourceLocation: ResourceLocation
-    constructor(name: string, resourceLocation: ResourceLocation) {
-        super(StructureEntity, name);
+    constructor(resourceLocation: ResourceLocation) {
+        super(StructureTagEntity, resourceLocation.toString());
         this.resourceLocation = resourceLocation;
-    }   
+    }
 }
 
 class StructureTagNode extends DynamoNode {
     resourceLocation: ResourceLocation
-    constructor(name: string, resourceLocation: ResourceLocation) {
-        super(StructureTagEntity, name);
+    constructor(resourceLocation: ResourceLocation) {
+        super(StructureTagEntity, resourceLocation.toString());
         this.resourceLocation = resourceLocation;
     }   
 }
 
-export function createStructureNode(name: string, resourceLocation: ResourceLocation): DynamoNode {
-    return new StructureNode(name, resourceLocation);
+export function createStructureNode(resourceLocation: ResourceLocation): DynamoNode {
+    return new StructureNode(resourceLocation);
 }
 
-export function createStructureTagNode(name: string, resourceLocation: ResourceLocation): StructureTagNode {
-    return new StructureTagNode(name, resourceLocation);
+export function createStructureTagNode(resourceLocation: ResourceLocation): StructureTagNode {
+    return new StructureTagNode(resourceLocation);
 }
 
-export function createStructureTagContainsEdge(StructureTagName: string, StructureName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName), StructureTagContainsStructureEdgeType, StructureEntity, StructureName);
+export function createStructureTagContainsStructureEdge(StructureTagName: ResourceLocation, StructureName: ResourceLocation): DynamoEdge {
+    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName.toString()), StructureTagContainsStructureEdgeType, StructureEntity, StructureName.toString());
 }
 
-export function createStructureTagContainsStructureTagEdge(StructureTagName1: string, StructureTagName2: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName1), StructureTagContainsStructureTagEdgeType, StructureTagEntity, StructureTagName2);
-}
-
-export function createSpawnEntitySpawnsInStructureEdge(
-    spawnEntityType: string, spawnPresetName: string, 
-    structureEntityType: string, structureName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(spawnEntityType, spawnPresetName), 
-        SpawnsInStructureEdgeType, structureEntityType, structureName);
-}
-
-export function createSpawnEntityDoesNotSpawnInStructureEdge(
-    spawnEntityType: string, spawnPresetName: string, 
-    structureEntityType: string, structureName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(spawnEntityType, spawnPresetName), 
-        DoesNotSpawnInStructureEdgeType, structureEntityType, structureName);
+export function createStructureTagContainsStructureTagEdge(containingStructureTagName: ResourceLocation, subjectStructureTagName: ResourceLocation): DynamoEdge {
+    return new DynamoEdge(getNodePK(StructureTagEntity, containingStructureTagName.toString()), StructureTagContainsStructureTagEdgeType, StructureTagEntity, subjectStructureTagName.toString());
 }

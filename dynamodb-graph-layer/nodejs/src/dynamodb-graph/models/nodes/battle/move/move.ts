@@ -1,23 +1,19 @@
 import { DynamoEdge, DynamoNode, getNodePK } from '../../../dynamo';
 import { TypeEntity } from '../type';
+import {MoveRange} from "./moveRange";
 
 export const MoveEntity = "Move";
-export const MoveCategoryEntity = "MoveCategory";
-export const MoveRangeEntity = "MoveRange";
 export const MoveLabelEntity = "MoveLabel";
+
 export const enum MoveEdgeType {
     IsType = "IsType",
-    InCategory = "InCategory",
-    HasRange = "HasRange",
     WithLabel = "WithLabel"
 }
 
-export function createMoveCategoryNode(name: string): DynamoNode {
-    return new DynamoNode(MoveCategoryEntity, name);
-}
-
-export function createMoveRangeNode(name: string): DynamoNode {
-    return new DynamoNode(MoveRangeEntity, name);
+export enum MoveCategory {
+    Physical = "Physical",
+    Special = "Special",
+    Status = "Status"
 }
 
 export function createMoveLabelNode(name: string): DynamoNode {
@@ -26,14 +22,6 @@ export function createMoveLabelNode(name: string): DynamoNode {
 
 export function createMoveIsTypeEdge(moveName: string, typeName: string): DynamoEdge {
     return new DynamoEdge(getNodePK(MoveEntity, moveName), MoveEdgeType.IsType, TypeEntity, typeName);
-}
-
-export function createMoveInCategoryEdge(moveName: string, categoryName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(MoveEntity, moveName), MoveEdgeType.InCategory, MoveCategoryEntity, categoryName);
-}
-
-export function createMoveHasRangeEdge(moveName: string, rangeName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(MoveEntity, moveName), MoveEdgeType.HasRange, MoveRangeEntity, rangeName);
 }
 
 export function createMoveWithLabelEdge(moveName: string, labelName: string): DynamoEdge {
@@ -45,13 +33,18 @@ export class MoveNode extends DynamoNode {
     basePower: number;
     priority: number;
     accuracy: number;
+    moveRange: MoveRange;
+    moveCategory: MoveCategory;
     description?: string;
 
-    constructor(name: string, basePower: number, powerPoints: number, priority: number, accuracy: number) {
+    constructor(name: string, basePower: number, powerPoints: number, priority: number, accuracy: number, moveRange: MoveRange, moveCategory: MoveCategory, description?: string) {
         super(MoveEntity, name);
         this.powerPoints = powerPoints;
         this.basePower = basePower;
         this.priority = priority;
         this.accuracy = accuracy;
+        this.moveRange = moveRange;
+        this.moveCategory = moveCategory;
+        this.description = description;
     }
 }

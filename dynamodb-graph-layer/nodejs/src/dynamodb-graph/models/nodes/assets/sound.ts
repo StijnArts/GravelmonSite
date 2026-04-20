@@ -1,4 +1,5 @@
 import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import {BehaviourEntity} from "../behaviour/behaviour";
 
 export const SoundEntity = "Sound";
 
@@ -18,6 +19,6 @@ export function createSoundNode(name: string, madeBy: string = "Unknown", s3Loca
     return new SoundNode(name, madeBy, s3Location);
 }
 
-export function createSoundUsedByEdge(soundName: string, userType: string, user: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(SoundEntity, soundName), SoundUsedByEdgeType, userType, user);
+export function createSoundUsedByBehaviourEdge(soundName: string, user: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(SoundEntity, soundName), SoundUsedByEdgeType, BehaviourEntity, user);
 }
