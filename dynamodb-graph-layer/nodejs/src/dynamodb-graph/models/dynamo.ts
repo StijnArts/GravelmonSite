@@ -24,11 +24,11 @@ export abstract class DynamoItem {
 }
 
 export class DynamoNode extends DynamoItem {
-    Name: string;
+    name: string;
 
     constructor(entityType: string, name: string) {
         super(getNodePK(entityType, name), "METADATA", ItemType.NODE, entityType);
-        this.Name = name;
+        this.name = name;
     }
 }
 
