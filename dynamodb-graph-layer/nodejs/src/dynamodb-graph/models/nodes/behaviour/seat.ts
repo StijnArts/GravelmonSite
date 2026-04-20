@@ -1,11 +1,11 @@
-import { vector } from '../properties/vector';
-import { PoseType } from '../assets/poseType';
+import { Vector } from '../properties/vector';
+import { PoseType } from '../assets/posing/poseType';
 
 export type SeatPoseOffsets = {
-    offset: vector;
+    offset: Vector;
     poseTypes: PoseType[];
 }
 export type Seat = {
-    offset: vector;
+    offset: Vector;
     poseOffsets: SeatPoseOffsets[];
 }

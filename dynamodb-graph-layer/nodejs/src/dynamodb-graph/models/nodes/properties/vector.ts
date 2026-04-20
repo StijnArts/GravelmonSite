@@ -1,4 +1,4 @@
-export type vector = {
+export type Vector = {
     x: number;
     y: number;
     z: number;
