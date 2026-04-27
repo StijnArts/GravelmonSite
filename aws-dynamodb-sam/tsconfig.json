@@ -11,7 +11,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "dynamodb-graph/*": ["../gravelmon-dynamodb-graph/nodejs/dist/dynamodb-graph/*"],
+      "dynamodb-graph": ["../gravelmon-dynamodb-graph/nodejs/dist/dynamodb-graph"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

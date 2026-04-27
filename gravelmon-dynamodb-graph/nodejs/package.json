@@ -4,9 +4,9 @@
   "private": true,
   "description": "Node.js runtime contents for the DynamoDB graph Lambda layer.",
   "scripts": {
-    "build": "rimraf dist && tsc && node scripts/build-layer.js",
+    "build": "rimraf dist && tsc && node scripts/build-layer.js && node scripts/create-lambda-layer.js",
     "create-layer": "node scripts/create-lambda-layer.js",
-    "bootstrap": "rimraf dist && tsc && node scripts/build-layer.js",
+    "bootstrap": "rimraf dist && tsc && node scripts/build-layer.js && node scripts/create-lambda-layer.js",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand src/__tests__/dynamo.integration.test.ts",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch"

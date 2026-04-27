@@ -47,39 +47,11 @@ if (fs.existsSync(path.join(__dirname, '../dist'))) {
     cwd: path.join(__dirname, '../dist'),
     ignore: ['lambda-layer.zip', '**/__tests__/**', '**/__tests__'],
   }, {
-    prefix: 'nodejs',
+    prefix: 'nodejs/node_modules',
   });
-  console.log('  ✓ Added compiled dist/ files to nodejs/ (excluding __tests__)');
+  console.log('  ✓ Added compiled dist/ files to nodejs/node_modules/ (excluding __tests__)');
 } else {
   console.warn('  ⚠ dist/ directory not found. Run npm run build first.');
-}
-
-// Add package.json
-const packageJsonPath = path.join(__dirname, '../package.json');
-if (fs.existsSync(packageJsonPath)) {
-  archive.file(packageJsonPath, { name: 'package.json' });
-  console.log('  ✓ Added package.json');
-}
-
-// Add tsconfig.json
-const tsconfigPath = path.join(__dirname, '../tsconfig.json');
-if (fs.existsSync(tsconfigPath)) {
-  archive.file(tsconfigPath, { name: 'tsconfig.json' });
-  console.log('  ✓ Added tsconfig.json');
-}
-
-// Add README if it exists
-const readmePath = path.join(__dirname, '../README.md');
-if (fs.existsSync(readmePath)) {
-  archive.file(readmePath, { name: 'README.md' });
-  console.log('  ✓ Added README.md');
-}
-
-// Add LICENSE if it exists
-const licensePath = path.join(__dirname, '../LICENSE');
-if (fs.existsSync(licensePath)) {
-  archive.file(licensePath, { name: 'LICENSE' });
-  console.log('  ✓ Added LICENSE');
 }
 
 // Finalize archive

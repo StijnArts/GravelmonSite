@@ -1,4 +1,4 @@
-const { helloWorld } = require("/opt/nodejs/dynamodb-graph/models/nodes/test.js");
+import { helloWorld } from "dynamodb-graph/models/nodes/test.js";
 
 interface LambdaResponse {
   statusCode: number;
@@ -21,10 +21,10 @@ const handler = async (): Promise<LambdaResponse> => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Internal server error",
-        message: error instanceof Error ? helloWorld() : String(helloWorld()),
+        message: error instanceof Error ? error.message : String(error),
       }),
     };
   }
 };
 
-module.exports = { handler };
+export { handler };
