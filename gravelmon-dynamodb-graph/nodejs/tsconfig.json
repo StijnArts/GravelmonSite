@@ -6,6 +6,9 @@
     "lib": ["ES2020"],
     "outDir": "./dist",
     "rootDir": "./src",
+    "paths": {
+      "@graph/*": ["./nodejs/dynamodb-graph/*"]
+    },
     "strict": true,
     "isolatedModules": true,
     "esModuleInterop": true,

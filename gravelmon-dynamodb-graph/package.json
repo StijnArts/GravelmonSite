@@ -1,8 +1,8 @@
 {
-  "name": "dynamodb-graph-layer",
+  "name": "gravelmon-dynamodb-graph",
   "version": "1.0.0",
   "private": true,
-  "description": "Standalone Lambda layer project for DynamoDB graph utilities.",
+  "description": "Standalone project for gravelmon DynamoDB graph utilities.",
   "scripts": {
     "bootstrap": "npm install --prefix nodejs && npm run bootstrap --prefix nodejs"
   }

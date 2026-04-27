@@ -36,9 +36,25 @@ Resources:
     Properties:
       LayerName: dynamodb-graph
       Description: Shared DynamoDB graph utility layer for Lambda functions
-      ContentUri: ../dynamodb-graph-layer
+      ContentUri: ../gravelmon-dynamodb-graph/nodejs/dist/lambda-layer.zip
       CompatibleRuntimes:
         - nodejs18.x
+
+  TestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: dist/test-handler.handler
+      Runtime: nodejs18.x
+      Layers:
+        - !Ref DynamoDBGraphLayer
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: get
+      Timeout: 10
 
   DynamoRelationalFunction:
     Type: AWS::Serverless::Function

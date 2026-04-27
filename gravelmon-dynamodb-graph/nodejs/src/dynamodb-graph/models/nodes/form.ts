@@ -24,8 +24,8 @@ export const FormEntity = "Form";
 export const IsFormOfEdgeType = "IsFormOf";
 export const DropsItemEdgeType = "DropsItem";
 
-export function createFormNode(pokemonData: PokemonData, genderDifference?: GenderDifference): FormNode {
-    return new FormNode(pokemonData, genderDifference);
+export function createFormNode(pokemonData: PokemonData, genderDifference?: GenderDifference, lightingData?: LightingData): FormNode {
+    return new FormNode(pokemonData, genderDifference, lightingData);
 }
 
 export function createFormPrimaryTypeEdge(formName: PokemonIdentifier, typeName: string): FormTypeEdge {
@@ -67,17 +67,25 @@ export function createFormDropsItemEdge(formName: PokemonIdentifier, itemName: R
     return new FormDropsItemEdge(formName.toString(), itemName.toString(), dropChance, quantityRange);
 }
 
+export interface LightingData {
+    lightLevel: number;
+    liquidGlowMode: undefined | "LAND"
+}
+
 export class FormNode extends PokemonNode {
     genderDifference?: GenderDifference;
+    lightingData?: LightingData;
     constructor(
         pokemonData: PokemonData,
-        genderDifference?: GenderDifference
+        genderDifference?: GenderDifference,
+        lightingData?: LightingData
     ) 
     {
         super(pokemonData);
         this.PK = getNodePK(FormEntity, this.name);
         this.entityType = FormEntity;
         this.genderDifference = genderDifference;
+        this.lightingData = lightingData;
     }
 }
 

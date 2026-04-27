@@ -7,6 +7,6 @@ architecture = "x86_64"
 handler = "src/handler.handler"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["DynamoRelationalFunction"]
+functions = ["TestFunction", "DynamoRelationalFunction"]
 
 [layer_build_definitions]

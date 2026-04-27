@@ -2,9 +2,14 @@
 SETLOCAL ENABLEDELAYEDEXPANSION
 
 set "URL=http://127.0.0.1:3000/items"
+set "TEST_URL=http://127.0.0.1:3000/test"
 
 echo Testing DynamoDB SAM handler on %URL%
 
+echo.
+echo 0) Test helloWorld from layer
+curl -s "%TEST_URL%"
+echo.
 echo.
 echo 1) Create item
 set "CREATE_BODY={""operation"":""create"",""id"":""item-1"",""name"":""Sample"",""description"":""Test item""}"
