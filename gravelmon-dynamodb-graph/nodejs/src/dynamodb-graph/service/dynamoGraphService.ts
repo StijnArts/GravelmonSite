@@ -1,27 +1,19 @@
 import { DynamoDBClient, PutItemCommand, TransactWriteItemsCommand, QueryCommand, GetItemCommand, ScanCommand, UpdateItemCommand, DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { DynamoEdge, PK, SK, DynamoNode } from "./service/dynamoNodes";
-import { SkCondition, KeyConditionBuilder, FilterBuilder, UpdateBuilder } from "./queryBuilder";
-
-export type EdgeFactory<T extends DynamoEdge = DynamoEdge> = (item: Record<string, any>) => T;
+import { DynamoEdge, PK, SK, DynamoNode } from "./dynamoNodes";
+import { SkCondition, KeyConditionBuilder, FilterBuilder, UpdateBuilder, Deserializer } from "./queryBuilder";
 
 // Re-export builder classes and types for convenience
-export type { SkCondition, KeyConditionBuilder, FilterBuilder, UpdateBuilder } from "./queryBuilder";
+export type { SkCondition, KeyConditionBuilder, FilterBuilder, UpdateBuilder, Deserializer } from "./queryBuilder";
 
-function defaultEdgeFactory(item: Record<string, any>): DynamoEdge {
-    const skParts = item.SK.split('#');
-    const edgeType = item.entityType;
-
-    if (skParts[1] === "IN") {
-        const sourceType = skParts[3];
-        const sourceName = skParts[4];
-        return new DynamoEdge(item.PK, edgeType, sourceType, sourceName);
-    }
-
-    const targetType = skParts[2];
-    const targetName = skParts[3];
-    return new DynamoEdge(item.PK, edgeType, targetType, targetName);
+// Helper to extract deserializer from a class with static deserialize method
+function getDeserializer<T>(TypeClass: { deserialize(data: Record<string, any>): T }): Deserializer<T> {
+    return (data: Record<string, any>) => TypeClass.deserialize(data);
 }
+
+// Default deserializers using the model's static methods
+const defaultEdgeDeserializer: Deserializer<DynamoEdge> = getDeserializer(DynamoEdge);
+const defaultNodeDeserializer: Deserializer<DynamoNode> = getDeserializer(DynamoNode);
 
 export class DynamoGraphService {
     private client: DynamoDBClient;
@@ -120,12 +112,12 @@ export class DynamoGraphService {
         );
     }
 
-    async queryEdges<T extends DynamoEdge = DynamoEdge>(
+    async queryEdges<T = DynamoEdge>(
         pk: PK,
         tableName?: string,
         skCondition: SkCondition = { beginsWith: "EDGE#" },
         edgeType?: string,
-        edgeFactory: EdgeFactory<T> = defaultEdgeFactory as EdgeFactory<T>
+        deserializer: Deserializer<T> = defaultEdgeDeserializer as Deserializer<T>
     ): Promise<T[]> {
         const table = tableName || this.tableName;
         const sk = DynamoGraphService.buildSkCondition(skCondition);
@@ -146,7 +138,7 @@ export class DynamoGraphService {
 
         return result.Items?.map(item => {
             const unmarshalled = unmarshall(item) as Record<string, any>;
-            return edgeFactory(unmarshalled);
+            return deserializer(unmarshalled);
         }) || [];
     }
 
@@ -173,27 +165,31 @@ export class DynamoGraphService {
         return new DynamoNode(item.entityType, item.name);
     }
 
-    async getOutgoingEdges<T extends DynamoEdge = DynamoEdge>(
+    async getOutgoingEdges<T = DynamoEdge>(
         pk: PK,
         tableName?: string,
         edgeType?: string,
-        edgeFactory: EdgeFactory<T> = defaultEdgeFactory as EdgeFactory<T>
+        deserializer: Deserializer<T> = defaultEdgeDeserializer as Deserializer<T>
     ): Promise<T[]> {
         const beginsWith = edgeType ? `EDGE#${edgeType}` : "EDGE#";
-        return this.queryEdges(pk, tableName, { beginsWith }, edgeType, edgeFactory);
+        return this.queryEdges(pk, tableName, { beginsWith }, edgeType, deserializer);
     }
 
-    async getIncomingEdges<T extends DynamoEdge = DynamoEdge>(
+    async getIncomingEdges<T = DynamoEdge>(
         pk: PK,
         tableName?: string,
         edgeType?: string,
-        edgeFactory: EdgeFactory<T> = defaultEdgeFactory as EdgeFactory<T>
+        deserializer: Deserializer<T> = defaultEdgeDeserializer as Deserializer<T>
     ): Promise<T[]> {
         const beginsWith = edgeType ? `EDGE#IN#${edgeType}` : "EDGE#IN#";
-        return this.queryEdges(pk, tableName, { beginsWith }, edgeType, edgeFactory);
+        return this.queryEdges(pk, tableName, { beginsWith }, edgeType, deserializer);
     }
 
-    async queryNodes(nodeType?: string, tableName?: string): Promise<DynamoNode[]> {
+    async queryNodes<T = DynamoNode>(
+        nodeType?: string,
+        tableName?: string,
+        deserializer: Deserializer<T> = defaultNodeDeserializer as Deserializer<T>
+    ): Promise<T[]> {
         const table = tableName || this.tableName;
 
         const params: any = {
@@ -213,7 +209,7 @@ export class DynamoGraphService {
         const result = await this.client.send(new ScanCommand(params));
         return result.Items?.map(item => {
             const unmarshalled = unmarshall(item) as Record<string, any>;
-            return new DynamoNode(unmarshalled.entityType, unmarshalled.name);
+            return deserializer(unmarshalled);
         }) || [];
     }
 
@@ -336,8 +332,6 @@ export class DynamoGraphService {
             return edge;
         }
 
-        const reverseEdge = edge.reverseEdge();
-
         // Update both forward and reverse edges
         const updateParams: any = {
             UpdateExpression: `SET ${updateExpressions.join(', ')}`,
@@ -375,11 +369,11 @@ export class DynamoGraphService {
     }
 
     // Query builder methods
-    queryWithBuilder<T extends DynamoEdge = DynamoEdge>(
+    queryWithBuilder<T = DynamoEdge>(
         pk: PK,
         keyConditionBuilder: KeyConditionBuilder,
         tableName?: string,
-        edgeFactory: EdgeFactory<T> = defaultEdgeFactory as EdgeFactory<T>
+        deserializer: Deserializer<T> = defaultEdgeDeserializer as Deserializer<T>
     ): Promise<T[]> {
         const table = tableName || this.tableName;
         const builtCondition = keyConditionBuilder.build();
@@ -391,13 +385,13 @@ export class DynamoGraphService {
             ExpressionAttributeNames: builtCondition.names,
         };
 
-        return this.executeQuery(params, edgeFactory);
+        return this.executeQuery(params, deserializer);
     }
 
-    scanWithFilter<T extends DynamoEdge = DynamoEdge>(
+    scanWithFilter<T = DynamoEdge>(
         filterBuilder: FilterBuilder,
         tableName?: string,
-        edgeFactory: EdgeFactory<T> = defaultEdgeFactory as EdgeFactory<T>
+        deserializer: Deserializer<T> = defaultEdgeDeserializer as Deserializer<T>
     ): Promise<T[]> {
         const table = tableName || this.tableName;
         const builtFilter = filterBuilder.build();
@@ -409,7 +403,7 @@ export class DynamoGraphService {
             ExpressionAttributeNames: builtFilter.names,
         };
 
-        return this.executeScan(params, edgeFactory);
+        return this.executeScan(params, deserializer);
     }
 
     async updateWithBuilder(
@@ -434,25 +428,25 @@ export class DynamoGraphService {
         return result.Attributes ? unmarshall(result.Attributes) : null;
     }
 
-    private async executeQuery<T extends DynamoEdge>(
+    private async executeQuery<T>(
         params: any,
-        edgeFactory: EdgeFactory<T>
+        deserializer: Deserializer<T>
     ): Promise<T[]> {
         const result = await this.client.send(new QueryCommand(params));
         return result.Items?.map(item => {
             const unmarshalled = unmarshall(item) as Record<string, any>;
-            return edgeFactory(unmarshalled);
+            return deserializer(unmarshalled);
         }) || [];
     }
 
-    private async executeScan<T extends DynamoEdge>(
+    private async executeScan<T>(
         params: any,
-        edgeFactory: EdgeFactory<T>
+        deserializer: Deserializer<T>
     ): Promise<T[]> {
         const result = await this.client.send(new ScanCommand(params));
         return result.Items?.map(item => {
             const unmarshalled = unmarshall(item) as Record<string, any>;
-            return edgeFactory(unmarshalled);
+            return deserializer(unmarshalled);
         }) || [];
     }
 }

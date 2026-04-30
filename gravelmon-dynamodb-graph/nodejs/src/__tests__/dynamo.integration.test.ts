@@ -1,5 +1,5 @@
 import { DynamoDBClient, CreateTableCommand, DeleteTableCommand, DescribeTableCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoNode, DynamoEdge, createEdge, createNode, getNode, getOutgoingEdges, getIncomingEdges, queryEdges, queryNodes, deleteNode, deleteEdge, updateNode, updateEdge } from "../dynamodb-graph/models/dynamoNodes";
+import { DynamoNode, DynamoEdge, createEdge, createNode, getNode, getOutgoingEdges, getIncomingEdges, queryEdges, queryNodes, deleteNode, deleteEdge, updateNode, updateEdge } from "../dynamodb-graph/service/dynamoNodes";
 
 const client = new DynamoDBClient({
     region: process.env.AWS_REGION || "us-east-1",
