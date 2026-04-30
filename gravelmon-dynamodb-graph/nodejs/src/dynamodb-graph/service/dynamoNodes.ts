@@ -1,9 +1,3 @@
-
-export interface DynamoNodeEdgePair {
-    edge: DynamoEdge;
-    node: DynamoNode;
-}
-
 export type PK = string;
 export type SK = string | "METADATA";
 
@@ -54,10 +48,9 @@ export class DynamoEdge extends DynamoItem {
 
     static deserialize(data: Record<string, any>): DynamoEdge {
         const skParts = data.SK.split('#');
-        const isIncoming = skParts[1] === "IN";
         const edgeType = data.entityType;
-        const targetType = skParts[isIncoming ? 3 : 2];
-        const targetName = skParts[isIncoming ? 4 : 3];
+        const targetType = skParts[2];
+        const targetName = skParts[3];
 
         return new DynamoEdge(data.PK, edgeType, targetType, targetName);
     }
