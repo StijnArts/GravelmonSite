@@ -3,7 +3,7 @@ import {PokemonIdentifier} from "../../../nodes/pokemon/pokemonNode";
 import {Vector} from "../../properties/vector";
 import {PoseType} from "./poseType";
 import {NumberRange} from "../../properties/numberRange";
-import {Animation} from "../../../nodes/animationNode";
+import { Animation } from '../../../nodes/assets/animationNode';
 
 export const PosingDataEntity = "PosingData";
 

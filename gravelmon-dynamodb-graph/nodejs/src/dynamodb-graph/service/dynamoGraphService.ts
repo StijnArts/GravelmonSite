@@ -19,17 +19,14 @@ export class DynamoGraphService {
     private client: DynamoDBClient;
     private tableName: string;
 
-    constructor(tableName?: string, region?: string, endpoint?: string) {
+    constructor(dynamoDBClient : DynamoDBClient, tableName?: string) {
         this.tableName = tableName || process.env.DYNAMODB_TABLE || "";
         
         if (!this.tableName) {
             throw new Error("DYNAMODB_TABLE environment variable or constructor tableName parameter is required.");
         }
 
-        this.client = new DynamoDBClient({
-            region: region || process.env.AWS_REGION || "us-east-1",
-            endpoint: endpoint || process.env.DYNAMODB_ENDPOINT || undefined,
-        });
+        this.client = dynamoDBClient;
     }
 
     private static buildSkCondition(condition: SkCondition): {

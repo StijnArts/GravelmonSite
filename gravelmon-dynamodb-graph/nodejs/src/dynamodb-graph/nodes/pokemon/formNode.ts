@@ -6,7 +6,7 @@ import {
     PokemonIdentifier,
     PokemonNode,
     PokemonTypeRelationship
-} from '../pokemonNode';
+} from './pokemonNode';
 import { AspectEntity, HasAspectEdgeType } from '../properties/aspectNode';
 import {HasLabelEdgeType, LabelEntity} from "../properties/labelNode";
 import {TypeEntity} from "../battle/typeNode";

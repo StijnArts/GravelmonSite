@@ -1,6 +1,6 @@
 import { DynamoEdge, DynamoNode, getNodePK } from '../service/dynamoNodes';
 import { FormEntity } from './pokemon/formNode';
-import { PokemonEntity, PokemonIdentifier } from './pokemonNode';
+import { PokemonEntity, PokemonIdentifier } from './pokemon/pokemonNode';
 
 export const SoundEntity = "Sound";
 
