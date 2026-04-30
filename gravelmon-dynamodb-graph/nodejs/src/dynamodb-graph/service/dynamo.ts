@@ -1,6 +1,6 @@
 import { DynamoDBClient, PutItemCommand, TransactWriteItemsCommand, QueryCommand, GetItemCommand, ScanCommand, UpdateItemCommand, DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { DynamoEdge, PK, SK, DynamoNode } from "./service/dynamoNodes";
+import { DynamoEdge, PK, SK, DynamoNode } from "./dynamoNodes";
 import { SkCondition, KeyConditionBuilder, FilterBuilder, UpdateBuilder } from "./queryBuilder";
 
 export type EdgeFactory<T extends DynamoEdge = DynamoEdge> = (item: Record<string, any>) => T;
@@ -11,13 +11,6 @@ export type { SkCondition, KeyConditionBuilder, FilterBuilder, UpdateBuilder } f
 function defaultEdgeFactory(item: Record<string, any>): DynamoEdge {
     const skParts = item.SK.split('#');
     const edgeType = item.entityType;
-
-    if (skParts[1] === "IN") {
-        const sourceType = skParts[3];
-        const sourceName = skParts[4];
-        return new DynamoEdge(item.PK, edgeType, sourceType, sourceName);
-    }
-
     const targetType = skParts[2];
     const targetName = skParts[3];
     return new DynamoEdge(item.PK, edgeType, targetType, targetName);
@@ -98,26 +91,11 @@ export class DynamoGraphService {
 
     async createEdge(edge: DynamoEdge, tableName?: string): Promise<void> {
         const table = tableName || this.tableName;
-        const reverseEdge = edge.reverseEdge();
 
-        await this.client.send(
-            new TransactWriteItemsCommand({
-                TransactItems: [
-                    {
-                        Put: {
-                            TableName: table,
-                            Item: marshall(edge, { removeUndefinedValues: true, convertClassInstanceToMap: true }),
-                        },
-                    },
-                    {
-                        Put: {
-                            TableName: table,
-                            Item: marshall(reverseEdge, { removeUndefinedValues: true, convertClassInstanceToMap: true }),
-                        },
-                    },
-                ],
-            })
-        );
+        await this.client.send(new PutItemCommand({
+            TableName: table,
+            Item: marshall(edge, { removeUndefinedValues: true, convertClassInstanceToMap: true }),
+        }));
     }
 
     async queryEdges<T extends DynamoEdge = DynamoEdge>(
@@ -183,15 +161,7 @@ export class DynamoGraphService {
         return this.queryEdges(pk, tableName, { beginsWith }, edgeType, edgeFactory);
     }
 
-    async getIncomingEdges<T extends DynamoEdge = DynamoEdge>(
-        pk: PK,
-        tableName?: string,
-        edgeType?: string,
-        edgeFactory: EdgeFactory<T> = defaultEdgeFactory as EdgeFactory<T>
-    ): Promise<T[]> {
-        const beginsWith = edgeType ? `EDGE#IN#${edgeType}` : "EDGE#IN#";
-        return this.queryEdges(pk, tableName, { beginsWith }, edgeType, edgeFactory);
-    }
+
 
     async queryNodes(nodeType?: string, tableName?: string): Promise<DynamoNode[]> {
         const table = tableName || this.tableName;
@@ -229,26 +199,11 @@ export class DynamoGraphService {
 
     async deleteEdge(edge: DynamoEdge, tableName?: string): Promise<void> {
         const table = tableName || this.tableName;
-        const reverseEdge = edge.reverseEdge();
 
-        await this.client.send(
-            new TransactWriteItemsCommand({
-                TransactItems: [
-                    {
-                        Delete: {
-                            TableName: table,
-                            Key: marshall({ PK: edge.PK, SK: edge.SK })
-                        },
-                    },
-                    {
-                        Delete: {
-                            TableName: table,
-                            Key: marshall({ PK: reverseEdge.PK, SK: reverseEdge.SK })
-                        },
-                    },
-                ],
-            })
-        );
+        await this.client.send(new DeleteItemCommand({
+            TableName: table,
+            Key: marshall({ PK: edge.PK, SK: edge.SK })
+        }));
     }
 
     async updateNode(
@@ -311,7 +266,7 @@ export class DynamoGraphService {
     ): Promise<DynamoEdge | null> {
         const table = tableName || this.tableName;
 
-        // Build update expression for forward edge
+        // Build update expression
         const updateExpressions: string[] = [];
         const expressionAttributeValues: Record<string, any> = {};
         const expressionAttributeNames: Record<string, string> = {};
@@ -336,42 +291,24 @@ export class DynamoGraphService {
             return edge;
         }
 
-        const reverseEdge = edge.reverseEdge();
-
-        // Update both forward and reverse edges
-        const updateParams: any = {
+        const params: any = {
+            TableName: table,
+            Key: marshall({ PK: edge.PK, SK: edge.SK }),
             UpdateExpression: `SET ${updateExpressions.join(', ')}`,
             ExpressionAttributeValues: marshall(expressionAttributeValues),
+            ReturnValues: "ALL_NEW"
         };
 
         if (Object.keys(expressionAttributeNames).length > 0) {
-            updateParams.ExpressionAttributeNames = expressionAttributeNames;
+            params.ExpressionAttributeNames = expressionAttributeNames;
         }
 
-        await this.client.send(
-            new TransactWriteItemsCommand({
-                TransactItems: [
-                    {
-                        Update: {
-                            TableName: table,
-                            Key: marshall({ PK: edge.PK, SK: edge.SK }),
-                            ...updateParams,
-                        },
-                    },
-                    {
-                        Update: {
-                            TableName: table,
-                            Key: marshall({ PK: reverseEdge.PK, SK: reverseEdge.SK }),
-                            ...updateParams,
-                        },
-                    },
-                ],
-            })
-        );
+        const result = await this.client.send(new UpdateItemCommand(params));
 
-        // Apply updates to the edge object and return it
-        Object.assign(edge, updates);
-        return edge;
+        if (!result.Attributes) return null;
+
+        const item = unmarshall(result.Attributes);
+        return defaultEdgeFactory(item);
     }
 
     // Query builder methods
