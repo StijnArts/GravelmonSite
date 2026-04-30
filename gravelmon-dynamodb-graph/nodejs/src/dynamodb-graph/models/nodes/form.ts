@@ -13,7 +13,7 @@ import { AspectEntity, HasAspectEdgeType } from './properties/aspect';
 import {HasLabelEdgeType, LabelEntity} from "./label";
 import {BehaviourEntity} from "./behaviour/behaviour";
 import {TypeEntity} from "./battle/type";
-import {MoveSetEntity, MoveSetOfEdgeType} from "./battle/move/moveset";
+import {MoveSetEntity, MoveSetOfEdgeType, RebalancedMoveSetOfEdgeType} from "./battle/move/moveset";
 import {AbilityEntity} from "./battle/ability";
 import {NumberRange} from "./properties/numberRange";
 import {ItemEntity} from "./minecraft/item";
@@ -28,12 +28,12 @@ export function createFormNode(pokemonData: PokemonData, genderDifference?: Gend
     return new FormNode(pokemonData, genderDifference, lightingData);
 }
 
-export function createFormPrimaryTypeEdge(formName: PokemonIdentifier, typeName: string): FormTypeEdge {
-    return new PrimaryTypeEdge(formName.toString(), typeName);
+export function createFormPrimaryTypeEdge(formName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false): FormTypeEdge {
+    return new PrimaryTypeEdge(formName.toString(), typeName, isRebalanced);
 }
 
-export function createFormSecondaryTypeEdge(formName: PokemonIdentifier, typeName: string): FormTypeEdge {
-    return new SecondaryTypeEdge(formName.toString(), typeName);
+export function createFormSecondaryTypeEdge(formName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false): FormTypeEdge {
+    return new SecondaryTypeEdge(formName.toString(), typeName, isRebalanced);
 }
 
 export function createFormHasAspectEdge(formName: PokemonIdentifier, aspectName: string): DynamoEdge {
@@ -52,15 +52,19 @@ export function createFormMoveSetOfEdge(formName: PokemonIdentifier, moveSetName
     return new DynamoEdge(getNodePK(FormEntity, formName.toString()), MoveSetOfEdgeType, MoveSetEntity, moveSetName);
 }
 
+export function createFormRebalancedMoveSetOfEdge(formName: PokemonIdentifier, moveSetName: string): DynamoEdge {
+    return new DynamoEdge(getNodePK(FormEntity, formName.toString()), RebalancedMoveSetOfEdgeType, MoveSetEntity, moveSetName);
+}
+
 export function createFormIsFormOfPokemonEdge(formName: PokemonIdentifier, pokemonName: PokemonIdentifier): DynamoEdge {
     return new DynamoEdge(getNodePK(FormEntity, formName.toString()), IsFormOfEdgeType, PokemonEntity, pokemonName.toString());
 }
 
 export function createFormHasAbilityEdge(
     formName: PokemonIdentifier, abilityName: string,
-    isHidden: boolean = false, isPlaceholder: boolean = false
+    isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false
 ): DynamoEdge {
-    return new FormHasAbilityEdge(formName.toString(), abilityName, isHidden, isPlaceholder);
+    return new FormHasAbilityEdge(formName.toString(), abilityName, isHidden, isPlaceholder, isRebalanced);
 }
 
 export function createFormDropsItemEdge(formName: PokemonIdentifier, itemName: ResourceLocation, dropChance: number, quantityRange: NumberRange): FormDropsItemEdge {
