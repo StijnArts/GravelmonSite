@@ -1,4 +1,4 @@
-import { DynamoNode, DynamoEdge, getNodePK, getEdgeSK, buildSkCondition, ItemType } from "../dynamodb-graph/models/dynamo";
+import { DynamoNode, DynamoEdge, getNodePK, getEdgeSK, buildSkCondition, ItemType } from "../dynamodb-graph/models/dynamoNodes";
 
 describe("DynamoDB Graph Unit Tests", () => {
     test("should create a node", () => {

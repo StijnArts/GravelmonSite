@@ -1,4 +1,4 @@
-import {DynamoEdge, getNodePK, getPkName} from '../dynamo';
+import {DynamoEdge, getNodePK, getPkName} from '../dynamoNodes';
 import { GenderDifferenceNode as GenderDifference } from './assets/genderDifference';
 import {
     HasAbilityEdgeType,

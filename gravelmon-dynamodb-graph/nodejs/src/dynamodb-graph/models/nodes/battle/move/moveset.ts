@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK, getPkName } from '../../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK, getPkName } from '../../../dynamoNodes';
 import { PokemonIdentifier } from '../../pokemon';
 import { MoveEntity } from './move';
 

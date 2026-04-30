@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamoNodes';
 import { SpawnPresetEntity } from '../spawning/spawnPreset';
 import { ResourceLocation } from './resourceLocation';
 

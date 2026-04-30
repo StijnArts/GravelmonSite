@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamoNodes';
 import {BiomeEntity, BiomeTagEntity} from "./biome";
 import {ResourceLocation} from "./resourceLocation";
 import {StructureEntity, StructureTagEntity} from "./structure";

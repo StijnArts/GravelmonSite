@@ -1,4 +1,4 @@
-import { DynamoNode } from '../../dynamo';
+import { DynamoNode } from '../../dynamoNodes';
 import { ResourceLocation } from './resourceLocation';
 
 export const ItemEntity = "Item";

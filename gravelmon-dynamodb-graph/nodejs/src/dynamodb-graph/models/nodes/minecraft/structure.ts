@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamoNodes';
 import { ResourceLocation } from './resourceLocation';
 
 export const StructureEntity = "Structure";

@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK, getPkName} from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK, getPkName} from '../../dynamoNodes';
 
 export const TypeEntity = "Type";
 

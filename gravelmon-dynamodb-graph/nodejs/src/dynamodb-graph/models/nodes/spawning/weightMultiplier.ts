@@ -1,4 +1,4 @@
-import { SK } from "../../dynamo";
+import { SK } from "../../dynamoNodes";
 
 export interface SpawnWeightMultiplier {
     multiplier: number;

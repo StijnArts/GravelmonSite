@@ -1,4 +1,4 @@
-import {DynamoEdge, DynamoNode, getNodePK} from '../../dynamo';
+import {DynamoEdge, DynamoNode, getNodePK} from '../../dynamoNodes';
 import {ResourceLocation} from "../minecraft/resourceLocation";
 import {ItemEntity} from "../minecraft/item";
 import {PokemonIdentifier} from "../pokemon";

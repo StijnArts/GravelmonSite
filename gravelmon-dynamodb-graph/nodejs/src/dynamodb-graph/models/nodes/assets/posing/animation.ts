@@ -1,4 +1,4 @@
-import {DynamoNode, PK} from '../../../dynamo';
+import {DynamoNode, PK} from '../../../dynamoNodes';
 import {PoseType} from "./poseType";
 import {ConditionalAnimation} from "./posingFileData";
 

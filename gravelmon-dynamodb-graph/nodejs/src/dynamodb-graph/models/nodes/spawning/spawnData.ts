@@ -1,4 +1,4 @@
-import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../../dynamo';
+import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../../dynamoNodes';
 import { FormEntity } from '../form';
 import { ItemEntity } from '../minecraft/item';
 import { ResourceLocation } from '../minecraft/resourceLocation';

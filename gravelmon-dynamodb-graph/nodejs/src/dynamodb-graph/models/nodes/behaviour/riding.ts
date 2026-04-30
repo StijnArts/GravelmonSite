@@ -1,4 +1,4 @@
-import { PK } from "../../dynamo";
+import { PK } from "../../dynamoNodes";
 import { NumberRange } from "../properties/numberRange";
 import { Seat } from "./seat";
 

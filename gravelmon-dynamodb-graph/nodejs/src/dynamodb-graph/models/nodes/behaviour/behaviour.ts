@@ -1,6 +1,6 @@
-import { DynamoEdge, DynamoNode, getPkName } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getPkName } from '../../dynamoNodes';
 import { PokemonIdentifier, PokemonEntity } from '../pokemon';
-import { getNodePK } from '../../dynamo';
+import { getNodePK } from '../../dynamoNodes';
 import { NumberRange } from '../properties/numberRange';
 import { RidingBehaviourOptions } from './riding';
 import { FormEntity } from '../form';

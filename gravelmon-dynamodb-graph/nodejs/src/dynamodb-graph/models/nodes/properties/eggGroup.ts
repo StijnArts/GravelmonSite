@@ -1,4 +1,4 @@
-import { DynamoNode } from '../../dynamo';
+import { DynamoNode } from '../../dynamoNodes';
 
 export const EggGroupEntity = "EggGroup";
 export const InEggGroupEdgeType = "InEggGroup";

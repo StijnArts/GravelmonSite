@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK } from '../../dynamoNodes';
 import {BehaviourEntity} from "../behaviour/behaviour";
 
 export const SoundEntity = "Sound";

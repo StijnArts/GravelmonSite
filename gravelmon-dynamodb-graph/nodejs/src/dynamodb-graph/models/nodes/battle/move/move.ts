@@ -1,4 +1,4 @@
-import { DynamoEdge, DynamoNode, getNodePK } from '../../../dynamo';
+import { DynamoEdge, DynamoNode, getNodePK } from '../../../dynamoNodes';
 import { TypeEntity } from '../type';
 import {MoveRange} from "./moveRange";
 

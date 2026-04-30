@@ -1,4 +1,4 @@
-import { PK } from "../../dynamo";
+import { PK } from "../../dynamoNodes";
 import { ResourceLocation } from "../minecraft/resourceLocation";
 import { NumberRange } from "../properties/numberRange";
 import { TimeRange } from "../properties/time";

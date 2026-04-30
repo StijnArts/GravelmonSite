@@ -1,4 +1,4 @@
-import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../dynamo';
+import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../dynamoNodes';
 import { AbilityEntity } from './battle/ability';
 import { BehaviourEntity } from './behaviour/behaviour';
 import { HasLabelEdgeType, LabelEntity } from './label';

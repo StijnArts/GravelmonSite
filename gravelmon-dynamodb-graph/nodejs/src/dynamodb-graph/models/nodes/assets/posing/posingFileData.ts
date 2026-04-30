@@ -1,4 +1,4 @@
-import {DynamoEdge, DynamoNode, getNodePK, SK} from '../../../dynamo';
+import {DynamoEdge, DynamoNode, getNodePK, SK} from '../../../dynamoNodes';
 import {PokemonIdentifier} from "../../pokemon";
 import {AspectEntity} from "../../properties/aspect";
 import {FormEntity} from "../../form";
