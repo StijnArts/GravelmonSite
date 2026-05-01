@@ -11,12 +11,16 @@ export abstract class DynamoItem {
     SK: SK;
     TYPE: ItemType;
     entityType: string;
+    version: number;
+    lastEdited: number;
 
-    constructor(pk: PK, sk: SK, type: ItemType, entityType: string) {
+    constructor(pk: PK, sk: SK, type: ItemType, entityType: string, version: number = 1, lastEdited: number = Date.now()) {
         this.PK = pk;
         this.SK = sk;
         this.TYPE = type;
         this.entityType = entityType;
+        this.version = version;
+        this.lastEdited = lastEdited;
     }
 
     public serialize(): Record<string, any> {
@@ -25,6 +29,8 @@ export abstract class DynamoItem {
             SK: this.SK,
             TYPE: this.TYPE,
             entityType: this.entityType,
+            version: this.version,
+            lastEdited: this.lastEdited,
         }
     }
 }
@@ -32,14 +38,13 @@ export abstract class DynamoItem {
 export class DynamoNode extends DynamoItem {
     name: string;
 
-    constructor(entityType: string, name: string) {
-        super(getNodePK(entityType, name), "METADATA", ItemType.NODE, entityType);
+    constructor(entityType: string, name: string, version: number = 1, lastEdited: number = Date.now()) {
+        super(getNodePK(entityType, name), "METADATA", ItemType.NODE, entityType, version, lastEdited);
         this.name = name;
     }
 
     static deserialize(data: Record<string, any>): DynamoNode {
-        const node = new DynamoNode(data.entityType, data.name);
-        return node;
+        return new DynamoNode(data.entityType, data.name, data.version, data.lastEdited);
     }
 
     public serialize(): Record<string, any> {
@@ -51,13 +56,13 @@ export class DynamoNode extends DynamoItem {
 }
 
 export class DynamoEdge extends DynamoItem {
-    Target: PK;
+    target: PK;
     sourceType: string;
     targetType: string;
 
-    constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string) {
-        super(pk, getEdgeSK(edgeType, targetEntityType, targetName), ItemType.EDGE, edgeType);
-        this.Target = getNodePK(targetEntityType, targetName);
+    constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string, version: number = 1, lastEdited: number = Date.now()) {
+        super(pk, getEdgeSK(edgeType, targetEntityType, targetName), ItemType.EDGE, edgeType, version, lastEdited);
+        this.target = getNodePK(targetEntityType, targetName);
         this.sourceType = getPkType(pk);
         this.targetType = targetEntityType;
     }
@@ -68,13 +73,13 @@ export class DynamoEdge extends DynamoItem {
         const targetType = skParts[2];
         const targetName = skParts[3];
 
-        return new DynamoEdge(data.PK, edgeType, targetType, targetName);
+        return new DynamoEdge(data.PK, edgeType, targetType, targetName, data.version, data.lastEdited);
     }
 
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
-            Target: this.Target,
+            target: this.target,
             sourceType: this.sourceType,
             targetType: this.targetType,
         }

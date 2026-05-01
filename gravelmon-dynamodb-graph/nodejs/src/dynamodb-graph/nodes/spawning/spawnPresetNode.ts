@@ -15,9 +15,10 @@ export interface SpawnPresetOptions {
 
 class SpawnPresetNode extends DynamoNode {
     spawnPresetOptions: SpawnPresetOptions;
+    static version = 1;
 
-    constructor(spawnPresetOptions: SpawnPresetOptions) {
-        super(SpawnPresetEntity, spawnPresetOptions.name.toString());
+    constructor(spawnPresetOptions: SpawnPresetOptions, lastEdited: number = Date.now()) {
+        super(SpawnPresetEntity, spawnPresetOptions.name.toString(), SpawnPresetNode.version, lastEdited);
         this.spawnPresetOptions = spawnPresetOptions;
     }
 

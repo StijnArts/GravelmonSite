@@ -10,8 +10,9 @@ export const SoundUsedByEdgeType = "UsedBy";
 
 class SoundNode extends DynamoNode {
     soundData: SoundData;
-    constructor(soundData: SoundData) {
-        super(SoundEntity, soundData.name);
+    static version = 1;
+    constructor(soundData: SoundData, lastEdited: number = Date.now()) {
+        super(SoundEntity, soundData.name, SoundNode.version, lastEdited);
         this.soundData = soundData;
     }
 
@@ -21,7 +22,7 @@ class SoundNode extends DynamoNode {
             s3Location: data.soundData.s3Location,
             madeBy: data.soundData.madeBy
         };
-        return new SoundNode(soundData);
+        return new SoundNode(soundData, data.lastEdited);
     }
 
     public serialize(): Record<string, any> {

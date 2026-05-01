@@ -1,64 +1,68 @@
-import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../../service/dynamoNodes';
-import { AbilityEntity } from '../battle/abilityNode';
-import { BehaviourOptions, deserializeBehaviourOptions, serializeBehaviourOptions } from '../../models/behaviour/behaviour';
-import { HasLabelEdgeType, LabelEntity } from '../properties/labelNode';
-import { EggGroupEntity, InEggGroupEdgeType } from '../properties/eggGroupNode';
-import { ExperienceGroupEntity, InExperienceGroupEdgeType } from '../properties/experienceGroupNode';
-import { Stats } from '../../models/properties/stats';
-import { TypeEntity } from '../battle/typeNode';
-import { deserializeMoveSet, MoveSet, serializeMoveSet } from '../../models/battle/moveset';
-import { deserializerRegistry } from '../../service/deserializerRegistry';
+import {DynamoNode, DynamoEdge, getNodePK, getPkName} from '../../service/dynamoNodes';
+import {AbilityEntity} from '../battle/abilityNode';
+import {
+    BehaviourOptions,
+    deserializeBehaviourOptions,
+    serializeBehaviourOptions
+} from '../../models/behaviour/behaviour';
+import {HasLabelEdgeType, LabelEntity} from '../properties/labelNode';
+import {EggGroupEntity, InEggGroupEdgeType} from '../properties/eggGroupNode';
+import {ExperienceGroupEntity, InExperienceGroupEdgeType} from '../properties/experienceGroupNode';
+import {Stats} from '../../models/properties/stats';
+import {TypeEntity} from '../battle/typeNode';
+import {deserializeMoveSet, MoveSet, serializeMoveSet} from '../../models/battle/moveset';
+import {deserializerRegistry} from '../../service/deserializerRegistry';
 
 export const PokemonEntity = "Pokemon";
 
 export const HasAbilityEdgeType = "HasAbility";
-export const HasFormEdgeType = "HasForm";
 
 export enum PokemonTypeRelationship {
     PrimaryType = "PrimaryType",
     SecondaryType = "SecondaryType"
 }
 
-export function createPokemonNode(pokemonData: PokemonData) {
-    return new PokemonNode(pokemonData);
+export function createPokemonNode(pokemonData: PokemonData, lastEdited: number = Date.now()) {
+    return new PokemonNode(pokemonData, lastEdited);
 }
 
-export function createPokemonPrimaryTypeEdge(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false): PokemonTypeEdge {
-    return new PrimaryTypeEdge(pokemonName, typeName, isRebalanced);
+export function createPokemonPrimaryTypeEdge(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()): PokemonTypeEdge {
+    return new PrimaryTypeEdge(pokemonName, typeName, isRebalanced, lastEdited);
 }
 
-export function createPokemonSecondaryTypeEdge(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false): PokemonTypeEdge {
-    return new SecondaryTypeEdge(pokemonName, typeName, isRebalanced);
+export function createPokemonSecondaryTypeEdge(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()): PokemonTypeEdge {
+    return new SecondaryTypeEdge(pokemonName, typeName, isRebalanced, lastEdited);
 }
 
 //edges pointing towards pokemon from other nodes, used to easily query all related nodes of a pokemon
-export function createPokemonHasLabelEdge(pokemonName: PokemonIdentifier, labelName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(LabelEntity, labelName), HasLabelEdgeType, PokemonEntity, pokemonName.toString());
+export function createPokemonHasLabelEdge(pokemonName: PokemonIdentifier, labelName: string, lastEdited: number = Date.now()): DynamoEdge {
+    return new DynamoEdge(getNodePK(LabelEntity, labelName), HasLabelEdgeType, PokemonEntity, pokemonName.toString(), lastEdited);
 }
 
-export function createPokemonInEggGroupEdge(pokemonName: PokemonIdentifier, eggGroupName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(EggGroupEntity, eggGroupName), InEggGroupEdgeType, PokemonEntity, pokemonName.toString());
+export function createPokemonInEggGroupEdge(pokemonName: PokemonIdentifier, eggGroupName: string, lastEdited: number = Date.now()): DynamoEdge {
+    return new DynamoEdge(getNodePK(EggGroupEntity, eggGroupName), InEggGroupEdgeType, PokemonEntity, pokemonName.toString(), lastEdited);
 }
 
-export function createPokemonInExperienceGroupEdge(pokemonName: PokemonIdentifier, experienceGroupName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(ExperienceGroupEntity, experienceGroupName), InExperienceGroupEdgeType, PokemonEntity, pokemonName.toString());
+export function createPokemonInExperienceGroupEdge(pokemonName: PokemonIdentifier, experienceGroupName: string, lastEdited: number = Date.now()): DynamoEdge {
+    return new DynamoEdge(getNodePK(ExperienceGroupEntity, experienceGroupName), InExperienceGroupEdgeType, PokemonEntity, pokemonName.toString(), lastEdited);
 }
 
 export function createPokemonHasAbilityEdge(
-            pokemonName: PokemonIdentifier, abilityName: string,
-            isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false
-        ): DynamoEdge {
-    return new PokemonHasAbilityEdge(pokemonName, abilityName, isHidden, isPlaceholder, isRebalanced);
+    pokemonName: PokemonIdentifier, abilityName: string,
+    isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false, lastEdited: number = Date.now()
+): DynamoEdge {
+    return new PokemonHasAbilityEdge(pokemonName, abilityName, isHidden, isPlaceholder, isRebalanced, lastEdited);
 }
 
 export class PokemonIdentifier {
     game: string;
     pokemon: string;
     formName?: string;
+
     constructor(game: string, pokemon: string, formName?: string | string[]) {
         this.game = game;
         this.pokemon = pokemon;
-        if(Array.isArray(formName)) {
+        if (Array.isArray(formName)) {
             this.formName = formName.join("-");
         } else {
             this.formName = formName;
@@ -84,7 +88,7 @@ export class PokemonIdentifier {
         return {
             game: this.game,
             pokemon: this.pokemon,
-             ...(this.formName && { formName: this.formName })
+            ...(this.formName && {formName: this.formName})
         }
     }
 
@@ -125,11 +129,11 @@ export interface PokemonData {
     behaviourOptions: BehaviourOptions;
 
     //references to related nodes
-    typing: { 
+    typing: {
         primaryType: string;
         secondaryType?: string;
     }
-    rebalancedTyping: { 
+    rebalancedTyping: {
         primaryType: string;
         secondaryType?: string;
     }
@@ -151,91 +155,92 @@ export interface PokemonData {
     rebalancedMoveSet?: MoveSet;
 }
 
-    export function deserializePokemonData(rawData: any): PokemonData {
-        return {
-            pokemonIdentifier: PokemonIdentifier.deserialize(rawData.pokemonIdentifier),
-            baseStats: Stats.deserialize(rawData.baseStats),
-            rebalancedStats: rawData.rebalancedStats ? Stats.deserialize(rawData.rebalancedStats) : undefined,
-            evYield: Stats.deserialize(rawData.evYield),
-            heightInMeters: rawData.heightInMeters,
-            weightInKg: rawData.weightInKg,
-            catchRate: rawData.catchRate,
+export function deserializePokemonData(rawData: any): PokemonData {
+    return {
+        pokemonIdentifier: PokemonIdentifier.deserialize(rawData.pokemonIdentifier),
+        baseStats: Stats.deserialize(rawData.baseStats),
+        rebalancedStats: rawData.rebalancedStats ? Stats.deserialize(rawData.rebalancedStats) : undefined,
+        evYield: Stats.deserialize(rawData.evYield),
+        heightInMeters: rawData.heightInMeters,
+        weightInKg: rawData.weightInKg,
+        catchRate: rawData.catchRate,
 
-            maleRatio: rawData.maleRatio,
-            baseExperience: rawData.baseExperience,
-            baseFriendship: rawData.baseFriendship,
-            eggCycles: rawData.eggCycles,
-            pokedexEntry: rawData.pokedexEntry,
-            hitbox: new Hitbox(rawData.hitbox.width, rawData.hitbox.height, rawData.hitbox.fixed),
-            baseScale: rawData.baseScale,
-            cannotDynamax: rawData.cannotDynamax,
-            dropAmount: rawData.dropAmount,
-            behaviourOptions: deserializeBehaviourOptions(rawData.behaviourOptions),
-            typing: {
-                primaryType: rawData.typing.primaryType,
-                secondaryType: rawData.typing.secondaryType
-            },
-            rebalancedTyping: {
-                primaryType: rawData.rebalancedTyping.primaryType,
-                secondaryType: rawData.rebalancedTyping.secondaryType
-            },
-            aspects: rawData.aspects,
-            labels: rawData.labels,
-            eggGroups: rawData.eggGroups,
-            experienceGroup: rawData.experienceGroup,
-            gameIntroducedIn: rawData.gameIntroducedIn,
-            abilities: rawData.abilities,
-            forms: rawData.forms.map((f: any) => PokemonIdentifier.deserialize(f)),
-            moveSet: deserializeMoveSet(rawData.moveSet),
-            placeholderMoveSet: rawData.placeholderMoveSet ? deserializeMoveSet(rawData.placeholderMoveSet) : undefined,
-            rebalancedMoveSet: rawData.rebalancedMoveSet ? deserializeMoveSet(rawData.rebalancedMoveSet) : undefined
-        };
-    }
+        maleRatio: rawData.maleRatio,
+        baseExperience: rawData.baseExperience,
+        baseFriendship: rawData.baseFriendship,
+        eggCycles: rawData.eggCycles,
+        pokedexEntry: rawData.pokedexEntry,
+        hitbox: new Hitbox(rawData.hitbox.width, rawData.hitbox.height, rawData.hitbox.fixed),
+        baseScale: rawData.baseScale,
+        cannotDynamax: rawData.cannotDynamax,
+        dropAmount: rawData.dropAmount,
+        behaviourOptions: deserializeBehaviourOptions(rawData.behaviourOptions),
+        typing: {
+            primaryType: rawData.typing.primaryType,
+            secondaryType: rawData.typing.secondaryType
+        },
+        rebalancedTyping: {
+            primaryType: rawData.rebalancedTyping.primaryType,
+            secondaryType: rawData.rebalancedTyping.secondaryType
+        },
+        aspects: rawData.aspects,
+        labels: rawData.labels,
+        eggGroups: rawData.eggGroups,
+        experienceGroup: rawData.experienceGroup,
+        gameIntroducedIn: rawData.gameIntroducedIn,
+        abilities: rawData.abilities,
+        forms: rawData.forms.map((f: any) => PokemonIdentifier.deserialize(f)),
+        moveSet: deserializeMoveSet(rawData.moveSet),
+        placeholderMoveSet: rawData.placeholderMoveSet ? deserializeMoveSet(rawData.placeholderMoveSet) : undefined,
+        rebalancedMoveSet: rawData.rebalancedMoveSet ? deserializeMoveSet(rawData.rebalancedMoveSet) : undefined
+    };
+}
 
 export class PokemonNode extends DynamoNode {
     pokemonData: PokemonData;
-    
-    constructor(pokemonData: PokemonData) {
-        super(PokemonEntity, pokemonData.pokemonIdentifier.toString());
+    static version = 1;
+
+    constructor(pokemonData: PokemonData, lastEdited: number = Date.now(), version: number = PokemonNode.version) {
+        super(PokemonEntity, pokemonData.pokemonIdentifier.toString(), PokemonNode.version, lastEdited);
         this.pokemonData = pokemonData;
     }
 
     public serializePokemonData(): Record<string, any> {
         return {
-                pokemonIdentifier: this.pokemonData.pokemonIdentifier.serialize(),
-                baseStats: this.pokemonData.baseStats.serialize(),
-                rebalancedStats: this.pokemonData.rebalancedStats?.serialize(),
-                evYield: this.pokemonData.evYield.serialize(),
-                heightInMeters: this.pokemonData.heightInMeters,
-                weightInKg: this.pokemonData.weightInKg,
-                catchRate: this.pokemonData.catchRate,
-                maleRatio: this.pokemonData.maleRatio,
-                baseExperience: this.pokemonData.baseExperience,
-                baseFriendship: this.pokemonData.baseFriendship,
-                eggCycles: this.pokemonData.eggCycles,
-                pokedexEntry: this.pokemonData.pokedexEntry,
-                hitbox: {
-                    width: this.pokemonData.hitbox.width,
-                    height: this.pokemonData.hitbox.height,
-                    fixed: this.pokemonData.hitbox.fixed
-                },
-                baseScale: this.pokemonData.baseScale,
-                cannotDynamax: this.pokemonData.cannotDynamax,
-                dropAmount: this.pokemonData.dropAmount,
-                behaviourOptions: serializeBehaviourOptions(this.pokemonData.behaviourOptions),
-                typing: { ...this.pokemonData.typing },
-                rebalancedTyping: { ...this.pokemonData.rebalancedTyping },
-                aspects: this.pokemonData.aspects,
-                labels: this.pokemonData.labels,
-                eggGroups: this.pokemonData.eggGroups,
-                experienceGroup: this.pokemonData.experienceGroup,
-                gameIntroducedIn: this.pokemonData.gameIntroducedIn,
-                abilities: this.pokemonData.abilities,
-                forms: this.pokemonData.forms.map(f => f.serialize()),
-                moveSet: serializeMoveSet(this.pokemonData.moveSet),
-                placeholderMoveSet: this.pokemonData.placeholderMoveSet ? serializeMoveSet(this.pokemonData.placeholderMoveSet) : undefined,
-                rebalancedMoveSet: this.pokemonData.rebalancedMoveSet ? serializeMoveSet(this.pokemonData.rebalancedMoveSet) : undefined
-            };
+            pokemonIdentifier: this.pokemonData.pokemonIdentifier.serialize(),
+            baseStats: this.pokemonData.baseStats.serialize(),
+            rebalancedStats: this.pokemonData.rebalancedStats?.serialize(),
+            evYield: this.pokemonData.evYield.serialize(),
+            heightInMeters: this.pokemonData.heightInMeters,
+            weightInKg: this.pokemonData.weightInKg,
+            catchRate: this.pokemonData.catchRate,
+            maleRatio: this.pokemonData.maleRatio,
+            baseExperience: this.pokemonData.baseExperience,
+            baseFriendship: this.pokemonData.baseFriendship,
+            eggCycles: this.pokemonData.eggCycles,
+            pokedexEntry: this.pokemonData.pokedexEntry,
+            hitbox: {
+                width: this.pokemonData.hitbox.width,
+                height: this.pokemonData.hitbox.height,
+                fixed: this.pokemonData.hitbox.fixed
+            },
+            baseScale: this.pokemonData.baseScale,
+            cannotDynamax: this.pokemonData.cannotDynamax,
+            dropAmount: this.pokemonData.dropAmount,
+            behaviourOptions: serializeBehaviourOptions(this.pokemonData.behaviourOptions),
+            typing: {...this.pokemonData.typing},
+            rebalancedTyping: {...this.pokemonData.rebalancedTyping},
+            aspects: this.pokemonData.aspects,
+            labels: this.pokemonData.labels,
+            eggGroups: this.pokemonData.eggGroups,
+            experienceGroup: this.pokemonData.experienceGroup,
+            gameIntroducedIn: this.pokemonData.gameIntroducedIn,
+            abilities: this.pokemonData.abilities,
+            forms: this.pokemonData.forms.map(f => f.serialize()),
+            moveSet: serializeMoveSet(this.pokemonData.moveSet),
+            placeholderMoveSet: this.pokemonData.placeholderMoveSet ? serializeMoveSet(this.pokemonData.placeholderMoveSet) : undefined,
+            rebalancedMoveSet: this.pokemonData.rebalancedMoveSet ? serializeMoveSet(this.pokemonData.rebalancedMoveSet) : undefined
+        };
     }
 
     public serialize(): Record<string, any> {
@@ -248,20 +253,24 @@ export class PokemonNode extends DynamoNode {
     static deserialize(data: Record<string, any>): PokemonNode {
         const rawData = data.pokemonData;
         const pokemonData: PokemonData = deserializePokemonData(rawData)
-        return new PokemonNode(pokemonData);
+        return new PokemonNode(pokemonData, data.lastEdited);
     }
 }
 
 //points towards pokemon from type, used to easily query all pokemon of a type
 abstract class PokemonTypeEdge extends DynamoEdge {
     isRebalanced: boolean;
+    static version = 1;
 
-    constructor(pokemonName: PokemonIdentifier, typeName: string, relationship: PokemonTypeRelationship, isRebalanced: boolean = false) {
+    constructor(pokemonName: PokemonIdentifier, typeName: string, relationship: PokemonTypeRelationship, isRebalanced: boolean = false, lastEdited: number = Date.now()) {
         super(
-            getNodePK(TypeEntity, typeName), 
-        relationship,
-        PokemonEntity, 
-        pokemonName.toString());
+            getNodePK(TypeEntity, typeName),
+            relationship,
+            PokemonEntity,
+            pokemonName.toString(),
+            PokemonTypeEdge.version,
+            lastEdited
+            );
         this.isRebalanced = isRebalanced;
     }
 
@@ -277,10 +286,10 @@ abstract class PokemonTypeEdge extends DynamoEdge {
         const pokemonName = PokemonIdentifier.fromString(getPkName(data.Target));
         const typeName = getPkName(data.PK);
         const isRebalanced = data.isRebalanced || false;
-        if(relationship === PokemonTypeRelationship.PrimaryType) {
-            return new PrimaryTypeEdge(pokemonName, typeName, isRebalanced);
-        } else if(relationship === PokemonTypeRelationship.SecondaryType) {
-            return new SecondaryTypeEdge(pokemonName, typeName, isRebalanced);
+        if (relationship === PokemonTypeRelationship.PrimaryType) {
+            return new PrimaryTypeEdge(pokemonName, typeName, isRebalanced, data.lastEdited);
+        } else if (relationship === PokemonTypeRelationship.SecondaryType) {
+            return new SecondaryTypeEdge(pokemonName, typeName, isRebalanced, data.lastEdited);
         } else {
             throw new Error(`Unknown PokemonTypeRelationship: ${relationship}`);
         }
@@ -288,14 +297,14 @@ abstract class PokemonTypeEdge extends DynamoEdge {
 }
 
 class PrimaryTypeEdge extends PokemonTypeEdge {
-    constructor(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false) {
-        super(pokemonName, typeName, PokemonTypeRelationship.PrimaryType, isRebalanced);
+    constructor(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()) {
+        super(pokemonName, typeName, PokemonTypeRelationship.PrimaryType, isRebalanced, lastEdited);
     }
 }
 
 class SecondaryTypeEdge extends PokemonTypeEdge {
-    constructor(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false) {
-        super(pokemonName, typeName, PokemonTypeRelationship.SecondaryType, isRebalanced);
+    constructor(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()) {
+        super(pokemonName, typeName, PokemonTypeRelationship.SecondaryType, isRebalanced, lastEdited);
     }
 }
 
@@ -303,11 +312,13 @@ class PokemonHasAbilityEdge extends DynamoEdge {
     isHidden: boolean;
     isPlaceholder: boolean;
     isRebalanced: boolean;
-    
-    constructor(pokemonName: PokemonIdentifier, abilityName: string, isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false) {
-        super(getNodePK(AbilityEntity, abilityName), 
-        HasAbilityEdgeType, PokemonEntity, 
-        pokemonName.toString());
+    static version = 1;
+
+    constructor(pokemonName: PokemonIdentifier, abilityName: string, isHidden: boolean = false, isPlaceholder: boolean = false,
+                isRebalanced: boolean = false, lastEdited: number = Date.now()) {
+        super(getNodePK(AbilityEntity, abilityName),
+            HasAbilityEdgeType, PokemonEntity,
+            pokemonName.toString(), PokemonHasAbilityEdge.version, lastEdited);
         this.isHidden = isHidden;
         this.isPlaceholder = isPlaceholder;
         this.isRebalanced = isRebalanced;
@@ -328,7 +339,8 @@ class PokemonHasAbilityEdge extends DynamoEdge {
             getPkName(data.Target),
             data.isHidden,
             data.isPlaceholder,
-            data.isRebalanced
+            data.isRebalanced,
+            data.lastEdited
         );
         return edge;
     }

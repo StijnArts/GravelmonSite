@@ -19,9 +19,10 @@ export function deserializeGameNode(data: Record<string, any>): GameNode {
 
 class GameNode extends DynamoNode {
     gameData: GameData;
+    static version = 1;
 
-    constructor(gameData: GameData) {
-        super(GameEntity, gameData.name);
+    constructor(gameData: GameData, lastEdited: number = Date.now()) {
+        super(GameEntity, gameData.name, GameNode.version, lastEdited);
         this.gameData = gameData;
     }
 
@@ -47,7 +48,7 @@ class GameNode extends DynamoNode {
             introducesMechanics: rawGameData.introducesMechanics,
             introducesTypes: rawGameData.introducesTypes
         };
-        return new GameNode(gameData);
+        return new GameNode(gameData, data.lastEdited);
     }
 
     public serialize(): Record<string, any> {

@@ -25,9 +25,10 @@ abstract class AspectNode extends DynamoNode {
     non primary aspects include female form, gigantamax form, mega form etc. It is possible for a pokemon to have multiple primary aspects*/
     isPrimaryAspect: boolean;
     introducedByGame: string;
+    static version = 1;
     
-    constructor(name: string, aspectType: AspectType, defaultValue: boolean | "random" | string, isPrimaryAspect: boolean, introducedByGame: string) {
-        super(AspectEntity, name);
+    constructor(name: string, aspectType: AspectType, defaultValue: boolean | "random" | string, isPrimaryAspect: boolean, introducedByGame: string, lastEdited: number = Date.now()) {
+        super(AspectEntity, name, AspectNode.version, lastEdited);
         this.aspectType = aspectType;
         this.defaultOption = defaultValue;
         this.isPrimaryAspect = isPrimaryAspect;
@@ -44,13 +45,13 @@ abstract class AspectNode extends DynamoNode {
         const introducedByGame: string = data.introducedByGame;
         const name: string = data.name;
         if(aspectType === AspectType.Flag) {
-            return new FlagAspectNode(name, defaultOption as boolean, isPrimaryAspect, introducedByGame);
+            return new FlagAspectNode(name, defaultOption as boolean, isPrimaryAspect, introducedByGame, data.lastEdited);
         } else if(aspectType === AspectType.Choice) {
             if(!data.choices) {
                 throw new Error("Invalid data for deserializing ChoiceAspectNode: missing choices property");
             }
             const choices: string[] = data.choices;
-            return new ChoiceAspectNode(name, choices, defaultOption as string, isPrimaryAspect, introducedByGame);
+            return new ChoiceAspectNode(name, choices, defaultOption as string, isPrimaryAspect, introducedByGame, data.lastEdited);
         } else {
             throw new Error("Invalid aspect type for deserializing AspectNode");
         }
@@ -69,15 +70,15 @@ abstract class AspectNode extends DynamoNode {
 }
 
 class FlagAspectNode extends AspectNode {
-    constructor(name: string, defaultValue: boolean = false, isPrimaryAspect: boolean = true, introducedByGame: string) {
-        super(name, AspectType.Flag, defaultValue, isPrimaryAspect, introducedByGame);
+    constructor(name: string, defaultValue: boolean = false, isPrimaryAspect: boolean = true, introducedByGame: string, lastEdited: number = Date.now()) {
+        super(name, AspectType.Flag, defaultValue, isPrimaryAspect, introducedByGame, lastEdited);
     }
 }
 
 class ChoiceAspectNode extends AspectNode {
     choices: string[];
-    constructor(name: string, choices: string[], defaultValue: string | "random" = "random", isPrimaryAspect: boolean = false, introducedByGame: string) {
-        super(name, AspectType.Choice, defaultValue, isPrimaryAspect, introducedByGame);
+    constructor(name: string, choices: string[], defaultValue: string | "random" = "random", isPrimaryAspect: boolean = false, introducedByGame: string, lastEdited: number = Date.now()) {
+        super(name, AspectType.Choice, defaultValue, isPrimaryAspect, introducedByGame, lastEdited);
         this.choices = choices;
     }
 }

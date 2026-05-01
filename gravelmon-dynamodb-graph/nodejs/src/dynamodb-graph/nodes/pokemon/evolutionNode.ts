@@ -5,6 +5,7 @@ import { ItemEntity } from '../minecraft/itemNode';
 import { ResourceLocation } from '../../models/minecraft/resourceLocation';
 import { PokemonIdentifier } from './pokemonNode';
 import { EvolutionCondition } from '../../models/properties/evolutionCondition';
+import {deserializerRegistry} from "../../service/deserializerRegistry";
 
 const EvolutionEntity = "Evolution";
 
@@ -12,8 +13,8 @@ const NeedsToHoldEdgeType = "NeedsToHold"
 const UseOnEdgeType = "UseOn"
 const LearnsUponEvolvingEdgeType = "LearnsUponEvolving"
 
-export function createEvolutionNode(source: PokemonIdentifier, result: PokemonIdentifier, evolutionOptions: EvolutionOptions) : EvolutionNode {
-    return new EvolutionNode(new EvolutionIdentifier(source, result), evolutionOptions)
+export function createEvolutionNode(evolutionOptions: EvolutionOptions, lastEdited: number = Date.now()) : EvolutionNode {
+    return new EvolutionNode(evolutionOptions, lastEdited)
 }
 
 //edges pointing towards evolution from other nodes, used to easily query all related nodes of an evolution
@@ -42,19 +43,6 @@ export enum EvolutionType {
     LevelUp = "level_up",
     ItemInteract = "item_interact",
     Trade = "trade"
-}
-
-export interface EvolutionOptions {
-    evolutionType: EvolutionType;
-    consumesHeldItem?: boolean;
-    isOptional?: boolean;
-    evolutionConditions: EvolutionCondition[]
-    needsToHoldItem?: ResourceLocation;
-    useItemOn?: ResourceLocation;
-    evolvesFromForm?: PokemonIdentifier;
-    evolvesIntoForm?: PokemonIdentifier;
-    shedsIntoForm?: PokemonIdentifier;
-    learnsMoveUponEvolving?: MoveIdentifier;
 }
 
 export class EvolutionIdentifier {
@@ -87,30 +75,70 @@ export class EvolutionIdentifier {
     }
 }
 
-class EvolutionNode extends DynamoNode {
-    evolutionIdentifier: EvolutionIdentifier;
+export interface EvolutionOptions {
+    identifier: EvolutionIdentifier;
     evolutionType: EvolutionType;
     consumesHeldItem?: boolean;
     isOptional?: boolean;
-    evolutionConditions: EvolutionCondition[];
+    evolutionConditions: EvolutionCondition[]
+    needsToHoldItem?: ResourceLocation;
+    useItemOn?: ResourceLocation;
+    evolvesFromForm?: PokemonIdentifier;
+    evolvesIntoForm?: PokemonIdentifier;
+    shedsIntoForm?: PokemonIdentifier;
+    learnsMoveUponEvolving?: MoveIdentifier;
+}
 
-    constructor(evolutionIdentifier: EvolutionIdentifier, evolutionOptions: EvolutionOptions) {
-        super(EvolutionEntity, evolutionIdentifier.toString());
-        this.evolutionIdentifier = evolutionIdentifier;
-        this.evolutionType = evolutionOptions.evolutionType;
-        this.consumesHeldItem = evolutionOptions.consumesHeldItem;
-        this.isOptional = evolutionOptions.isOptional;
-        this.evolutionConditions = evolutionOptions.evolutionConditions;
+class EvolutionNode extends DynamoNode {
+    evolutionOptions: EvolutionOptions;
+    static version = 1;
+
+    constructor(evolutionOptions: EvolutionOptions, lastEdited: number = Date.now()) {
+        super(EvolutionEntity, evolutionOptions.identifier.toString(), EvolutionNode.version, lastEdited);
+        this.evolutionOptions = evolutionOptions;
     }
 
     serialize(): any {
         return {
             ...super.serialize(),
-            evolutionIdentifier: this.evolutionIdentifier.serialize(),
-            evolutionType: this.evolutionType,
-            consumesHeldItem: this.consumesHeldItem,
-            isOptional: this.isOptional,
-            evolutionConditions: this.evolutionConditions.map(condition => condition.serialize())
+            evolutionOptions: {
+                evolutionIdentifier: this.evolutionOptions.identifier.serialize(),
+                evolutionType: this.evolutionOptions.evolutionType,
+                consumesHeldItem: this.evolutionOptions.consumesHeldItem,
+                isOptional: this.evolutionOptions.isOptional,
+                evolutionConditions: this.evolutionOptions.evolutionConditions.map(condition => condition.serialize()),
+                needsToHoldItem: this.evolutionOptions.needsToHoldItem?.serialize(),
+                useItemOn: this.evolutionOptions.useItemOn?.serialize(),
+                evolvesFromForm: this.evolutionOptions.evolvesFromForm?.serialize(),
+                evolvesIntoForm: this.evolutionOptions.evolvesIntoForm?.serialize(),
+                shedsIntoForm: this.evolutionOptions.shedsIntoForm?.serialize(),
+                learnsMoveUponEvolving: this.evolutionOptions.learnsMoveUponEvolving?.serialize()
+            }
         }
     }
+
+    static deserialize(data: any): EvolutionNode {
+        if(!data.evolutionIdentifier || !data.evolutionIdentifier.source || !data.evolutionIdentifier.result) {
+            throw new Error("Invalid data for deserializing EvolutionNode: missing evolutionIdentifier or source or result");
+        }
+        const evolutionIdentifier = EvolutionIdentifier.deserialize(data.evolutionIdentifier);
+        const evolutionOptions: EvolutionOptions = {
+            identifier: evolutionIdentifier,
+            evolutionType: data.evolutionType,
+            consumesHeldItem: data.consumesHeldItem,
+            isOptional: data.isOptional,
+            evolutionConditions: Array.isArray(data.evolutionConditions) ?
+                data.evolutionConditions.map((condition: any) => EvolutionCondition.deserialize(condition))
+                : [],
+            needsToHoldItem: data.needsToHoldItem ? ResourceLocation.deserialize(data.needsToHoldItem) : undefined,
+            useItemOn: data.useItemOn ? ResourceLocation.deserialize(data.useItemOn) : undefined,
+            evolvesFromForm: data.evolvesFromForm ? PokemonIdentifier.deserialize(data.evolvesFromForm) : undefined,
+            evolvesIntoForm: data.evolvesIntoForm ? PokemonIdentifier.deserialize(data.evolvesIntoForm) : undefined,
+            shedsIntoForm: data.shedsIntoForm ? PokemonIdentifier.deserialize(data.shedsIntoForm) : undefined,
+            learnsMoveUponEvolving: data.learnsMoveUponEvolving ? MoveIdentifier.deserialize(data.learnsMoveUponEvolving) : undefined
+        }
+        return new EvolutionNode(evolutionOptions);
+    }
 }
+
+deserializerRegistry.register(EvolutionEntity, EvolutionNode.deserialize);

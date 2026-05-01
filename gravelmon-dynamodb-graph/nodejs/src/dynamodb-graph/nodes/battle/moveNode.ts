@@ -76,6 +76,7 @@ export interface MoveData {
     moveRange: MoveRange;
     moveCategory: MoveCategory;
     description?: string;
+    typeGemCost: Record<string, number>
 }
 
 export class MoveNode extends DynamoNode {
@@ -111,7 +112,8 @@ export class MoveNode extends DynamoNode {
             accuracy: data.accuracy,
             moveRange: data.moveRange,
             moveCategory: data.moveCategory,
-            description: data.description    
+            description: data.description,
+            typeGemCost: data.typeGemCost
         }
     }
 
