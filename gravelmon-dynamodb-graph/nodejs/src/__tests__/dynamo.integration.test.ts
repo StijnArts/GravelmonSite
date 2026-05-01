@@ -8,7 +8,7 @@ import { DynamoDBGraphService } from "../dynamodb-graph/service/dynamoDBGraphSer
 import { createGameNode, GameEntity } from "../dynamodb-graph/nodes/gameNode";
 import { getNodePK } from "../dynamodb-graph/service/dynamoNodes";
 import { PokemonIdentifier } from "../dynamodb-graph/nodes";
-import { MoveIdentifier } from "../dynamodb-graph/nodes/battle/moveNode";
+import { MoveIdentifier } from "../dynamodb-graph/nodes";
 import { ResourceLocation } from "../dynamodb-graph/models/minecraft/resourceLocation";
 import { GameData } from "../dynamodb-graph/models/gameData";
 
@@ -66,10 +66,26 @@ async function createTestTable(): Promise<void> {
                         { AttributeName: "PK", KeyType: "HASH" },
                         { AttributeName: "SK", KeyType: "RANGE" }
                     ],
+
                     AttributeDefinitions: [
                         { AttributeName: "PK", AttributeType: "S" },
-                        { AttributeName: "SK", AttributeType: "S" }
+                        { AttributeName: "SK", AttributeType: "S" },
+                        { AttributeName: "entityType", AttributeType: "S" } // <-- REQUIRED for GSI
                     ],
+
+                    GlobalSecondaryIndexes: [
+                        {
+                            IndexName: "GSI1-EntityType",
+                            KeySchema: [
+                                { AttributeName: "entityType", KeyType: "HASH" },
+                                { AttributeName: "PK", KeyType: "RANGE" }
+                            ],
+                            Projection: {
+                                ProjectionType: "ALL"
+                            }
+                        }
+                    ],
+
                     BillingMode: "PAY_PER_REQUEST"
                 })
             );
@@ -84,26 +100,70 @@ async function createTestTable(): Promise<void> {
 
 async function waitForTable(): Promise<void> {
     let attempts = 0;
-    const maxAttempts = 30;
-    
-    while (attempts < maxAttempts) {
-        try {
-            const response = await dynamoClient.send(
-                new DescribeTableCommand({ TableName: tableName })
-            );
-            if (response.Table?.TableStatus === "ACTIVE") {
-                return;
-            }
-        } catch {
-            // Table not ready yet
+
+    while (attempts < 30) {
+        const res = await dynamoClient.send(
+            new DescribeTableCommand({ TableName: tableName })
+        );
+
+        const table = res.Table;
+
+        const gsi = table?.GlobalSecondaryIndexes?.find(
+            i => i.IndexName === "GSI1-EntityType"
+        );
+
+        if (table?.TableStatus === "ACTIVE" && gsi?.IndexStatus === "ACTIVE") {
+            return;
         }
-        
+
+        await new Promise(r => setTimeout(r, 200));
         attempts++;
-        await new Promise(resolve => setTimeout(resolve, 100));
     }
-    
-    throw new Error("Timeout waiting for table to be created");
+
+    throw new Error("Timeout waiting for table + GSI");
 }
+
+test("should query nodes by entityType using GSI", async () => {
+    const redGameData: GameData = {
+        name: "Pokemon Red",
+        developer: "Game Freak",
+        wikiPage: "https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Red",
+        isPermitted: true,
+        s3LogoLocation: "pokemon-logos/red.png",
+        introducesPokemon: {},
+        introducesItem: [],
+        introducesMoves: [],
+        introducesAbilities: [],
+        introducesAspects: [],
+        introducesMechanics: [],
+        introducesTypes: []
+    };
+    const blueGameData: GameData = {
+        name: "Pokemon Blue",
+        developer: "Game Freak",
+        wikiPage: "https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Red",
+        isPermitted: true,
+        s3LogoLocation: "pokemon-logos/red.png",
+        introducesPokemon: {},
+        introducesItem: [],
+        introducesMoves: [],
+        introducesAbilities: [],
+        introducesAspects: [],
+        introducesMechanics: [],
+        introducesTypes: []
+    };
+
+    const redGameNode = createGameNode(redGameData);
+    const blueGameNode = createGameNode(blueGameData);
+
+    await service.putItem(redGameNode);
+    await service.putItem(blueGameNode);
+
+    const results = await service.queryByEntityType("Game");
+
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].entityType).toBe("Game");
+});
 
 describe("GameNode Integration Tests", () => {
     const introducedPokemon = {
@@ -119,6 +179,7 @@ describe("GameNode Integration Tests", () => {
         new MoveIdentifier("Red", "Tackle"),
         new MoveIdentifier("Red", "Ember")
     ];
+
     test("should write and read a GameNode from DynamoDB", async () => {
         // Arrange: Create sample game data
         const gameData : GameData = {

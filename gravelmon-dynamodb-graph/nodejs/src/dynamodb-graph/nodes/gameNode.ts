@@ -4,6 +4,7 @@ import {PokemonIdentifier} from "./pokemon/pokemonNode";
 import {ResourceLocation} from "../models/minecraft/resourceLocation";
 import { deserializerRegistry } from '../service/deserializerRegistry';
 import { GameData } from '../models/gameData';
+import {generateKeyPair} from "node:crypto";
 
 export const GameEntity = "Game";
 
@@ -34,13 +35,14 @@ class GameNode extends DynamoNode {
             wikiPage: rawGameData.wikiPage,
             isPermitted: rawGameData.isPermitted,
             s3LogoLocation: rawGameData.s3LogoLocation,
-            introducesPokemon: Object.entries(rawGameData.introducesPokemon).reduce(
-                (acc, [key, pokemon]: [string, any]) => {
-                    acc[parseInt(key)] = PokemonIdentifier.deserialize(pokemon);
-                    return acc;
-                },
-                {} as Record<number, PokemonIdentifier>
-            ),
+                introducesPokemon: Object.fromEntries(
+                    Object.entries(rawGameData.introducesPokemon).map(
+                        ([key, pokemon]) => [
+                            key,
+                            PokemonIdentifier.deserialize(pokemon)
+                        ]
+                    )
+                ),
             introducesItem: rawGameData.introducesItem.map((item: any) => new ResourceLocation(item.namespace, item.path)),
             introducesMoves: rawGameData.introducesMoves.map((move: any) => new MoveIdentifier(move.game, move.move)),
             introducesAbilities: rawGameData.introducesAbilities,
@@ -60,9 +62,11 @@ class GameNode extends DynamoNode {
                 wikiPage: this.gameData.wikiPage,
                 isPermitted: this.gameData.isPermitted,
                 s3LogoLocation: this.gameData.s3LogoLocation,
-                introducesPokemon: Object.entries(this.gameData.introducesPokemon).reduce(
-                    (accumulator, [key, identifier]) => accumulator[key] = identifier.serialize(),
-                    {} as Record<string, any>
+                introducesPokemon: Object.fromEntries(
+                    Object.entries(this.gameData.introducesPokemon).map(([key, value]) => [
+                        key,
+                        value.serialize()
+                    ])
                 ),
                 introducesItem: this.gameData.introducesItem.map(item => item.serialize()),
                 introducesMoves: this.gameData.introducesMoves.map(move => move.serialize()),
