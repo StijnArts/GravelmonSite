@@ -62,46 +62,46 @@ export interface SpawnDataNode  {
 export function createSpawnDataUsesSpawnPresetEdge(spawnDataName: PokemonIdentifier, spawnPresetName: string) : DynamoEdge {
     return new DynamoEdge(
         getNodePK(SpawnPresetEntity, spawnPresetName), 
-        UsesPresetEdgeType, spawnDataName.toPK(), SpawnDataEntity
+        UsesPresetEdgeType, spawnDataName.toString(), SpawnDataEntity
     );
 }
 
 export function createSpawnDataPrefersBlockEdge(spawnDataName: PokemonIdentifier, blockName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(ItemEntity, blockName.toString()), PreferredBlockEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(ItemEntity, blockName.toString()), PreferredBlockEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataRequiresBlockEdge(spawnDataName: PokemonIdentifier, blockName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(ItemEntity, blockName.toString()), RequiredBlockEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(ItemEntity, blockName.toString()), RequiredBlockEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataDoesNotSpawnInBiomeEdge(spawnDataName: PokemonIdentifier, biomeName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(BiomeEntity, biomeName.toString()), DoesNotSpawnInBiomeEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(BiomeEntity, biomeName.toString()), DoesNotSpawnInBiomeEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataDoesNotSpawnInBiomeTagEdge(spawnDataName: PokemonIdentifier, biomeTagName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(BiomeTagEntity, biomeTagName.toString()), DoesNotSpawnInBiomeEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(BiomeTagEntity, biomeTagName.toString()), DoesNotSpawnInBiomeEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataSpawnsInBiomeEdge(spawnDataName: PokemonIdentifier, biomeName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(BiomeEntity, biomeName.toString()), SpawnsInBiomeEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(BiomeEntity, biomeName.toString()), SpawnsInBiomeEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataSpawnsInBiomeTagEdge(spawnDataName: PokemonIdentifier, biomeTagName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(BiomeTagEntity, biomeTagName.toString()), SpawnsInBiomeEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(BiomeTagEntity, biomeTagName.toString()), SpawnsInBiomeEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataSpawnsInStructureEdge(spawnDataName: PokemonIdentifier, StructureName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(StructureEntity, StructureName.toString()), SpawnsInStructureEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(StructureEntity, StructureName.toString()), SpawnsInStructureEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataSpawnsInStructureTagEdge(spawnDataName: PokemonIdentifier, StructureTagName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName.toString()), SpawnsInStructureEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName.toString()), SpawnsInStructureEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataDoesNotSpawnInStructureEdge(spawnDataName: PokemonIdentifier, StructureName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(StructureEntity, StructureName.toString()), DoesNotSpawnInStructureEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(StructureEntity, StructureName.toString()), DoesNotSpawnInStructureEdgeType, SpawnDataEntity, spawnDataName.toString());
 }
 
 export function createSpawnDataDoesNotSpawnInStructureTagEdge(spawnDataName: PokemonIdentifier, StructureTagName: ResourceLocation): DynamoEdge {
-    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName.toString()), DoesNotSpawnInStructureEdgeType, SpawnDataEntity, spawnDataName.toPK());
+    return new DynamoEdge(getNodePK(StructureTagEntity, StructureTagName.toString()), DoesNotSpawnInStructureEdgeType, SpawnDataEntity, spawnDataName.toString());
 }

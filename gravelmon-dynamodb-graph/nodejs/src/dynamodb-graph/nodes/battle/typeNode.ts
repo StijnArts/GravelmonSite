@@ -1,3 +1,4 @@
+import { deserializerRegistry } from '../../service/deserializerRegistry';
 import { DynamoNode } from '../../service/dynamoNodes';
 
 export const TypeEntity = "Type";
@@ -21,4 +22,25 @@ export class TypeNode extends DynamoNode {
     constructor(name: string) {
         super(TypeEntity, name);
     }
+
+    public serialize(): Record<string, any> {
+        return {
+            ...super.serialize(),
+            resists: this.resists,
+            immunities: this.immunities,
+            weaknesses: this.weaknesses,
+            introducedByGame: this.introducedByGame
+        }
+    }
+
+    static deserialize(data: Record<string, any>): DynamoNode {
+        const typeNode = new TypeNode(data.name);
+        typeNode.resists = data.resists;
+        typeNode.immunities = data.immunities;
+        typeNode.weaknesses = data.weaknesses;
+        typeNode.introducedByGame = data.introducedByGame;
+        return typeNode;
+    }
 }
+
+deserializerRegistry.register(TypeEntity, TypeNode.deserialize);

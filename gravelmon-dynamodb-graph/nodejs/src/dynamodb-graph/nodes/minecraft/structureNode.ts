@@ -1,5 +1,6 @@
 import { DynamoEdge, DynamoNode, getNodePK } from '../../service/dynamoNodes';
 import { ResourceLocation } from '../../models/minecraft/resourceLocation';
+import { deserializerRegistry } from '../../service/deserializerRegistry';
 
 export const StructureEntity = "Structure";
 export const StructureTagEntity = "StructureTag";
@@ -15,6 +16,21 @@ class StructureNode extends DynamoNode {
         super(StructureTagEntity, resourceLocation.toString());
         this.resourceLocation = resourceLocation;
     }
+    
+    static deserialize(data: Record<string, any>): DynamoNode {
+        if(!data.resourceLocation) {
+            throw new Error("Invalid data for deserializing StructureNode: missing resourceLocation");
+        }
+
+        return new StructureNode(ResourceLocation.deserialize(data.resourceLocation));
+    }
+
+    public serialize(): Record<string, any> {
+        return {
+            ...super.serialize(),
+            resourceLocation: this.resourceLocation.serialize()
+        }
+    }
 }
 
 class StructureTagNode extends DynamoNode {
@@ -24,6 +40,22 @@ class StructureTagNode extends DynamoNode {
         super(StructureTagEntity, resourceLocation.toString());
         this.resourceLocation = resourceLocation;
         this.containsStructures = containsStructures;
+    }
+
+    static deserialize(data: Record<string, any>): StructureTagNode {
+        if(!data.resourceLocation) {
+            throw new Error("Invalid data for deserializing StructureTagNode: missing resourceLocation");
+        }
+        const containsStructures: ResourceLocation[] = Array.isArray(data.containsStructures) ? data.containsStructures.map((structureData: any) => ResourceLocation.deserialize(structureData)) : [];
+
+        return new StructureTagNode(ResourceLocation.deserialize(data.resourceLocation), containsStructures);
+    }
+
+    public serialize(): Record<string, any> {
+        return {
+            ...super.serialize(),
+            containsStructures: this.containsStructures.map(Structure => Structure.serialize())
+        }
     }
 }
 
@@ -35,7 +67,7 @@ export function createStructureTagNode(resourceLocation: ResourceLocation, conta
     return new StructureTagNode(resourceLocation, containsStructures);
 }
 
-// Note: The edges between structures and structure tags are stored in the opposite direction of the edges between biomes and biome tags,
+// Note: The edges between structures and structure tags are stored in the opposite direction of the edges between Structures and Structure tags,
 // since the "contains" relationship is more intuitive to traverse from structure tags to structures than the other way around.
 export function createStructureTagContainsStructureEdge(StructureTagName: ResourceLocation, StructureName: ResourceLocation): DynamoEdge {
     return new DynamoEdge(getNodePK(StructureEntity, StructureName.toString()), ContainedInStructureTagEdgeType, StructureTagEntity, StructureTagName.toString());
@@ -44,3 +76,6 @@ export function createStructureTagContainsStructureEdge(StructureTagName: Resour
 export function createStructureTagContainsStructureTagEdge(containingStructureTagName: ResourceLocation, subjectStructureTagName: ResourceLocation): DynamoEdge {
     return new DynamoEdge(getNodePK(StructureTagEntity, subjectStructureTagName.toString()), ContainedInStructureTagEdgeType, StructureTagEntity, containingStructureTagName.toString());
 }
+
+deserializerRegistry.register(StructureEntity, StructureNode.deserialize);
+deserializerRegistry.register(StructureTagEntity, StructureTagNode.deserialize);

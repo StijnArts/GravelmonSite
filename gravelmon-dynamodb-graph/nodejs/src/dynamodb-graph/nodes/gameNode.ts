@@ -3,6 +3,7 @@ import {MoveIdentifier} from "./battle/moveNode";
 import {PokemonIdentifier} from "./pokemon/pokemonNode";
 import {ResourceLocation} from "../models/minecraft/resourceLocation";
 import { deserializerRegistry } from '../service/deserializerRegistry';
+import { GameData } from '../models/gameData';
 
 export const GameEntity = "Game";
 
@@ -14,21 +15,6 @@ export function createGameNode(gameData: GameData): GameNode {
 
 export function deserializeGameNode(data: Record<string, any>): GameNode {
     return new GameNode(data.gameData);
-}
-
-export interface GameData {
-    name: string;
-    developer: string;
-    wikiPage: string;
-    isPermitted: boolean;
-    s3LogoLocation?: string;
-    introducesPokemon: Record<number, PokemonIdentifier>; //dex number to pokemon identifier
-    introducesItem: ResourceLocation[];
-    introducesMoves: MoveIdentifier[];
-    introducesAbilities: string[];
-    introducesAspects: string[];
-    introducesMechanics: string[];
-    introducesTypes: string[];
 }
 
 class GameNode extends DynamoNode {
@@ -64,10 +50,6 @@ class GameNode extends DynamoNode {
         return new GameNode(gameData);
     }
 
-    static register() {
-        deserializerRegistry.register(GameEntity, GameNode.deserialize);
-    }
-
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
@@ -78,24 +60,11 @@ class GameNode extends DynamoNode {
                 isPermitted: this.gameData.isPermitted,
                 s3LogoLocation: this.gameData.s3LogoLocation,
                 introducesPokemon: Object.entries(this.gameData.introducesPokemon).reduce(
-                    (acc, [key, identifier]) => {
-                        acc[key] = {
-                            game: identifier.game,
-                            pokemon: identifier.pokemon,
-                            ...(identifier.formName && { formName: identifier.formName })
-                        };
-                        return acc;
-                    },
+                    (accumulator, [key, identifier]) => accumulator[key] = identifier.serialize(),
                     {} as Record<string, any>
                 ),
-                introducesItem: this.gameData.introducesItem.map(item => ({
-                    namespace: item.namespace,
-                    path: item.path
-                })),
-                introducesMoves: this.gameData.introducesMoves.map(move => ({
-                    game: move.game,
-                    move: move.move
-                })),
+                introducesItem: this.gameData.introducesItem.map(item => item.serialize()),
+                introducesMoves: this.gameData.introducesMoves.map(move => move.serialize()),
                 introducesAbilities: this.gameData.introducesAbilities,
                 introducesAspects: this.gameData.introducesAspects,
                 introducesMechanics: this.gameData.introducesMechanics,
@@ -105,4 +74,4 @@ class GameNode extends DynamoNode {
     }
 }
 
-GameNode.register();
+deserializerRegistry.register(GameEntity, GameNode.deserialize);

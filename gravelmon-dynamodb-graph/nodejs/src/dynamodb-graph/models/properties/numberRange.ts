@@ -10,4 +10,19 @@ export class NumberRange {
     static fromFlat(flatRange: number) {
         return new NumberRange(flatRange, flatRange);
     }
+
+    serialize(): any {
+        return {
+            min: this.min,
+            max: this.max
+        }
+    }
+
+    static deserialize(data: any): NumberRange {
+        if (typeof data === "object" && "min" in data && "max" in data) {
+            return new NumberRange(data.min, data.max);
+        } else {
+            throw new Error(`Invalid NumberRange format: ${JSON.stringify(data)}`);
+        }
+    }
 }

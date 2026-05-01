@@ -37,11 +37,11 @@ export function createFormSecondaryTypeEdge(formName: PokemonIdentifier, typeNam
 }
 
 export function createFormHasAspectEdge(formName: PokemonIdentifier, aspectName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(AspectEntity, aspectName), HasAspectEdgeType, FormEntity, formName.toPK());
+    return new DynamoEdge(getNodePK(AspectEntity, aspectName), HasAspectEdgeType, FormEntity, formName.toString());
 }
 
 export function createFormHasLabelEdge(formName: PokemonIdentifier, labelName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(LabelEntity, labelName), HasLabelEdgeType, FormEntity, formName.toPK());
+    return new DynamoEdge(getNodePK(LabelEntity, labelName), HasLabelEdgeType, FormEntity, formName.toString());
 }
 
 export function createFormHasAbilityEdge(
@@ -95,7 +95,7 @@ abstract class FormTypeEdge extends DynamoEdge {
             getNodePK(TypeEntity, typeName), 
         relationship,
         FormEntity, 
-        pokemonName.toPK());
+        pokemonName.toString());
         this.isRebalanced = isRebalanced;
     }
 }
@@ -107,7 +107,7 @@ class FormDropsItemEdge extends DynamoEdge {
     constructor(formName: PokemonIdentifier, itemName: ResourceLocation, dropChance: number, quantityRange: NumberRange) {
         super(getNodePK(ItemEntity, itemName.toString()),
             DropsItemEdgeType, FormEntity,
-            formName.toPK());
+            formName.toString());
         this.dropChance = dropChance;
         this.quantityRange = quantityRange;
     }
@@ -133,7 +133,7 @@ class FormHasAbilityEdge extends DynamoEdge {
     constructor(pokemonName: PokemonIdentifier, abilityName: string, isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false) {
         super(getNodePK(AbilityEntity, abilityName), 
         HasAbilityEdgeType, FormEntity, 
-        pokemonName.toPK());
+        pokemonName.toString());
         this.isHidden = isHidden;
         this.isPlaceholder = isPlaceholder;
         this.isRebalanced = isRebalanced;

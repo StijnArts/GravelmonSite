@@ -8,7 +8,7 @@ import {
     QueryCommand,
     QueryCommandInput
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoEdge, DynamoNode, ItemType, PK } from "./dynamoNodes";
+import { DynamoEdge, DynamoItem, DynamoNode, ItemType, PK } from "./dynamoNodes";
 import { deserializerRegistry } from "./deserializerRegistry";
 
 export class DynamoDBGraphService {
@@ -115,11 +115,12 @@ export class DynamoDBGraphService {
 
     // ---------- Write Operations ----------
 
-    async putItem(item: Record<string, any>): Promise<void> {
+    async putItem(item: DynamoItem): Promise<void> {
+        const serialized = item.serialize();
         await this.client.send(
             new PutCommand({
                 TableName: this.tableName,
-                Item: item
+                Item: serialized
             })
         );
     }

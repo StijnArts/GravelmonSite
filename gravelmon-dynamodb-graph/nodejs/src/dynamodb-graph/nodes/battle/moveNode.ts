@@ -1,6 +1,7 @@
 import { DynamoEdge, DynamoNode, getNodePK } from '../../service/dynamoNodes';
 import { TypeEntity } from './typeNode';
 import {MoveRange} from "../../models/battle/moveRange";
+import { deserializerRegistry } from '../../service/deserializerRegistry';
 
 export const MoveEntity = "Move";
 export const MoveLabelEntity = "MoveLabel";
@@ -36,6 +37,17 @@ export class MoveIdentifier {
     static fromString(identifier: string): MoveIdentifier {
         const [game, move] = identifier.split("#");
         return new MoveIdentifier(game, move);
+    }
+
+    serialize(): any {
+        return {
+            game: this.game,
+            move: this.move
+        };
+    }
+
+    static deserialize(data: any): MoveIdentifier {
+        return new MoveIdentifier(data.game, data.move);
     }
 }
 
@@ -76,4 +88,51 @@ export class MoveNode extends DynamoNode {
         this.rebalancedMoveData = rebalancedMoveData;
         this.moveLabels = moveLabels;
     }
+
+    static deserialize(data: Record<string, any>): MoveNode {
+        return new MoveNode(
+            MoveIdentifier.deserialize(data.moveIdentifier),
+            this.deserializeMoveData(data.moveData),
+            data.rebalancedMoveData ? this.deserializeMoveData(data.rebalancedMoveData) : undefined,
+            data.moveLabels || []
+        );
+    }
+
+    private static deserializeMoveData(data: any): MoveData {
+        return {
+            moveTypes: data.moveTypes.map((moveType: any) => ({ type: moveType.type, isRebalanced: moveType.isRebalanced })),
+            powerPoints: data.powerPoints,
+            basePower: data.basePower,
+            priority: data.priority,
+            accuracy: data.accuracy,
+            moveRange: data.moveRange,
+            moveCategory: data.moveCategory,
+            description: data.description    
+        }
+    }
+
+    private serializeMoveData(moveData: MoveData): any {
+        return {
+            moveTypes: moveData.moveTypes,
+            powerPoints: moveData.powerPoints,
+            basePower: moveData.basePower,
+            priority: moveData.priority,
+            accuracy: moveData.accuracy,
+            moveRange: moveData.moveRange,
+            moveCategory: moveData.moveCategory,
+            description: moveData.description
+        }
+    }
+
+    public serialize(): Record<string, any> {
+        return {
+            ...super.serialize(),
+            moveIdentifier: this.moveIdentifier.serialize(),
+            moveData: this.serializeMoveData(this.moveData),
+            rebalancedMoveData: this.rebalancedMoveData ? this.serializeMoveData(this.rebalancedMoveData) : undefined,
+            moveLabels: this.moveLabels
+        }
+    }
 }
+
+deserializerRegistry.register(MoveEntity, MoveNode.deserialize);
