@@ -26,3 +26,13 @@ export interface ResolverData {
         choice: string;
     };
 }
+
+export function serializeResolverData(resolverData: ResolverData) {
+    return {
+        layers: resolverData.layers.map(layer => serializeResolverLayer(layer)),
+        variationForAspectChoice: resolverData.variationForAspectChoice ? {
+            aspect: resolverData.variationForAspectChoice.aspect,
+            choice: resolverData.variationForAspectChoice.choice
+        } : undefined
+    }
+}
