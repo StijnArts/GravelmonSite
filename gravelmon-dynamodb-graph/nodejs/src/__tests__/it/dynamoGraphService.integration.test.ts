@@ -4,15 +4,17 @@ import {
     DeleteTableCommand,
     DescribeTableCommand
 } from "@aws-sdk/client-dynamodb";
-import { DynamoDBGraphService } from "../dynamodb-graph/service/dynamoDBGraphService";
-import { createGameNode, GameEntity } from "../dynamodb-graph/nodes/gameNode";
-import { getNodePK } from "../dynamodb-graph/service/dynamoNodes";
-import { PokemonIdentifier } from "../dynamodb-graph/nodes";
-import { MoveIdentifier } from "../dynamodb-graph/nodes";
-import { ResourceLocation } from "../dynamodb-graph/models/minecraft/resourceLocation";
-import { GameData } from "../dynamodb-graph/models/gameData";
+import { DynamoDBGraphService } from "../../dynamodb-graph/service/dynamoDBGraphService";
+import { createGameNode, GameEntity } from "../../dynamodb-graph/nodes/gameNode";
+import { getNodePK } from "../../dynamodb-graph/service/dynamoNodes";
+import { PokemonIdentifier } from "../../dynamodb-graph/nodes";
+import { MoveIdentifier } from "../../dynamodb-graph/nodes";
+import { ResourceLocation } from "../../dynamodb-graph/models/minecraft/resourceLocation";
+import { GameData } from "../../dynamodb-graph/models/gameData";
 
-const tableName = process.env.DYNAMODB_TABLE || "TestGraphTable";
+const tableName =
+    process.env.DYNAMODB_TABLE ||
+    `TestGraphTable-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 const endpoint = process.env.DYNAMODB_ENDPOINT || "http://localhost:8000";
 
 let dynamoClient: DynamoDBClient;

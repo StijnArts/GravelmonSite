@@ -8,7 +8,7 @@
     "create-layer": "node scripts/create-lambda-layer.js",
     "bootstrap": "rimraf dist && tsc && node scripts/build-layer.js && node scripts/create-lambda-layer.js",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand src/__tests__/dynamo.integration.test.ts",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules jest src/__tests__/it --testMatch='**/*.integration.test.ts'",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch"
   },
   "devDependencies": {
