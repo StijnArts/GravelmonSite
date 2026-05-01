@@ -5,11 +5,12 @@ import {
     DescribeTableCommand
 } from "@aws-sdk/client-dynamodb";
 import { DynamoDBGraphService } from "../dynamodb-graph/service/dynamoDBGraphService";
-import { createGameNode, GameData, GameEntity } from "../dynamodb-graph/nodes/gameNode";
+import { createGameNode, GameEntity } from "../dynamodb-graph/nodes/gameNode";
 import { getNodePK } from "../dynamodb-graph/service/dynamoNodes";
 import { PokemonIdentifier } from "../dynamodb-graph/nodes";
 import { MoveIdentifier } from "../dynamodb-graph/nodes/battle/moveNode";
 import { ResourceLocation } from "../dynamodb-graph/models/minecraft/resourceLocation";
+import { GameData } from "../dynamodb-graph/models/gameData";
 
 const tableName = process.env.DYNAMODB_TABLE || "TestGraphTable";
 const endpoint = process.env.DYNAMODB_ENDPOINT || "http://localhost:8000";
@@ -139,7 +140,7 @@ describe("GameNode Integration Tests", () => {
         const pk = getNodePK(GameEntity, gameData.name);
 
         // Act: Write the node to DynamoDB
-        await service.putItem(gameNode.serialize());
+        await service.putItem(gameNode);
 
         // Act: Read it back
         const readNode = await service.getNode(pk);
@@ -203,7 +204,7 @@ describe("GameNode Integration Tests", () => {
         // Act: Write both nodes
         for (const gameData of games) {
             const gameNode = createGameNode(gameData);
-            await service.putItem(gameNode.serialize());
+            await service.putItem(gameNode);
         }
 
         // Act: Read them back individually

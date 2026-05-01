@@ -69,6 +69,22 @@ export class EvolutionIdentifier {
     toString(): string {
         return `${this.source.toString()}_${this.result.toString()}`;
     }
+
+    static fromString(identifier: string): EvolutionIdentifier {
+        const [sourceStr, resultStr] = identifier.split("_");
+        return new EvolutionIdentifier(PokemonIdentifier.fromString(sourceStr), PokemonIdentifier.fromString(resultStr));
+    }
+
+    serialize(): any {
+        return {
+            source: this.source.serialize(),
+            result: this.result.serialize()
+        }
+    }
+
+    static deserialize(data: any): EvolutionIdentifier {
+        return new EvolutionIdentifier(PokemonIdentifier.deserialize(data.source), PokemonIdentifier.deserialize(data.result));
+    }
 }
 
 class EvolutionNode extends DynamoNode {
@@ -85,5 +101,16 @@ class EvolutionNode extends DynamoNode {
         this.consumesHeldItem = evolutionOptions.consumesHeldItem;
         this.isOptional = evolutionOptions.isOptional;
         this.evolutionConditions = evolutionOptions.evolutionConditions;
+    }
+
+    serialize(): any {
+        return {
+            ...super.serialize(),
+            evolutionIdentifier: this.evolutionIdentifier.serialize(),
+            evolutionType: this.evolutionType,
+            consumesHeldItem: this.consumesHeldItem,
+            isOptional: this.isOptional,
+            evolutionConditions: this.evolutionConditions.map(condition => condition.serialize())
+        }
     }
 }

@@ -35,7 +35,7 @@ class GameNode extends DynamoNode {
             s3LogoLocation: rawGameData.s3LogoLocation,
             introducesPokemon: Object.entries(rawGameData.introducesPokemon).reduce(
                 (acc, [key, pokemon]: [string, any]) => {
-                    acc[parseInt(key)] = new PokemonIdentifier(pokemon.game, pokemon.pokemon, pokemon.formName);
+                    acc[parseInt(key)] = PokemonIdentifier.deserialize(pokemon);
                     return acc;
                 },
                 {} as Record<number, PokemonIdentifier>

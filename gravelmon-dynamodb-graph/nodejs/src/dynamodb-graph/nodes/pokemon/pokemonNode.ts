@@ -87,6 +87,10 @@ export class PokemonIdentifier {
              ...(this.formName && { formName: this.formName })
         }
     }
+
+    static deserialize(data: any): PokemonIdentifier {
+        return new PokemonIdentifier(data.game, data.pokemon, data.formName);
+    }
 }
 
 export class Hitbox {

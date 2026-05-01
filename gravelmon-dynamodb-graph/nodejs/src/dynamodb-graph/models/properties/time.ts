@@ -20,6 +20,15 @@ export function serializeTimeRange(value: TimeRange): any {
     }
 }
 
+export function isTimeRange(value: any): value is TimeRange {
+    return (
+        value &&
+        typeof value === "object" &&
+        "type" in value &&
+        ["time", "range", "list"].includes(value.type)
+    );
+}
+
 export function deserializeTimeRange(value: any): TimeRange {
     if (!value) {
         throw new Error("Invalid TimeRange: value is null/undefined");

@@ -39,6 +39,10 @@ export class MoveIdentifier {
         return new MoveIdentifier(game, move);
     }
 
+    getMove(): string {
+        return this.move;
+    }
+
     serialize(): any {
         return {
             game: this.game,
