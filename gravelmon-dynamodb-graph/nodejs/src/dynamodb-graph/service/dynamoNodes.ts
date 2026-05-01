@@ -18,6 +18,15 @@ export abstract class DynamoItem {
         this.TYPE = type;
         this.entityType = entityType;
     }
+
+    public serialize(): Record<string, any> {
+        return {
+            PK: this.PK,
+            SK: this.SK,
+            TYPE: this.TYPE,
+            entityType: this.entityType,
+        }
+    }
 }
 
 export class DynamoNode extends DynamoItem {
@@ -31,6 +40,13 @@ export class DynamoNode extends DynamoItem {
     static deserialize(data: Record<string, any>): DynamoNode {
         const node = new DynamoNode(data.entityType, data.name);
         return node;
+    }
+
+    public serialize(): Record<string, any> {
+        return {
+            ...super.serialize(),
+            name: this.name,
+        }
     }
 }
 
@@ -53,6 +69,15 @@ export class DynamoEdge extends DynamoItem {
         const targetName = skParts[3];
 
         return new DynamoEdge(data.PK, edgeType, targetType, targetName);
+    }
+
+    public serialize(): Record<string, any> {
+        return {
+            ...super.serialize(),
+            Target: this.Target,
+            sourceType: this.sourceType,
+            targetType: this.targetType,
+        }
     }
 }
 

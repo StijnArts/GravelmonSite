@@ -67,7 +67,7 @@ export class EvolutionIdentifier {
     }
 
     toString(): string {
-        return `${this.source.toString()}_${this.result.toString()}`;
+        return `${this.source.toPK()}_${this.result.toPK()}`;
     }
 }
 

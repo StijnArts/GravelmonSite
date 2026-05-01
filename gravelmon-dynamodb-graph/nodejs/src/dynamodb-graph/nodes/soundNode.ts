@@ -21,9 +21,9 @@ export function createSoundNode(name: string, madeBy: string = "Unknown", s3Loca
 }
 
 export function createSoundUsedByPokemonEdge(soundName: string, pokemonIdentifier: PokemonIdentifier): DynamoEdge {
-    return new DynamoEdge(getNodePK(SoundEntity, soundName), SoundUsedByEdgeType, PokemonEntity, pokemonIdentifier.toString());
+    return new DynamoEdge(getNodePK(SoundEntity, soundName), SoundUsedByEdgeType, PokemonEntity, pokemonIdentifier.toPK());
 }
 
 export function createSoundUsedByFormEdge(soundName: string, formIdentifier: PokemonIdentifier): DynamoEdge {
-    return new DynamoEdge(getNodePK(SoundEntity, soundName), SoundUsedByEdgeType, FormEntity, formIdentifier.toString());
+    return new DynamoEdge(getNodePK(SoundEntity, soundName), SoundUsedByEdgeType, FormEntity, formIdentifier.toPK());
 }

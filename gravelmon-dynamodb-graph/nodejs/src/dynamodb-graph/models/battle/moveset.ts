@@ -48,7 +48,7 @@ class MoveSetEdge extends DynamoEdge {
     isRebalanced: boolean;
 
     constructor(moveName: MoveIdentifier, pokemonName: PokemonIdentifier, relationship: MoveSetEdgeType, isRebalanced: boolean = false) {
-        super(getNodePK(MoveEntity, moveName.toString()), relationship, PokemonEntity, pokemonName.toString());
+        super(getNodePK(MoveEntity, moveName.toString()), relationship, PokemonEntity, pokemonName.toPK());
         this.isRebalanced = isRebalanced;
     }
 }

@@ -28,5 +28,5 @@ export function createMechanicNode(name: string, description?: string, usesItems
 
 //This is not supposed to point towards the mega evolution in case of the mega evolution mechanic, but the base form
 export function createMechanicAffectsFormEdge(mechanicName: string, pokemonIdentifier: PokemonIdentifier) : DynamoEdge {
-    return new DynamoEdge(getNodePK(MechanicEntity, mechanicName), AffectsFormEdgeType, FormEntity, pokemonIdentifier.toString());
+    return new DynamoEdge(getNodePK(MechanicEntity, mechanicName), AffectsFormEdgeType, FormEntity, pokemonIdentifier.toPK());
 }

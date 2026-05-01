@@ -33,15 +33,15 @@ export function createPokemonSecondaryTypeEdge(pokemonName: PokemonIdentifier, t
 
 //edges pointing towards pokemon from other nodes, used to easily query all related nodes of a pokemon
 export function createPokemonHasLabelEdge(pokemonName: PokemonIdentifier, labelName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(LabelEntity, labelName), HasLabelEdgeType, PokemonEntity, pokemonName.toString());
+    return new DynamoEdge(getNodePK(LabelEntity, labelName), HasLabelEdgeType, PokemonEntity, pokemonName.toPK());
 }
 
 export function createPokemonInEggGroupEdge(pokemonName: PokemonIdentifier, eggGroupName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(EggGroupEntity, eggGroupName), InEggGroupEdgeType, PokemonEntity, pokemonName.toString());
+    return new DynamoEdge(getNodePK(EggGroupEntity, eggGroupName), InEggGroupEdgeType, PokemonEntity, pokemonName.toPK());
 }
 
 export function createPokemonInExperienceGroupEdge(pokemonName: PokemonIdentifier, experienceGroupName: string): DynamoEdge {
-    return new DynamoEdge(getNodePK(ExperienceGroupEntity, experienceGroupName), InExperienceGroupEdgeType, PokemonEntity, pokemonName.toString());
+    return new DynamoEdge(getNodePK(ExperienceGroupEntity, experienceGroupName), InExperienceGroupEdgeType, PokemonEntity, pokemonName.toPK());
 }
 
 export function createPokemonHasAbilityEdge(
@@ -65,7 +65,7 @@ export class PokemonIdentifier {
         }
     }
 
-    toString(): string {
+    toPK(): string {
         const formSuffix = this.formName ? `#${this.formName}` : "";
         return `${this.game}#${this.pokemon}${formSuffix}`;
     }
@@ -138,7 +138,7 @@ export class PokemonNode extends DynamoNode {
     pokemonData: PokemonData;
     
     constructor(pokemonData: PokemonData) {
-        super(PokemonEntity, pokemonData.pokemonIdentifier.toString());
+        super(PokemonEntity, pokemonData.pokemonIdentifier.toPK());
         this.pokemonData = pokemonData;
     }
 }
@@ -152,7 +152,7 @@ abstract class PokemonTypeEdge extends DynamoEdge {
             getNodePK(TypeEntity, typeName), 
         relationship,
         PokemonEntity, 
-        pokemonName.toString());
+        pokemonName.toPK());
         this.isRebalanced = isRebalanced;
     }
 }
@@ -165,7 +165,7 @@ class PokemonHasAbilityEdge extends DynamoEdge {
     constructor(pokemonName: PokemonIdentifier, abilityName: string, isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false) {
         super(getNodePK(AbilityEntity, abilityName), 
         HasAbilityEdgeType, PokemonEntity, 
-        pokemonName.toString());
+        pokemonName.toPK());
         this.isHidden = isHidden;
         this.isPlaceholder = isPlaceholder;
         this.isRebalanced = isRebalanced;

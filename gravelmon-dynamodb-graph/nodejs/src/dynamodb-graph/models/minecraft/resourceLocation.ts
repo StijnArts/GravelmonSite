@@ -9,4 +9,9 @@ export class ResourceLocation {
     toString(): string {
         return `${this.namespace}:${this.path}`;
     }
+
+    static fromString(location: string): ResourceLocation {
+        const [namespace, path] = location.split(":");
+        return new ResourceLocation(namespace, path);
+    }
 }
