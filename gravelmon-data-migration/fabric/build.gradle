@@ -56,7 +56,6 @@ dependencies {
     modImplementation "com.cobblemon:fabric:${cobblemon_file}"
     modImplementation "maven.modrinth:packet-fixer:${packet_fixer_fabric_file}"
     modImplementation "maven.modrinth:midnightlib:gDxRS3a2"
-    modImplementation files("libs/gravels_extended_battles-fabric-${gravelmon_file}.jar")
     modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin}")
 
     //Mega showdown compat

@@ -1,9 +1,9 @@
 import { DynamoEdge, getNodePK } from '../../service/dynamoNodes';
 import { PokemonEntity, PokemonIdentifier } from '../../nodes/pokemon/pokemonNode';
-import { MoveEntity, MoveIdentifier, MoveCategory } from '../../nodes/battle/moveNode';
+import { MoveEntity, MoveIdentifier, MoveCategory, MoveType } from '../../nodes/battle/moveNode';
 import { deserializerRegistry } from '../../service/deserializerRegistry';
 
-const enum MoveSetEdgeType {
+const enum MoveSetLearnType {
     LevelUp = "LevelUp",
     Teach = "Teach",
     Egg = "Egg",
@@ -16,15 +16,15 @@ export function createMoveSetLevelUpMoveEdge(pokemonName: PokemonIdentifier, mov
 }
 
 export function createMoveSetTeachMoveEdge(pokemonName: PokemonIdentifier, moveName: MoveIdentifier): DynamoEdge {
-    return new MoveSetEdge(moveName, pokemonName, MoveSetEdgeType.Teach);
+    return new MoveSetEdge(moveName, pokemonName, MoveSetLearnType.Teach);
 }
 
 export function createMoveSetEggMoveEdge(pokemonName: PokemonIdentifier, moveName: MoveIdentifier): DynamoEdge {
-    return new MoveSetEdge(moveName, pokemonName, MoveSetEdgeType.Egg);
+    return new MoveSetEdge(moveName, pokemonName, MoveSetLearnType.Egg);
 }
 
 export function createMoveSetLegacyMoveEdge(pokemonName: PokemonIdentifier, moveName: MoveIdentifier): DynamoEdge {
-    return new MoveSetEdge(moveName, pokemonName, MoveSetEdgeType.Legacy);
+    return new MoveSetEdge(moveName, pokemonName, MoveSetLearnType.Legacy);
 }
 
 export interface MoveSetEntry {
@@ -33,6 +33,9 @@ export interface MoveSetEntry {
     basePower: number;
     accuracy: number;
     type: string;
+    rebalancedBasePower?: number;
+    rebalancedAccuracy?: number;
+    rebalancedType?: string;
 }
 
 function serializeMoveSetEntry(entry: MoveSetEntry): any {
@@ -41,7 +44,10 @@ function serializeMoveSetEntry(entry: MoveSetEntry): any {
         category: entry.category,
         basePower: entry.basePower,
         accuracy: entry.accuracy,
-        type: entry.type
+        type: entry.type,
+        rebalancedBasePower: entry.rebalancedBasePower,
+        rebalancedAccuracy: entry.rebalancedAccuracy,
+        rebalancedType: entry.rebalancedType
     }
 }
 
@@ -51,7 +57,10 @@ function deserializeMoveSetEntry(data: any): MoveSetEntry {
         category: data.category,
         basePower: data.basePower,
         accuracy: data.accuracy,
-        type: data.type
+        type: data.type,
+        rebalancedBasePower: data.rebalancedBasePower,
+        rebalancedAccuracy: data.rebalancedAccuracy,
+        rebalancedType: data.rebalancedType
     }
 }
 
@@ -84,17 +93,14 @@ export function deserializeMoveSet(data: any): MoveSet {
 }
 
 class MoveSetEdge extends DynamoEdge {
-    isRebalanced: boolean;
 
-    constructor(moveName: MoveIdentifier, pokemonName: PokemonIdentifier, relationship: MoveSetEdgeType, isRebalanced: boolean = false) {
+    constructor(moveName: MoveIdentifier, pokemonName: PokemonIdentifier, relationship: MoveSetLearnType) {
         super(getNodePK(MoveEntity, moveName.toString()), relationship, PokemonEntity, pokemonName.toString());
-        this.isRebalanced = isRebalanced;
     }
 
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
-            isRebalanced: this.isRebalanced
         }
     }
 
@@ -102,8 +108,7 @@ class MoveSetEdge extends DynamoEdge {
         return new MoveSetEdge(
             MoveIdentifier.deserialize(data.PK.split("#").slice(1).join("#")),
             PokemonIdentifier.deserialize(data.SK),
-            data.relationship as MoveSetEdgeType,
-            data.isRebalanced || false
+            data.relationship as MoveSetLearnType,
         );
     }
 }
@@ -112,7 +117,7 @@ class MoveSetLevelUpEdge extends MoveSetEdge {
     level: number;
 
     constructor(moveName: MoveIdentifier, pokemonName: PokemonIdentifier, level: number) {
-        super(moveName, pokemonName, MoveSetEdgeType.LevelUp);
+        super(moveName, pokemonName, MoveSetLearnType.LevelUp);
         this.level = level;
     }
 
@@ -132,7 +137,7 @@ class MoveSetLevelUpEdge extends MoveSetEdge {
     }
 }
 
-deserializerRegistry.register(MoveSetEdgeType.LevelUp, MoveSetLevelUpEdge.deserialize);
-deserializerRegistry.register(MoveSetEdgeType.Teach, MoveSetEdge.deserialize);
-deserializerRegistry.register(MoveSetEdgeType.Egg, MoveSetEdge.deserialize);
-deserializerRegistry.register(MoveSetEdgeType.Legacy, MoveSetEdge.deserialize);
+deserializerRegistry.register(MoveSetLearnType.LevelUp, MoveSetLevelUpEdge.deserialize);
+deserializerRegistry.register(MoveSetLearnType.Teach, MoveSetEdge.deserialize);
+deserializerRegistry.register(MoveSetLearnType.Egg, MoveSetEdge.deserialize);
+deserializerRegistry.register(MoveSetLearnType.Legacy, MoveSetEdge.deserialize);

@@ -11,12 +11,6 @@ export const enum FieldEffectEdgeType {
     WithLabel = "WithLabel"
 }
 
-export enum FieldEffectCategory {
-    Physical = "Physical",
-    Special = "Special",
-    Status = "Status"
-}
-
 export interface FieldEffectType {
     type : string;
     isRebalanced: boolean;

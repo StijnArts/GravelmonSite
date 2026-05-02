@@ -9,19 +9,21 @@ export class ItemNode extends DynamoNode {
     s3TextureLocation?: string;
     isPlaceable: boolean = false;
     inBattleEffect?: string;
-    constructor(resourceLocation: ResourceLocation, isPlaceable: boolean, s3TextureLocation?: string, inBattleEffect?: string) {
+    rebalancedInBattleEffect?: string;
+    constructor(resourceLocation: ResourceLocation, isPlaceable: boolean, s3TextureLocation?: string, inBattleEffect?: string, rebalancedInBattleEffect?: string) {
         super(ItemEntity, resourceLocation.toString());
         this.resourceLocation = resourceLocation;
         this.s3TextureLocation = s3TextureLocation;
         this.isPlaceable = isPlaceable;
         this.inBattleEffect = inBattleEffect;
+        this.rebalancedInBattleEffect = rebalancedInBattleEffect;
     }
 
     static deserialize(data: Record<string, any>): ItemNode {
         if(!data.resourceLocation) {
             throw new Error("Invalid data for deserializing ItemNode: missing resourceLocation");
         }
-        return new ItemNode(ResourceLocation.deserialize(data.resourceLocation), data.isPlaceable, data.s3TextureLocation, data.inBattleEffect);
+        return new ItemNode(ResourceLocation.deserialize(data.resourceLocation), data.isPlaceable, data.s3TextureLocation, data.inBattleEffect, data.rebalancedInBattleEffect);
     }
 
     public serialize(): Record<string, any> {
@@ -30,14 +32,15 @@ export class ItemNode extends DynamoNode {
             resourceLocation: this.resourceLocation.serialize(),
             isPlaceable: this.isPlaceable,
             s3TextureLocation: this.s3TextureLocation,
-            inBattleEffect: this.inBattleEffect
+            inBattleEffect: this.inBattleEffect,
+            rebalancedInBattleEffect: this.rebalancedInBattleEffect
         }   
     }
 }
 
 export function createItemNode(resourceLocation: ResourceLocation, isPlaceable: boolean = false,
-    s3TextureLocation: string = "", inBattleEffect: string = ""): ItemNode {
-    return new ItemNode(resourceLocation, isPlaceable, s3TextureLocation, inBattleEffect);
+    s3TextureLocation: string = "", inBattleEffect: string = "", rebalancedInBattleEffect : string = ""): ItemNode {
+    return new ItemNode(resourceLocation, isPlaceable, s3TextureLocation, inBattleEffect, rebalancedInBattleEffect);
 }
 
 deserializerRegistry.register(ItemEntity, ItemNode.deserialize);

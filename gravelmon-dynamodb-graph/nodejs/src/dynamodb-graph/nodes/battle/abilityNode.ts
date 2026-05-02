@@ -39,29 +39,32 @@ export class AbilityIdentifier {
 
 export class AbilityNode extends DynamoNode {
     description?: string;
+    rebalancedDescription?: string;
     identifier: AbilityIdentifier;
 
-    constructor(name: AbilityIdentifier, description?: string) {
+    constructor(name: AbilityIdentifier, description?: string, rebalancedDescription?: string) {
         super(AbilityEntity, name.toString());
         this.description = description;
         this.identifier = name;
+        this.rebalancedDescription = rebalancedDescription;
     }
 
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
             description: this.description,
+            rebalancedDescription: this.rebalancedDescription,
             identifier: this.identifier.serialize()
         }
     }
 
     static deserialize(data: Record<string, any>): DynamoNode {
-        return new AbilityNode(AbilityIdentifier.deserialize(data.identifier), data.description);
+        return new AbilityNode(AbilityIdentifier.deserialize(data.identifier), data.description, data.rebalancedDescription);
     }
 }
 
-export function createAbilityNode(name: AbilityIdentifier, description?: string): AbilityNode {
-    return new AbilityNode(name, description);
+export function createAbilityNode(name: AbilityIdentifier, description?: string, rebalancedDescription?: string): AbilityNode {
+    return new AbilityNode(name, description, rebalancedDescription);
 }
 
 deserializerRegistry.register(AbilityEntity, AbilityNode.deserialize);

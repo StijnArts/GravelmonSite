@@ -11,9 +11,10 @@ public abstract class Game {
     protected List<Pokemon> newPokemon = new ArrayList<>();
     protected List<String> pokedex = new ArrayList<>();
     protected List<String> additionalPokedexPokemon = new ArrayList<>();
-    
+
     protected List<Move> introducedMoves = new ArrayList<>();
     protected List<Ability> introducedAbility = new ArrayList<>();
+    protected List<FieldEffect> introducedFieldEffects = new ArrayList<>();
 
     public int priority = 99;
     public String wikiUrl;

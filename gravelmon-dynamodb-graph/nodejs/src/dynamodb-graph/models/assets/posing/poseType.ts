@@ -7,7 +7,10 @@ export enum PoseType {
     FLY,
     FLOAT,
     SWIM,
+    GLIDE,
     SLEEP,
     SHOULDER_LEFT,
-    SHOULDER_RIGHT
+    SHOULDER_RIGHT,
+    OPEN,
+    NONE
 }
