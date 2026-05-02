@@ -3,24 +3,22 @@ import { DynamoNode } from '../../service/dynamoNodes';
 
 export const TypeEntity = "Type";
 
-export enum TypeRelationShip {
-    IMMUNITY = "ImmuneTo",
-    WEAKNESS = "WeakAgainst",
-    RESISTANCE = "Resists"
-}
-
-export function createTypeNode(name: string): TypeNode {
-    return new TypeNode(name);
+export function createTypeNode(name: string, resists?: string[], immunities?: string[], weaknesses?: string[], introducedByGames?: string[]): TypeNode {
+    return new TypeNode(name, resists, immunities, weaknesses, introducedByGames);
 }
 
 export class TypeNode extends DynamoNode {
     private resists?: string[];
     private immunities?: string[];
     private weaknesses?: string[];
-    private introducedByGame?: string;
+    private introducedByGames?: string[];
 
-    constructor(name: string) {
+    constructor(name: string, resists?: string[], immunities?: string[], weaknesses?: string[], introducedByGames?: string[]) {
         super(TypeEntity, name);
+        this.resists = resists;
+        this.immunities = immunities;
+        this.weaknesses = weaknesses;
+        this.introducedByGames = introducedByGames;
     }
 
     public serialize(): Record<string, any> {
@@ -29,7 +27,7 @@ export class TypeNode extends DynamoNode {
             resists: this.resists,
             immunities: this.immunities,
             weaknesses: this.weaknesses,
-            introducedByGame: this.introducedByGame
+            introducedByGames: this.introducedByGames
         }
     }
 
@@ -38,7 +36,7 @@ export class TypeNode extends DynamoNode {
         typeNode.resists = data.resists;
         typeNode.immunities = data.immunities;
         typeNode.weaknesses = data.weaknesses;
-        typeNode.introducedByGame = data.introducedByGame;
+        typeNode.introducedByGames = data.introducedByGames;
         return typeNode;
     }
 }

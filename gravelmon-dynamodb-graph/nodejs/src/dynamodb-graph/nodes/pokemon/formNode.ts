@@ -11,7 +11,7 @@ import {
 import { AspectEntity, HasAspectEdgeType } from '../properties/aspectNode';
 import {HasLabelEdgeType, LabelEntity} from "../properties/labelNode";
 import {TypeEntity} from "../battle/typeNode";
-import {AbilityEntity} from "../battle/abilityNode";
+import {AbilityEntity, AbilityIdentifier} from "../battle/abilityNode";
 import {NumberRange} from "../../models/properties/numberRange";
 import {ItemEntity} from "../minecraft/itemNode";
 import {ResourceLocation} from "../../models/minecraft/resourceLocation";
@@ -31,11 +31,11 @@ export function createFormNode(pokemonData: PokemonData, formData: FormData, las
 }
 
 export function createFormPrimaryTypeEdge(formName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()): FormTypeEdge {
-    return new PrimaryTypeEdge(formName, typeName, isRebalanced, lastEdited);
+    return new FormPrimaryTypeEdge(formName, typeName, isRebalanced, lastEdited);
 }
 
 export function createFormSecondaryTypeEdge(formName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()): FormTypeEdge {
-    return new SecondaryTypeEdge(formName, typeName, isRebalanced, lastEdited);
+    return new FormSecondaryTypeEdge(formName, typeName, isRebalanced, lastEdited);
 }
 
 export function createFormHasAspectEdge(formName: PokemonIdentifier, aspectName: string, lastEdited: number = Date.now()): DynamoEdge {
@@ -47,7 +47,7 @@ export function createFormHasLabelEdge(formName: PokemonIdentifier, labelName: s
 }
 
 export function createFormHasAbilityEdge(
-            formName: PokemonIdentifier, abilityName: string,
+            formName: PokemonIdentifier, abilityName: AbilityIdentifier,
             isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false, lastEdited: number = Date.now()
         ): DynamoEdge {
     return new FormHasAbilityEdge(formName, abilityName, isHidden, isPlaceholder, isRebalanced, lastEdited);
@@ -137,7 +137,7 @@ export function deserializeFormData(data: any): FormData {
             liquidGlowMode: data.lightingData.liquidGlowMode
         } : undefined,
         evolutions: data.evolutions?.map((evolution: any) => EvolutionIdentifier.deserialize(evolution)),
-        isFormOf: data.isFormOf.map((formOf: any) => PokemonIdentifier.deserialize(formOf)),
+        isFormOf: PokemonIdentifier.deserialize(data.isFormOf ),
         affectedByMechanics: data.affectedByMechanics,
         resolverData: deserializeResolverData(data.resolverData),
         posingData: deserializePosingData(data.posingData),
@@ -146,9 +146,11 @@ export function deserializeFormData(data: any): FormData {
     };
 }
 
-class FormDropsItemEdge extends DynamoEdge {
+export class FormDropsItemEdge extends DynamoEdge {
     dropChance: number;
     quantityRange: NumberRange;
+    droppingPokemon: PokemonIdentifier;
+    droppedItem: ResourceLocation;
     static version = 1;
 
     constructor(formName: PokemonIdentifier, itemName: ResourceLocation, dropChance: number, quantityRange: NumberRange, lastEdited: number = Date.now()) {
@@ -157,20 +159,24 @@ class FormDropsItemEdge extends DynamoEdge {
             formName.toString(), FormDropsItemEdge.version, lastEdited);
         this.dropChance = dropChance;
         this.quantityRange = quantityRange;
+        this.droppingPokemon = formName;
+        this.droppedItem = itemName;
     }
 
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
             dropChance: this.dropChance,
-            quantityRange: this.quantityRange.serialize()
+            quantityRange: this.quantityRange.serialize(),
+            droppingPokemon: this.droppingPokemon.serialize(),
+            droppedItem: this.droppedItem.serialize()
         }
     }
 
     public static deserialize(data: Record<string, any>): FormDropsItemEdge {
         return new FormDropsItemEdge(
-            PokemonIdentifier.fromString(getPkName(data.SK)),
-            ResourceLocation.fromString(getPkName(data.PK)),
+            PokemonIdentifier.deserialize(data.droppingPokemon),
+            ResourceLocation.deserialize(data.droppedItem),
             data.dropChance,
             NumberRange.deserialize(data.quantityRange),
             data.lastEdited
@@ -199,45 +205,51 @@ abstract class FormTypeEdge extends DynamoEdge {
         }
     
         static deserialize(data: Record<string, any>): FormTypeEdge {
-            const relationship = data.TYPE as PokemonTypeRelationship;
-            const pokemonName = PokemonIdentifier.fromString(getPkName(data.Target));
+            const relationship = data.entityType as FormTypeRelationship;
+            const pokemonName = PokemonIdentifier.deserialize(data.target);
             const typeName = getPkName(data.PK);
             const isRebalanced = data.isRebalanced || false;
-            if(relationship === PokemonTypeRelationship.PrimaryType) {
-                return new PrimaryTypeEdge(pokemonName, typeName, isRebalanced, data.lastEdited);
-            } else if(relationship === PokemonTypeRelationship.SecondaryType) {
-                return new SecondaryTypeEdge(pokemonName, typeName, isRebalanced, data.lastEdited);
+            if(relationship === FormTypeRelationship.PrimaryType) {
+                return new FormPrimaryTypeEdge(pokemonName, typeName, isRebalanced, data.lastEdited);
+            } else if(relationship === FormTypeRelationship.SecondaryType) {
+                return new FormSecondaryTypeEdge(pokemonName, typeName, isRebalanced, data.lastEdited);
             } else {
                 throw new Error(`Unknown PokemonTypeRelationship: ${relationship}`);
             }
         }
 }
 
-class PrimaryTypeEdge extends FormTypeEdge {
+export class FormPrimaryTypeEdge extends FormTypeEdge {
     constructor(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()) {
         super(pokemonName, typeName, FormTypeRelationship.PrimaryType, isRebalanced, lastEdited);
     }
 }
 
-class SecondaryTypeEdge extends FormTypeEdge {
+export class FormSecondaryTypeEdge extends FormTypeEdge {
     constructor(pokemonName: PokemonIdentifier, typeName: string, isRebalanced: boolean = false, lastEdited: number = Date.now()) {
         super(pokemonName, typeName, FormTypeRelationship.SecondaryType, isRebalanced, lastEdited);
     }
 }
 
-class FormHasAbilityEdge extends DynamoEdge {
+export class FormHasAbilityEdge extends DynamoEdge {
     isHidden: boolean;
     isPlaceholder: boolean;
     isRebalanced: boolean;
     static version = 1;
+    recipient: PokemonIdentifier;
+    abilityIdentifier: AbilityIdentifier;
     
-    constructor(pokemonName: PokemonIdentifier, abilityName: string, isHidden: boolean = false, isPlaceholder: boolean = false, isRebalanced: boolean = false, lastEdited: number = Date.now()) {
-        super(getNodePK(AbilityEntity, abilityName), 
+    constructor(pokemonName: PokemonIdentifier,
+                abilityIdentifier: AbilityIdentifier, isHidden: boolean = false, isPlaceholder: boolean = false,
+                isRebalanced: boolean = false, lastEdited: number = Date.now()) {
+        super(getNodePK(AbilityEntity, abilityIdentifier.toString()),
         FormHasAbilityEdgeType, FormEntity, 
         pokemonName.toString(), FormHasAbilityEdge.version, lastEdited);
         this.isHidden = isHidden;
         this.isPlaceholder = isPlaceholder;
         this.isRebalanced = isRebalanced;
+        this.recipient = pokemonName;
+        this.abilityIdentifier = abilityIdentifier;
     }
     
         public serialize(): Record<string, any> {
@@ -245,14 +257,16 @@ class FormHasAbilityEdge extends DynamoEdge {
                 ...super.serialize(),
                 isHidden: this.isHidden,
                 isPlaceholder: this.isPlaceholder,
-                isRebalanced: this.isRebalanced
+                isRebalanced: this.isRebalanced,
+                recipient: this.recipient.serialize(),
+                abilityIdentifier: this.abilityIdentifier.serialize()
             }
         }
     
         static deserialize(data: Record<string, any>): FormHasAbilityEdge {
             const edge = new FormHasAbilityEdge(
-                PokemonIdentifier.fromString(getPkName(data.PK)),
-                getPkName(data.Target),
+                PokemonIdentifier.deserialize(data.recipient),
+                AbilityIdentifier.deserialize(data.abilityIdentifier),
                 data.isHidden,
                 data.isPlaceholder,
                 data.isRebalanced,

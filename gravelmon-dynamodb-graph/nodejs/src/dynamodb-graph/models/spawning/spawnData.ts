@@ -1,4 +1,4 @@
-import { DynamoNode, DynamoEdge, getNodePK, getPkName } from '../../service/dynamoNodes';
+import { DynamoNode, DynamoEdge, getNodePK } from '../../service/dynamoNodes';
 import { FormEntity } from '../../nodes/pokemon/formNode';
 import { ItemEntity } from '../../nodes/minecraft/itemNode';
 import { ResourceLocation } from '../minecraft/resourceLocation';
@@ -107,8 +107,8 @@ export function deserializeSpawnData(data: any): SpawnData {
         weightMultiplier: data.weightMultiplier,
         maxHerdSize: data.maxHerdSize,
         minDistanceBetweenSpawns: data.minDistanceBetweenSpawns,
-        condition: SpawnCondition.deserialize(data.condition),
-        antiCondition: SpawnCondition.deserialize(data.antiCondition),
+        condition: data.condition ? SpawnCondition.deserialize(data.condition) : undefined,
+        antiCondition: data.antiCondition ? SpawnCondition.deserialize(data.antiCondition) : undefined,
         herdSpawnEntries: data.herdSpawnEntries?.map(deserializeHerdSpawnEntry),
         preferredBlocks: data.preferredBlocks?.map((block: any) => ResourceLocation.deserialize(block)),
         requiredBlocks: data.requiredBlocks?.map((block: any) => ResourceLocation.deserialize(block))

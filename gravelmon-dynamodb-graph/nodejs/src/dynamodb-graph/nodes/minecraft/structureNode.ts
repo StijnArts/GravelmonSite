@@ -10,7 +10,7 @@ export const ContainedInStructureTagEdgeType = "ContainedInStructureTag";
 export const SpawnsInStructureEdgeType = "SpawnsInStructure";
 export const DoesNotSpawnInStructureEdgeType = "DoesNotSpawnInStructure";
 
-class StructureNode extends DynamoNode {
+export class StructureNode extends DynamoNode {
     resourceLocation: ResourceLocation
     constructor(resourceLocation: ResourceLocation) {
         super(StructureTagEntity, resourceLocation.toString());
@@ -33,7 +33,7 @@ class StructureNode extends DynamoNode {
     }
 }
 
-class StructureTagNode extends DynamoNode {
+export class StructureTagNode extends DynamoNode {
     resourceLocation: ResourceLocation
     containsStructures: ResourceLocation[]
     constructor(resourceLocation: ResourceLocation, containsStructures: ResourceLocation[] = []) {
@@ -54,6 +54,7 @@ class StructureTagNode extends DynamoNode {
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
+            resourceLocation: this.resourceLocation.serialize(),
             containsStructures: this.containsStructures.map(Structure => Structure.serialize())
         }
     }

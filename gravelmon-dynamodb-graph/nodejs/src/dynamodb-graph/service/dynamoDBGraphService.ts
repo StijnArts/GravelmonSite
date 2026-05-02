@@ -11,7 +11,7 @@ import {
     QueryCommand,
     QueryCommandInput
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoEdge, DynamoItem, DynamoNode, ItemType, PK } from "./dynamoNodes";
+import {DynamoEdge, DynamoItem, DynamoNode, ItemType, PK, SK} from "./dynamoNodes";
 import { deserializerRegistry } from "./deserializerRegistry";
 
 export class DynamoDBGraphService {
@@ -77,8 +77,8 @@ export class DynamoDBGraphService {
 
     // ---------- Nodes ----------
 
-    async getNode(pk: PK): Promise<DynamoNode | null> {
-        const items = await this.queryByPKAndSKPrefix(pk, "METADATA");
+    async getNode(pk: PK, sk: SK = "METADATA"): Promise<DynamoNode | null> {
+        const items = await this.queryByPKAndSKPrefix(pk, sk);
         return items.find(i => i instanceof DynamoNode) ?? null;
     }
 
@@ -150,11 +150,12 @@ export class DynamoDBGraphService {
 
     private deserializeItem(item: Record<string, any>): any {
         const type = item.entityType;
+        const itemType = item.TYPE;
 
         if (!type) {
             throw new Error("Missing entityType on item");
         }
 
-        return deserializerRegistry.deserialize(type, item);
+        return deserializerRegistry.deserialize(type, itemType as ItemType, item);
     }
 }

@@ -45,7 +45,7 @@ function isConditionalAnimation(value: any): value is ConditionalAnimation {
 
 type PrimaryPoseType = PoseType | "BattleAnimation" | "Other";
 
-class AnimationNode extends DynamoNode {
+export class AnimationNode extends DynamoNode {
     primaryPoseType?: PrimaryPoseType;
     constructor(name: string, primaryPoseType: PrimaryPoseType) {
         super(AnimationEntity, "animations");

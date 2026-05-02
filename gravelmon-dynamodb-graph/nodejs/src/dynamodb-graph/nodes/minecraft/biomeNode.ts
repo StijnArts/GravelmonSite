@@ -10,8 +10,9 @@ export const SpawnsInBiomeEdgeType = "SpawnsInBiome";
 export const DoesNotSpawnInBiomeEdgeType = "DoesNotSpawnInBiome";
 
 
-class BiomeNode extends DynamoNode {
+export class BiomeNode extends DynamoNode {
     resourceLocation: ResourceLocation
+
     constructor(resourceLocation: ResourceLocation) {
         super(BiomeEntity, resourceLocation.toString());
         this.resourceLocation = resourceLocation;
@@ -33,26 +34,30 @@ class BiomeNode extends DynamoNode {
     }
 }
 
-class BiomeTagNode extends BiomeNode {
+export class BiomeTagNode extends DynamoNode {
     containsBiomes: ResourceLocation[]
-    constructor(resourceLocation: ResourceLocation, containsBiomes: ResourceLocation[] = []) {
-        super(resourceLocation);
-        this.containsBiomes = containsBiomes;
+    resourceLocation: ResourceLocation
+    constructor(resourceLocation: ResourceLocation, containsBiomes?: ResourceLocation[]) {
+        super(BiomeTagEntity, resourceLocation.toString());
+        this.containsBiomes = containsBiomes ?? [];
+        this.resourceLocation = resourceLocation;
     }   
 
     static deserialize(data: Record<string, any>): BiomeTagNode {
         if(!data.resourceLocation) {
             throw new Error("Invalid data for deserializing BiomeTagNode: missing resourceLocation");
         }
-        const containsBiomes: ResourceLocation[] = Array.isArray(data.containsBiomes) ? data.containsBiomes.map((biomeData: any) => ResourceLocation.deserialize(biomeData)) : [];
-
+        const containsBiomes = (data.containsBiomes ?? []).map((b: any) =>
+            ResourceLocation.deserialize(b)
+        );
         return new BiomeTagNode(ResourceLocation.deserialize(data.resourceLocation), containsBiomes);
     }
 
     public serialize(): Record<string, any> {
         return {
             ...super.serialize(),
-            containsBiomes: this.containsBiomes.map(biome => biome.serialize())
+            resourceLocation: this.resourceLocation.serialize(),
+            containsBiomes: this.containsBiomes?.map(biome => biome.serialize()) ?? []
         }
     }
 }

@@ -4,7 +4,7 @@ import { deserializerRegistry } from '../../service/deserializerRegistry';
 
 export const ItemEntity = "Item";
 
-class ItemNode extends DynamoNode {
+export class ItemNode extends DynamoNode {
     resourceLocation: ResourceLocation;
     s3TextureLocation?: string;
     isPlaceable: boolean = false;

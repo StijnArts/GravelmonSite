@@ -59,19 +59,20 @@ export class DynamoEdge extends DynamoItem {
     target: PK;
     sourceType: string;
     targetType: string;
+    targetName: string;
 
     constructor(pk: PK, edgeType: string, targetEntityType: string, targetName: string, version: number = 1, lastEdited: number = Date.now()) {
         super(pk, getEdgeSK(edgeType, targetEntityType, targetName), ItemType.EDGE, edgeType, version, lastEdited);
         this.target = getNodePK(targetEntityType, targetName);
         this.sourceType = getPkType(pk);
         this.targetType = targetEntityType;
+        this.targetName = targetName;
     }
 
     static deserialize(data: Record<string, any>): DynamoEdge {
-        const skParts = data.SK.split('#');
         const edgeType = data.entityType;
-        const targetType = skParts[2];
-        const targetName = skParts[3];
+        const targetType = data.targetType;
+        const targetName = data.targetName;
 
         return new DynamoEdge(data.PK, edgeType, targetType, targetName, data.version, data.lastEdited);
     }
@@ -82,6 +83,7 @@ export class DynamoEdge extends DynamoItem {
             target: this.target,
             sourceType: this.sourceType,
             targetType: this.targetType,
+            targetName: this.targetName,
         }
     }
 }
@@ -96,10 +98,18 @@ export function getEdgeSK(edgeType: string, targetType: string, targetName: stri
 
 export function getPkType(pk: PK): string {
     const parts = pk.split('#');
+    if (parts.length < 2) {
+        throw new Error(`Invalid PK format: ${pk}`);
+    }
+
     return parts[1];
 }
 
 export function getPkName(pk: PK): string {
     const parts = pk.split('#');
+    if (parts.length < 3) {
+        throw new Error(`Invalid PK format: ${pk}`);
+    }
+
     return parts[2];
 }

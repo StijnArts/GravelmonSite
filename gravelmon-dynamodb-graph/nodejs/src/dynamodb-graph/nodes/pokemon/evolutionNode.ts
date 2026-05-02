@@ -7,7 +7,7 @@ import { PokemonIdentifier } from './pokemonNode';
 import { EvolutionCondition } from '../../models/properties/evolutionCondition';
 import {deserializerRegistry} from "../../service/deserializerRegistry";
 
-const EvolutionEntity = "Evolution";
+export const EvolutionEntity = "Evolution";
 
 const NeedsToHoldEdgeType = "NeedsToHold"
 const UseOnEdgeType = "UseOn"
@@ -82,14 +82,14 @@ export interface EvolutionOptions {
     isOptional?: boolean;
     evolutionConditions: EvolutionCondition[]
     needsToHoldItem?: ResourceLocation;
-    useItemOn?: ResourceLocation;
-    evolvesFromForm?: PokemonIdentifier;
-    evolvesIntoForm?: PokemonIdentifier;
+    requiresItemUsedOn?: ResourceLocation;
+    evolvesFromForm: PokemonIdentifier;
+    evolvesIntoForm: PokemonIdentifier;
     shedsIntoForm?: PokemonIdentifier;
     learnsMoveUponEvolving?: MoveIdentifier;
 }
 
-class EvolutionNode extends DynamoNode {
+export class EvolutionNode extends DynamoNode {
     evolutionOptions: EvolutionOptions;
     static version = 1;
 
@@ -102,15 +102,15 @@ class EvolutionNode extends DynamoNode {
         return {
             ...super.serialize(),
             evolutionOptions: {
-                evolutionIdentifier: this.evolutionOptions.identifier.serialize(),
+                identifier: this.evolutionOptions.identifier.serialize(),
                 evolutionType: this.evolutionOptions.evolutionType,
                 consumesHeldItem: this.evolutionOptions.consumesHeldItem,
                 isOptional: this.evolutionOptions.isOptional,
                 evolutionConditions: this.evolutionOptions.evolutionConditions.map(condition => condition.serialize()),
                 needsToHoldItem: this.evolutionOptions.needsToHoldItem?.serialize(),
-                useItemOn: this.evolutionOptions.useItemOn?.serialize(),
-                evolvesFromForm: this.evolutionOptions.evolvesFromForm?.serialize(),
-                evolvesIntoForm: this.evolutionOptions.evolvesIntoForm?.serialize(),
+                useItemOn: this.evolutionOptions.requiresItemUsedOn?.serialize(),
+                evolvesFromForm: this.evolutionOptions.evolvesFromForm.serialize(),
+                evolvesIntoForm: this.evolutionOptions.evolvesIntoForm.serialize(),
                 shedsIntoForm: this.evolutionOptions.shedsIntoForm?.serialize(),
                 learnsMoveUponEvolving: this.evolutionOptions.learnsMoveUponEvolving?.serialize()
             }
@@ -118,24 +118,28 @@ class EvolutionNode extends DynamoNode {
     }
 
     static deserialize(data: any): EvolutionNode {
-        if(!data.evolutionIdentifier || !data.evolutionIdentifier.source || !data.evolutionIdentifier.result) {
-            throw new Error("Invalid data for deserializing EvolutionNode: missing evolutionIdentifier or source or result");
+        const options = data.evolutionOptions;
+
+        if (!options?.identifier?.source || !options?.identifier?.result) {
+            throw new Error(
+                "Invalid data for deserializing EvolutionNode: missing evolutionIdentifier or source or result"
+            );
         }
-        const evolutionIdentifier = EvolutionIdentifier.deserialize(data.evolutionIdentifier);
+        const evolutionIdentifier = EvolutionIdentifier.deserialize(options.identifier);
         const evolutionOptions: EvolutionOptions = {
             identifier: evolutionIdentifier,
-            evolutionType: data.evolutionType,
-            consumesHeldItem: data.consumesHeldItem,
-            isOptional: data.isOptional,
-            evolutionConditions: Array.isArray(data.evolutionConditions) ?
-                data.evolutionConditions.map((condition: any) => EvolutionCondition.deserialize(condition))
+            evolutionType: options.evolutionType,
+            consumesHeldItem: options.consumesHeldItem,
+            isOptional: options.isOptional,
+            evolutionConditions: Array.isArray(options.evolutionConditions) ?
+                options.evolutionConditions.map((condition: any) => EvolutionCondition.deserialize(condition))
                 : [],
-            needsToHoldItem: data.needsToHoldItem ? ResourceLocation.deserialize(data.needsToHoldItem) : undefined,
-            useItemOn: data.useItemOn ? ResourceLocation.deserialize(data.useItemOn) : undefined,
-            evolvesFromForm: data.evolvesFromForm ? PokemonIdentifier.deserialize(data.evolvesFromForm) : undefined,
-            evolvesIntoForm: data.evolvesIntoForm ? PokemonIdentifier.deserialize(data.evolvesIntoForm) : undefined,
-            shedsIntoForm: data.shedsIntoForm ? PokemonIdentifier.deserialize(data.shedsIntoForm) : undefined,
-            learnsMoveUponEvolving: data.learnsMoveUponEvolving ? MoveIdentifier.deserialize(data.learnsMoveUponEvolving) : undefined
+            needsToHoldItem: options.needsToHoldItem ? ResourceLocation.deserialize(options.needsToHoldItem) : undefined,
+            requiresItemUsedOn: options.useItemOn ? ResourceLocation.deserialize(options.useItemOn) : undefined,
+            evolvesFromForm: PokemonIdentifier.deserialize(options.evolvesFromForm),
+            evolvesIntoForm: PokemonIdentifier.deserialize(options.evolvesIntoForm),
+            shedsIntoForm: options.shedsIntoForm ? PokemonIdentifier.deserialize(options.shedsIntoForm) : undefined,
+            learnsMoveUponEvolving: options.learnsMoveUponEvolving ? MoveIdentifier.deserialize(options.learnsMoveUponEvolving) : undefined
         }
         return new EvolutionNode(evolutionOptions);
     }

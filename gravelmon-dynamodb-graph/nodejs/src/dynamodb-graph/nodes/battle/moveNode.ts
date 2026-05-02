@@ -86,7 +86,9 @@ export class MoveNode extends DynamoNode {
     moveLabels: string[];
 
     constructor(name: MoveIdentifier, 
-        moveData: MoveData, rebalancedMoveData?: MoveData, moveLabels: string[] = []) {
+                moveData: MoveData,
+                rebalancedMoveData?: MoveData,
+                moveLabels: string[] = []) {
         super(MoveEntity, name.toString());
         this.moveIdentifier = name;
         this.moveData = moveData;
@@ -97,13 +99,13 @@ export class MoveNode extends DynamoNode {
     static deserialize(data: Record<string, any>): MoveNode {
         return new MoveNode(
             MoveIdentifier.deserialize(data.moveIdentifier),
-            this.deserializeMoveData(data.moveData),
-            data.rebalancedMoveData ? this.deserializeMoveData(data.rebalancedMoveData) : undefined,
+            MoveNode.deserializeMoveData(data.moveData),
+            data.rebalancedMoveData ? MoveNode.deserializeMoveData(data.rebalancedMoveData) : undefined,
             data.moveLabels || []
         );
     }
 
-    private static deserializeMoveData(data: any): MoveData {
+    static deserializeMoveData(data: any): MoveData {
         return {
             moveTypes: data.moveTypes.map((moveType: any) => ({ type: moveType.type, isRebalanced: moveType.isRebalanced })),
             powerPoints: data.powerPoints,
@@ -126,7 +128,8 @@ export class MoveNode extends DynamoNode {
             accuracy: moveData.accuracy,
             moveRange: moveData.moveRange,
             moveCategory: moveData.moveCategory,
-            description: moveData.description
+            description: moveData.description,
+            typeGemCost: moveData.typeGemCost
         }
     }
 

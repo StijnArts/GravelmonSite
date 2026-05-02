@@ -1,3 +1,5 @@
+import {DynamoEdge, DynamoNode, ItemType} from "./dynamoNodes";
+
 export type Deserializer<T> = (data: Record<string, any>) => T;
 
 class DeserializerRegistry {
@@ -11,11 +13,15 @@ class DeserializerRegistry {
         return this.map.get(type);
     }
 
-    deserialize<T>(type: string, data: Record<string, any>): T {
-        const fn = this.map.get(type);
+    deserialize<T>(entityType: string, itemType: ItemType, data: Record<string, any>): T {
+        const fn = this.map.get(entityType);
 
         if (!fn) {
-            throw new Error(`No deserializer registered for type: ${type}`);
+            switch (itemType) {
+                case ItemType.NODE : return DynamoNode.deserialize(data) as T;
+                case ItemType.EDGE : return DynamoEdge.deserialize(data) as T;
+                default: throw new Error(`No deserializer registered for ${entityType}`);
+            }
         }
 
         return fn(data);
