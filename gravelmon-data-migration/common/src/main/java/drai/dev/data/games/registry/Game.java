@@ -2,6 +2,7 @@ package drai.dev.data.games.registry;
 
 import drai.dev.data.pokemon.*;
 import drai.dev.gravelmon.*;
+import drai.dev.gravelmon.pokemon.attributes.*;
 
 import java.util.*;
 
@@ -10,6 +11,10 @@ public abstract class Game {
     protected List<Pokemon> newPokemon = new ArrayList<>();
     protected List<String> pokedex = new ArrayList<>();
     protected List<String> additionalPokedexPokemon = new ArrayList<>();
+    
+    protected List<Move> introducedMoves = new ArrayList<>();
+    protected List<Ability> introducedAbility = new ArrayList<>();
+
     public int priority = 99;
     public String wikiUrl;
 

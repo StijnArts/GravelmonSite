@@ -2,6 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
+  runInBand: true,
   testMatch: [
     '**/__tests__/**/*.integration.test.ts',
     '**/__tests__/**/*.test.ts',

@@ -76,7 +76,11 @@ export interface MoveData {
     moveRange: MoveRange;
     moveCategory: MoveCategory;
     description?: string;
+    zMoveEffect?: string;
     typeGemCost: Record<string, number>
+    associatedWeathers?: string[];
+    associatedTerrain?: string[];
+    associatedFieldEffects?: string[];
 }
 
 export class MoveNode extends DynamoNode {
@@ -115,7 +119,11 @@ export class MoveNode extends DynamoNode {
             moveRange: data.moveRange,
             moveCategory: data.moveCategory,
             description: data.description,
-            typeGemCost: data.typeGemCost
+            zMoveEffect: data.zMoveEffect,
+            typeGemCost: data.typeGemCost,
+            associatedWeathers: data.associatedWeathers,
+            associatedTerrain: data.associatedTerrain,
+            associatedFieldEffects: data.associatedFieldEffects
         }
     }
 
@@ -129,7 +137,11 @@ export class MoveNode extends DynamoNode {
             moveRange: moveData.moveRange,
             moveCategory: moveData.moveCategory,
             description: moveData.description,
-            typeGemCost: moveData.typeGemCost
+            zMoveEffect: moveData.zMoveEffect,
+            typeGemCost: moveData.typeGemCost,
+            associatedWeathers: moveData.associatedWeathers,
+            associatedTerrain: moveData.associatedTerrain,
+            associatedFieldEffects: moveData.associatedFieldEffects
         }
     }
 

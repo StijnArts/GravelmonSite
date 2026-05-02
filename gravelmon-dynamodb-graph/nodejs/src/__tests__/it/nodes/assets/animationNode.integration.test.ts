@@ -1,11 +1,6 @@
 import {
     DynamoDBClient,
-    CreateTableCommand,
-    DeleteTableCommand,
-    DescribeTableCommand
 } from "@aws-sdk/client-dynamodb";
-import { ResourceLocation } from "../../../../dynamodb-graph/models/minecraft/resourceLocation";
-import {BiomeNode, BiomeTagNode} from "../../../../dynamodb-graph/nodes/minecraft/biomeNode";
 import {DynamoDBGraphService} from "../../../../dynamodb-graph/service/dynamoDBGraphService";
 import { createTestEnv } from "../../../testEnv";
 import {AnimationEntity, AnimationNode, createAnimationNode } from "../../../../dynamodb-graph/nodes/assets/animationNode";
