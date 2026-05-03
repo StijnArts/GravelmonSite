@@ -84,10 +84,11 @@ export class FormNode extends PokemonNode {
         lastEdited: number = Date.now(),
     ) 
     {
-        super(pokemonData, lastEdited, FormNode.version);
+        super(pokemonData, lastEdited);
         this.PK = getNodePK(FormEntity, this.name);
         this.entityType = FormEntity;
         this.formData = formData;
+        this.version = FormNode.version;
     }
 
     static deserialize(data: Record<string, any>): PokemonNode {

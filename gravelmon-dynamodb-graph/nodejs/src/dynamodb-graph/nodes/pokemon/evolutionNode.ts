@@ -1,6 +1,5 @@
 import { DynamoEdge, DynamoNode, getNodePK } from '../../service/dynamoNodes';
 import { MoveEntity, MoveIdentifier } from '../battle/moveNode';
-import { FormEntity } from './formNode';
 import { ItemEntity } from '../minecraft/itemNode';
 import { ResourceLocation } from '../../models/minecraft/resourceLocation';
 import { PokemonIdentifier } from './pokemonNode';
@@ -86,7 +85,7 @@ export interface EvolutionOptions {
     evolvesFromForm: PokemonIdentifier;
     evolvesIntoForm: PokemonIdentifier;
     shedsIntoForm?: PokemonIdentifier;
-    learnsMoveUponEvolving?: MoveIdentifier;
+    learnsMovesUponEvolving?: MoveIdentifier[];
 }
 
 export class EvolutionNode extends DynamoNode {
@@ -112,7 +111,9 @@ export class EvolutionNode extends DynamoNode {
                 evolvesFromForm: this.evolutionOptions.evolvesFromForm.serialize(),
                 evolvesIntoForm: this.evolutionOptions.evolvesIntoForm.serialize(),
                 shedsIntoForm: this.evolutionOptions.shedsIntoForm?.serialize(),
-                learnsMoveUponEvolving: this.evolutionOptions.learnsMoveUponEvolving?.serialize()
+                learnsMoveUponEvolving: this.evolutionOptions.learnsMovesUponEvolving ? 
+                    this.evolutionOptions.learnsMovesUponEvolving?.map(move => move.serialize()) 
+                    : undefined
             }
         }
     }
@@ -139,7 +140,7 @@ export class EvolutionNode extends DynamoNode {
             evolvesFromForm: PokemonIdentifier.deserialize(options.evolvesFromForm),
             evolvesIntoForm: PokemonIdentifier.deserialize(options.evolvesIntoForm),
             shedsIntoForm: options.shedsIntoForm ? PokemonIdentifier.deserialize(options.shedsIntoForm) : undefined,
-            learnsMoveUponEvolving: options.learnsMoveUponEvolving ? MoveIdentifier.deserialize(options.learnsMoveUponEvolving) : undefined
+            learnsMovesUponEvolving: options.learnsMoveUponEvolving ? options.learnsMoveUponEvolving.map((move:any)  => MoveIdentifier.deserialize(move)) : undefined
         }
         return new EvolutionNode(evolutionOptions);
     }

@@ -1,6 +1,6 @@
 import { PokemonIdentifier } from '../../nodes/pokemon/pokemonNode';
 import { NumberRange } from '../properties/numberRange';
-import { deserializeRidingBehaviourOptions, RidingBehaviourOptions, serializeRidingBehaviourOptions } from './riding';
+import { deserializeRidingBehaviourOptions, RidingBehaviourOptions as BehaviourRidingOptions, serializeRidingBehaviourOptions } from './riding';
 import { deserializeTimeRange, serializeTimeRange, TimeRange } from '../properties/time';
 
 export enum SleepDepth {
@@ -63,7 +63,7 @@ export interface BehaviourOptions {
     aquatic?: BehaviourAquaticOptions;
     sleep?: BehaviourSleepOptions;
     herd?: BehaviorHerdingOptions;
-    riding?: RidingBehaviourOptions;
+    riding?: BehaviourRidingOptions;
 }
 
 export function serializeBehaviourOptions(options: BehaviourOptions): any {

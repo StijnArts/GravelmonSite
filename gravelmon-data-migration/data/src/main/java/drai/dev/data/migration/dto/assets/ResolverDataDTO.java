@@ -1,11 +1,11 @@
 package drai.dev.data.migration.dto.assets;
 
-import com.cobblemon.mod.common.entity.*;
 import kotlin.*;
 
+import javax.annotation.*;
 import java.util.*;
 
-public record ResolverDataDTO(List<ResolverLayer> layers, Optional<Pair<String, String>> variationForAspectChoice) {
+public record ResolverDataDTO(List<ResolverLayer> layers, @Nullable Pair<String, String> variationForAspectChoice) {
     public enum CommonLayerNames {
         Emissive("emissive"),
         TransparentEmissive("transparentEmissive"),
@@ -26,5 +26,5 @@ public record ResolverDataDTO(List<ResolverLayer> layers, Optional<Pair<String, 
     }
 
     public record ResolverLayer(String name, String textureName, Optional<Boolean> isEmissive, Optional<Boolean> isTranslucent,
-                                Optional<Integer> framerate, boolean loops, Optional<Integer> numberOfFrames) {}
+                                OptionalInt framerate, boolean loops, OptionalInt numberOfFrames) {}
 }

@@ -200,7 +200,7 @@ export class PokemonNode extends DynamoNode {
     pokemonData: PokemonData;
     static version = 1;
 
-    constructor(pokemonData: PokemonData, lastEdited: number = Date.now(), version: number = PokemonNode.version) {
+    constructor(pokemonData: PokemonData, lastEdited: number = Date.now()) {
         super(PokemonEntity, pokemonData.pokemonIdentifier.toString(), PokemonNode.version, lastEdited);
         this.pokemonData = pokemonData;
     }

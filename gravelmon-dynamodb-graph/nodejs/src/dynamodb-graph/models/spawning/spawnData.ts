@@ -6,7 +6,6 @@ import { PokemonIdentifier } from '../../nodes/pokemon/pokemonNode';
 import { NumberRange } from '../properties/numberRange';
 import { SpawnablePositionType, SpawnBucket } from './spawning';
 import { SpawnPresetEntity } from '../../nodes/spawning/spawnPresetNode';
-import { SpawnWeightMultiplier } from './weightMultiplier';
 import {SpawnCondition} from "./spawnCondition";
 import {BiomeEntity, BiomeTagEntity, DoesNotSpawnInBiomeEdgeType, SpawnsInBiomeEdgeType} from "../../nodes/minecraft/biomeNode";
 import {
@@ -66,8 +65,8 @@ export interface SpawnData {
     spawnWeight: number;
     spawnablePositionTypes: SpawnablePositionType;
     spawnBucket: SpawnBucket;
-    moonPhaseMultiplier?: SpawnWeightMultiplier;
-    weightMultiplier?: SpawnWeightMultiplier;
+    moonPhaseMultiplier?: number;
+    weightMultiplier?: number;
     maxHerdSize?: number;
     minDistanceBetweenSpawns?: number;
     condition?: SpawnCondition;

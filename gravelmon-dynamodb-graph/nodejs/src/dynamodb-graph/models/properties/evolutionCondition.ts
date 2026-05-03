@@ -33,7 +33,7 @@ export enum Gender {
 export abstract class EvolutionCondition {
     name: string;
     condition: string;
-    value: string | number | boolean | ResourceLocation | TimeRange | StatRatio | Gender | PokemonIdentifier;
+    value: string | number | boolean | ResourceLocation | TimeRange | StatRatio | Gender | PokemonIdentifier | MoveIdentifier;
     type: EvolutionConditionType;
 
     constructor(name: string, type: EvolutionConditionType, condition: string, value: any) {
@@ -148,7 +148,7 @@ export class RatioCondition extends EvolutionCondition {
 
 export class HasMoveCondition extends EvolutionCondition {
     constructor(value: MoveIdentifier) {
-        super("has_move", EvolutionConditionType.HAS_MOVE, "move", value.getMove());
+        super("has_move", EvolutionConditionType.HAS_MOVE, "move", value);
     }
 }
 

@@ -1,5 +1,6 @@
 package drai.dev.data.migration.dto.battle;
 
+import javax.annotation.*;
 import java.util.*;
 
 public record MoveSetDTO(List<LevelUpEntry> levelUpMoves, List<MoveSetEntry> teachMoves, List<MoveSetEntry> eggMoves, List<MoveSetEntry> legacyMoves) {
@@ -20,6 +21,6 @@ public record MoveSetDTO(List<LevelUpEntry> levelUpMoves, List<MoveSetEntry> tea
     }
 
     public record MoveSetEntry(MoveDTO.MoveIdentifier moveName, MoveDTO.MoveCategory category, int basePower, int accuracy, String type,
-                               Optional<String> rebalancedBasePower, Optional<String> rebalancedAccuracy, Optional<String> rebalancedType) {}
+                               @Nullable String rebalancedBasePower, @Nullable String rebalancedAccuracy, @Nullable String rebalancedType) {}
     public record LevelUpEntry(List<MoveSetEntry> moves, int level) {}
 }
