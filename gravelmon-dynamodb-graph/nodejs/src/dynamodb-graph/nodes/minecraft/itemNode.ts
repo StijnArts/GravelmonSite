@@ -10,8 +10,8 @@ export class ItemNode extends DynamoNode {
     isPlaceable: boolean = false;
     inBattleEffect?: string;
     rebalancedInBattleEffect?: string;
-    constructor(resourceLocation: ResourceLocation, isPlaceable: boolean, s3TextureLocation?: string, inBattleEffect?: string, rebalancedInBattleEffect?: string) {
-        super(ItemEntity, resourceLocation.toString());
+    constructor(name: string, resourceLocation: ResourceLocation, isPlaceable: boolean, s3TextureLocation?: string, inBattleEffect?: string, rebalancedInBattleEffect?: string) {
+        super(ItemEntity, name);
         this.resourceLocation = resourceLocation;
         this.s3TextureLocation = s3TextureLocation;
         this.isPlaceable = isPlaceable;
@@ -23,7 +23,7 @@ export class ItemNode extends DynamoNode {
         if(!data.resourceLocation) {
             throw new Error("Invalid data for deserializing ItemNode: missing resourceLocation");
         }
-        return new ItemNode(ResourceLocation.deserialize(data.resourceLocation), data.isPlaceable, data.s3TextureLocation, data.inBattleEffect, data.rebalancedInBattleEffect);
+        return new ItemNode(data.name, ResourceLocation.deserialize(data.resourceLocation), data.isPlaceable, data.s3TextureLocation, data.inBattleEffect, data.rebalancedInBattleEffect);
     }
 
     public serialize(): Record<string, any> {
@@ -38,9 +38,9 @@ export class ItemNode extends DynamoNode {
     }
 }
 
-export function createItemNode(resourceLocation: ResourceLocation, isPlaceable: boolean = false,
+export function createItemNode(name: string, resourceLocation: ResourceLocation, isPlaceable: boolean = false,
     s3TextureLocation: string = "", inBattleEffect: string = "", rebalancedInBattleEffect : string = ""): ItemNode {
-    return new ItemNode(resourceLocation, isPlaceable, s3TextureLocation, inBattleEffect, rebalancedInBattleEffect);
+    return new ItemNode(name, resourceLocation, isPlaceable, s3TextureLocation, inBattleEffect, rebalancedInBattleEffect);
 }
 
 deserializerRegistry.register(ItemEntity, ItemNode.deserialize);

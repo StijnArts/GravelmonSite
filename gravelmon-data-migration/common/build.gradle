@@ -12,6 +12,7 @@ dependencies {
     modImplementation "dev.architectury:architectury:$architectury_api_version"
     modImplementation "com.cobblemon:mod:${cobblemon_file}"
     modImplementation "maven.modrinth:midnightlib:gDxRS3a2"
+    modImplementation files("libs/gravels_extended_battles-fabric-${gravelmon_file}.jar")
 
     //Mega showdown compat
     modImplementation("maven.modrinth:cobblemon-mega-showdown:${megashowdown_fabric}")

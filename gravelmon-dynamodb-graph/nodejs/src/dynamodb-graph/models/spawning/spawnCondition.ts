@@ -11,16 +11,19 @@ export interface SpawnConditionOptions {
     dimensions?: string[];
     moonPhase?: NumberRange;
     canSeeSky?: boolean;
+
     minY?: number;
     minX?: number;
     minZ?: number;
     maxY?: number;
     maxX?: number;
     maxZ?: number;
+    
     minLight?: number;
     maxLight?: number;
     minSkyLight?: number;
     maxSkyLight?: number;
+
     timeRange?: TimeRange;
     isRaining?: boolean;
     isThundering?: boolean;

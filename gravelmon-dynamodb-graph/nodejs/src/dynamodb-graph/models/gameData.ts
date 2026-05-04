@@ -3,6 +3,7 @@ import { ResourceLocation } from "./minecraft/resourceLocation";
 
 export interface GameData {
     name: string;
+    namespace?: string;
     developer: string;
     wikiPage: string;
     isPermitted: boolean;

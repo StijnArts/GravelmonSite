@@ -77,6 +77,7 @@ export class EvolutionIdentifier {
 export interface EvolutionOptions {
     identifier: EvolutionIdentifier;
     evolutionType: EvolutionType;
+    
     consumesHeldItem?: boolean;
     isOptional?: boolean;
     evolutionConditions: EvolutionCondition[]

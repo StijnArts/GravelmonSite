@@ -1,8 +1,9 @@
 package drai.dev.data.attributes.assets;
 
 import com.google.gson.*;
+import drai.dev.data.jsonwriters.*;
 
-public class Vector3 {
+public class Vector3 implements JsonSerializable {
     public double x, y, z;
 
     public Vector3(double x, double y, double z) {
@@ -29,5 +30,14 @@ public class Vector3 {
         this.x /= factor;
         this.y /= factor;
         this.z /= factor;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        var jsonObject = new JsonObject();
+        jsonObject.addProperty("x", x);
+        jsonObject.addProperty("y", y);
+        jsonObject.addProperty("z", z);
+        return jsonObject;
     }
 }

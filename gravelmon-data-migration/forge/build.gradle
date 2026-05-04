@@ -50,9 +50,9 @@ dependencies {
         exclude group: "net.neoforged.fancymodloader", module: "loader"
     }
     modImplementation "maven.modrinth:packet-fixer:${packet_fixer_neoforge_file}"
-//    modImplementation("maven.modrinth:cobblemon-paleontology:0.0.3-Beta")
     modImplementation "maven.modrinth:midnightlib:uGySRC8x"
     modImplementation("maven.modrinth:cobblemon-mega-showdown:${megashowdown_neoforge}")
+    modImplementation files("libs/gravels_extended_battles-neoforge-${gravelmon_file}.jar")
 
     // Compile against only the API artifact
     compileOnly("top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1:api")

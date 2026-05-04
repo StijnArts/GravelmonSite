@@ -21,7 +21,7 @@ export function createChoiceAspectNode(name: string, choices: string[], defaultV
 abstract class AspectNode extends DynamoNode {
     aspectType: AspectType;
     isAspect: boolean = true;
-    defaultOption: boolean | "random" | string;
+    defaultOption?: boolean | "random" | string;
     /** Indicates that this aspect governs the form of the pokemon (e.g. Galarian vs Hisuian)
     non primary aspects include female form, gigantamax form, mega form etc. It is possible for a pokemon to have multiple primary aspects*/
     isPrimaryAspect: boolean;

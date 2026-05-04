@@ -65,10 +65,13 @@ export interface SpawnData {
     spawnWeight: number;
     spawnablePositionTypes: SpawnablePositionType;
     spawnBucket: SpawnBucket;
+
     moonPhaseMultiplier?: number;
     weightMultiplier?: number;
+
     maxHerdSize?: number;
     minDistanceBetweenSpawns?: number;
+    
     condition?: SpawnCondition;
     antiCondition?: SpawnCondition;
     herdSpawnEntries?: HerdSpawnEntry[];

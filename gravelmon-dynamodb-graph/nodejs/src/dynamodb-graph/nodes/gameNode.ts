@@ -4,7 +4,6 @@ import {PokemonIdentifier} from "./pokemon/pokemonNode";
 import {ResourceLocation} from "../models/minecraft/resourceLocation";
 import { deserializerRegistry } from '../service/deserializerRegistry';
 import { GameData } from '../models/gameData';
-import {generateKeyPair} from "node:crypto";
 
 export const GameEntity = "Game";
 
@@ -31,6 +30,7 @@ class GameNode extends DynamoNode {
         const rawGameData = data.gameData;
         const gameData: GameData = {
             name: rawGameData.name,
+            namespace: rawGameData.namespace,
             developer: rawGameData.developer,
             wikiPage: rawGameData.wikiPage,
             isPermitted: rawGameData.isPermitted,
@@ -58,6 +58,7 @@ class GameNode extends DynamoNode {
             ...super.serialize(),
             gameData: {
                 name: this.gameData.name,
+                namespace: this.gameData.namespace,
                 developer: this.gameData.developer,
                 wikiPage: this.gameData.wikiPage,
                 isPermitted: this.gameData.isPermitted,

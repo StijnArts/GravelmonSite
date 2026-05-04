@@ -8,13 +8,17 @@ import java.util.*;
 
 public abstract class Game {
     protected String name;
+    protected String nameSpace;
     protected List<Pokemon> newPokemon = new ArrayList<>();
     protected List<String> pokedex = new ArrayList<>();
     protected List<String> additionalPokedexPokemon = new ArrayList<>();
 
-    protected List<Move> introducedMoves = new ArrayList<>();
-    protected List<Ability> introducedAbility = new ArrayList<>();
-    protected List<FieldEffect> introducedFieldEffects = new ArrayList<>();
+    protected List<Move> introducesMoves = new ArrayList<>();
+    protected List<Ability> introducesAbility = new ArrayList<>();
+    protected List<FieldEffect> introducesFieldEffects = new ArrayList<>();
+    protected List<Aspect> introducesAspects = new ArrayList<>();
+    protected List<String> introducesMechanics = new ArrayList<>();
+    protected List<Type> introducesTypes = new ArrayList<>();
 
     public int priority = 99;
     public String wikiUrl;
@@ -25,12 +29,24 @@ public abstract class Game {
         registerPokemon();
     }
 
+    public Game(String name, String wikiUrl, String nameSpace){
+        this(name, wikiUrl);
+        this.nameSpace = nameSpace;
+    }
+
     public Game setPriority(int priority){
         this.priority = priority;
         return this;
     }
 
     public abstract void registerPokemon();
+    public abstract void registerMoves();
+    public abstract void registerAbilities();
+    public abstract void registerFieldEffects();
+    public abstract void registerTypes();
+    public abstract void registerAspects();
+    public abstract void registerMechanics();
+
     public String getName(){
         return name;
     }
