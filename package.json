@@ -4,7 +4,7 @@
   "description": "AWS SAM Node.js app using DynamoDB",
   "main": "dist/handler.js",
   "scripts": {
-    "setup-layer": "node setup-layer.js",
+    "setup-layer": "node scripts/setup-layer.js",
     "start": "npm run setup-layer && sam local start-api --template template.yaml --port 3000",
     "build": "npm install && npm run setup-layer && npx tsc",
     "test": "echo \"No tests configured yet\" && exit 0"
