@@ -160,3 +160,11 @@ world/
 /gravelmon-data-migration/forge/libs/
 /gravelmon-data-migration/data/libs/
 /gravelmon-data-migration/common/libs/
+
+*.js
+*.d.ts
+node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
