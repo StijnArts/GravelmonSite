@@ -72,12 +72,38 @@ export class CdkMigrationStack extends cdk.Stack {
             },
         });
 
+        // -------------------------
+        // API KEY SETUP
+        // -------------------------
+
+        const apiKey = api.addApiKey('MigrationApiKey', {
+            apiKeyName: 'migration-api-key',
+            description: 'API key for migration endpoint',
+        });
+
+        const usagePlan = api.addUsagePlan('MigrationUsagePlan', {
+            name: 'MigrationUsagePlan',
+            throttle: {
+                rateLimit: 10,
+                burstLimit: 2,
+            },
+        });
+
+        usagePlan.addApiKey(apiKey);
+
+        usagePlan.addApiStage({
+            stage: api.deploymentStage,
+        });
+
         const migrate = api.root.addResource('migrate');
         const animation = migrate.addResource('animation');
 
         animation.addMethod(
             'PUT',
-            new apigateway.LambdaIntegration(relationalFunction)
+            new apigateway.LambdaIntegration(relationalFunction),
+            {
+                apiKeyRequired: true,
+            }
         );
 
         // Outputs
@@ -87,6 +113,10 @@ export class CdkMigrationStack extends cdk.Stack {
 
         new cdk.CfnOutput(this, 'TableName', {
             value: table.tableName,
+        });
+
+        new cdk.CfnOutput(this, 'ApiKeyId', {
+            value: apiKey.keyId,
         });
     }
 }
