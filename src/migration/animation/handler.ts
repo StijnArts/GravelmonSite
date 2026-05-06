@@ -7,15 +7,14 @@ import {
   PrimaryPoseType
 } from "gravelmon-dynamodb";
 
-export const handler = async (event: LambdaEvent, dynamoGraphService?: DynamoDBGraphService) => {
+export const handler = async (event: LambdaEvent) => {
   if (!process.env.DYNAMODB_TABLE) {
-
     return createErrorResponse(500, "DYNAMODB_TABLE environment variable is required.");
   }
 
-  dynamoGraphService = dynamoGraphService || new DynamoDBGraphService(process.env.DYNAMODB_TABLE);
-  console.log("DynamoDBGraphService:", DynamoDBGraphService);
-  console.log("Resolved module path:", require.resolve("dynamodb-graph"));
+  const dynamoGraphService = new DynamoDBGraphService(process.env.DYNAMODB_TABLE);
+  console.log("DynamoDBGraphService:", dynamoGraphService);
+  console.log("Resolved module path:", require.resolve("gravelmon-dynamodb"));
   console.log("Service prototype:", Object.getOwnPropertyNames(DynamoDBGraphService.prototype));
   let tableExists = await dynamoGraphService.tableExists();
 

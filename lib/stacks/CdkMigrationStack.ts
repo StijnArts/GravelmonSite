@@ -10,9 +10,9 @@ export class CdkMigrationStack extends cdk.Stack {
         super(scope, id, props);
 
         // Parameters
-        const tableNameParam = new cdk.CfnParameter(this, 'DynamoTableName', {
+        const tableNameParam = new cdk.CfnParameter(this, 'GravelmonDynamoTable', {
             type: 'String',
-            default: 'Products',
+            default: 'Gravelmon',
         });
 
         const localEndpointParam = new cdk.CfnParameter(this, 'LocalDynamoEndpoint', {
@@ -37,10 +37,12 @@ export class CdkMigrationStack extends cdk.Stack {
 
         // Lambda Layer
         const dynamoLayer = new lambda.LayerVersion(this, 'DynamoDBGraphLayer', {
-            layerVersionName: 'dynamodb-graph',
+            layerVersionName: 'gravelmon-dynamodb',
             description: 'Shared DynamoDB graph utility layer for Lambda functions',
             code: lambda.Code.fromAsset(
-                path.join(__dirname, '../../../GravelmonWebApp-DynamoLayer/dist/package')
+                path.join(__dirname, '../../../GravelmonWebApp-DynamoLayer/dist/layer'), {
+                    exclude: ['cdk.out', 'node_modules/.cache', '.git']
+                }
             ),
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
         });
@@ -49,13 +51,14 @@ export class CdkMigrationStack extends cdk.Stack {
         const relationalFunction = new lambda.Function(this, 'DynamoRelationalFunction', {
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: 'dist/migration/animation/handler.handler',
-            code: lambda.Code.fromAsset('.'),
+            code: lambda.Code.fromAsset(path.join(__dirname, '../../dist/migration/animation'), {
+                exclude: ['cdk.out', 'node_modules/.cache', '.git']
+            }) ,
             timeout: cdk.Duration.seconds(30),
             layers: [dynamoLayer],
             environment: {
                 DYNAMODB_TABLE: tableNameParam.valueAsString,
-                DYNAMODB_ENDPOINT: localEndpointParam.valueAsString,
-                AWS_REGION: this.region,
+                DYNAMODB_ENDPOINT: localEndpointParam.valueAsString
             },
         });
 

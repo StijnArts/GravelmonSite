@@ -1,5 +1,3 @@
-import { execSync } from "child_process";
-
 it("should process animation nodes via SAM API", async () => {
     const response = await fetch("http://127.0.0.1:3000/migrate/animation", {
         method: "PUT",
@@ -11,8 +9,6 @@ it("should process animation nodes via SAM API", async () => {
             { name: "TestAnimation2", primaryPoseType: "POSE_2" },
         ]),
     });
-
-    const data = await response.json();
 
     expect(response.status).toBe(200);
 });

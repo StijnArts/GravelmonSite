@@ -26,7 +26,7 @@ This keeps the production architecture aligned with AWS while allowing local dev
 
 ## Layer support
 
-This project uses a separate Lambda layer project in `../dynamodb-graph-layer`. The `dynamodb-graph` package is loaded from that layer, so shared graph operations are reusable across Lambda functions.
+This project uses a separate Lambda layer project in `../gravelmon-dynamodb-layer`. The `gravelmon-dynamodb` package is loaded from that layer, so shared graph operations are reusable across Lambda functions.
 
 ## Local setup
 

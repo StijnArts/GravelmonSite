@@ -2,12 +2,8 @@ import {
     DynamoDBClient,
     CreateTableCommand,
     DeleteTableCommand,
-    DescribeTableCommand,
-    DynamoDBClientConfig
+    DescribeTableCommand
 } from "@aws-sdk/client-dynamodb";
-const tableName =
-    process.env.DYNAMODB_TABLE ||
-    `TestGraphTable-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export function createTestEnv(testName: string) {
     const tableName = `TestGraphTable_${testName}_${Date.now()}`;
